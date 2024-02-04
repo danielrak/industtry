@@ -1,13 +1,26 @@
 Package: industtry
 Type: Package
-Title: What the Package Does (Title Case)
+Title: A toolkit for structured datasets exploitation
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Daniel Rakotomalala
+Maintainer: Daniel Rakotomalala <rakdanielh@gmail.com>
+Description: A set of functions that helps exploiting structured datasets 
+    (data frames) with an industrialization approach. 
+    Industrialization here means applying as efficiently as possible the same
+    procedure to any number of inputs as long as these inputs have a common structure. 
+License: Public domain license
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/danielrak/industtry
 BugReports: https://github.com/danielrak/industtry/issues
+Imports: 
+    dplyr,
+    lubridate,
+    magrittr,
+    plyr,
+    purrr,
+    rio,
+    stringr,
+    tibble,
+    tools,
+    writexl
