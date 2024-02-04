@@ -1,14 +1,15 @@
 Package: industtry
 Type: Package
 Title: A toolkit for structured datasets exploitation
-Version: 0.1.0
-Author: Daniel Rakotomalala
+Version: 0.0.0.9000
+Authors@R: person("Daniel", "Rakotomalala", email = "rakdanielh@gmail.com",
+    role = c("aut", "cre"))
 Maintainer: Daniel Rakotomalala <rakdanielh@gmail.com>
-Description: A set of functions that helps exploiting structured datasets 
-    (data frames) with an industrialization approach. 
+Description: A toolkit for structured datasets exploitation. A set of functions that helps 
+    exploiting structured datasets (data frames) with an industrialization approach. 
     Industrialization here means applying as efficiently as possible the same
-    procedure to any number of inputs as long as these inputs have a common structure. 
-License: Public domain license
+    procedure to any number of inputs as long as these inputs have an identified common structure. 
+License: CCO (http://bit.ly/1F96Zgp)
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/danielrak/industtry
@@ -24,3 +25,4 @@ Imports:
     tibble (>= 3.2.1),
     tools (>= 4.3.1),
     writexl (>= 1.4.2)
+RoxygenNote: 7.2.3
