@@ -4,6 +4,8 @@
 
 inspect <- function(data_frame, nrow = FALSE) {
 
+  require(magrittr)
+
   # Observations:
   rows <- nrow(data_frame)
   df <- data_frame %>%
@@ -16,18 +18,18 @@ inspect <- function(data_frame, nrow = FALSE) {
     purrr::map_df(~ {
       dplyr::tibble(
         type = class(.x),
-        nb_dis = dplyr::n_distinct(.x),
-        prop_dis = nb_dis / rows,
+        nb_distinct = dplyr::n_distinct(.x),
+        prop_distinct = nb_distinct / rows,
         nb_na = sum(is.na(.x)),
         prop_na = nb_na / rows,
-        nb_vide = sum(.x == "", na.rm = TRUE),
-        prop_vide = nb_vide / rows,
-        modalite = paste(sort(unique(.x))[
+        nb_void = sum(.x == "", na.rm = TRUE),
+        prop_void = nb_void / rows,
+        modalities = paste(sort(unique(.x))[
           1:min(dplyr::n_distinct(.x), 10)],
           collapse =
             " / ")
       )
-    }, .id = "colonne")
+    }, .id = "variables")
   if (nrow) {
     print(nrow(data_frame))
     df
