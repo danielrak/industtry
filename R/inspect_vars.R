@@ -2,6 +2,15 @@
 
 # Inspect function --------------------------------------------------------
 
+
+#' Inspect a data frame
+#'
+#' @param data_frame The data.frame to explore. Need to exist in the Global Environment.
+#' @param nrow Logical. If TRUE, the number of observations of the dataset is rendered in addition.
+#' @return Variable list of the dataset and systematic informations for each variable.
+#' @examples
+#' inspect(diamonds)
+
 inspect <- function(data_frame, nrow = FALSE) {
 
   require(magrittr)
@@ -17,7 +26,7 @@ inspect <- function(data_frame, nrow = FALSE) {
     # Computing inspection infos:
     purrr::map_df(~ {
       dplyr::tibble(
-        type = class(.x),
+        class = class(.x),
         nb_distinct = dplyr::n_distinct(.x),
         prop_distinct = nb_distinct / rows,
         nb_na = sum(is.na(.x)),
