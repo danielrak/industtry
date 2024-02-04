@@ -2,14 +2,17 @@
 
 # Inspect function --------------------------------------------------------
 
-inspect <- function(dataframe, nrow = FALSE) {
-  # observations
-  rows <- nrow(dataframe)
-  df <- dataframe %>%
-    # Date-time class correction to make it compatible with class(.x)
-    dplyr::mutate_if(lubridate::is.POSIXct, function (x)
-      as.character(x) %>% structure(class = "Date-time")) %>%
-    # Computing inspection infos
+inspect <- function(data_frame, nrow = FALSE) {
+
+  # Observations:
+  rows <- nrow(data_frame)
+  df <- data_frame %>%
+
+    # Date-time class correction to make it compatible with class(.x):
+    dplyr::mutate_if(lubridate::is.POSIXct, \(x)
+                     as.character(x) %>% structure(class = "Date-time")) %>%
+
+    # Computing inspection infos:
     purrr::map_df(~ {
       dplyr::tibble(
         type = class(.x),
@@ -26,7 +29,7 @@ inspect <- function(dataframe, nrow = FALSE) {
       )
     }, .id = "colonne")
   if (nrow) {
-    print(nrow(dataframe))
+    print(nrow(data_frame))
     df
   } else
     df
