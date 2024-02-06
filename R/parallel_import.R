@@ -16,6 +16,7 @@ ext_tract <- function (path, split = "/") {
 
 # parallel_import ---------------------------------------------------------
 
+#' Import a collection of datasets into the Global Environment
 #' @param file_paths A character vector of valid absolute file paths of
 #' datasets to import
 #' @return After jobs completion, see the datasets imported in the Global Environment
