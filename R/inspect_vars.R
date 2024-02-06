@@ -46,3 +46,59 @@ inspect <- function(data_frame, nrow = FALSE) {
     df
 }
 
+# Variable detection pattern function -------------------------------------
+
+vars_detect <- function (data_frames) {
+
+  require(magrittr)
+
+  out_data <- data_frames %>%
+    purrr::map(\(x) get(x) %>% names %>% as.data.frame %>%
+                 setNames(x) %>% (\(x2) cbind(x2, x2) %>%
+                                    (\(c) {
+                                      colnames(c)[1] <- "union"
+                                      c
+                                    }))) %>%
+    (\(l)
+     plyr::join_all(list(as.data.frame(unique(unlist(l))),
+                         l %>% purrr::map(as.data.frame)) %>%
+                      purrr::flatten() %>%
+                      (\(l2) {
+                        l2[[1]] <- as.data.frame(l2[[1]]) %>%
+                          setNames("union")
+                        l2
+                      }), type = "left")) %>%
+    (\(d) {
+      cbind(d[, 1],
+            dplyr::mutate_all(d[, 2:ncol(d)],
+                              \(x) ifelse(! is.na(x), "ok", "-"))) %>%
+        (\(d2) {names(d2)[1] <- "vars_union" ; d2})
+    })
+
+  # Arranging lines to better visualize presence/absence patterns.
+  # Critrias: rkfirst_ok, desc(nb_ok_conseq), desc(rkfirst_out),
+  # desc(nb_out_conseq):
+
+  rkfirst_ok <- out_data[, - 1] %>%
+    apply(1, function (x) min(which(x == "ok")))
+
+  nb_ok_conseq <- out_data %>%
+    apply(1, function (x) rle(as.numeric(x == "ok"))$lengths[2])
+
+  rkfirst_out <- out_data[, - 1] %>%
+    apply(1, function (x) min(which(x == "-")))
+
+  nb_out_conseq <- out_data %>%
+    apply(1, function (x) rle(as.numeric(x == "-"))$lengths[2])
+
+  out_data <- dplyr::mutate(out_data,
+                            rkfirst_ok, nb_ok_conseq,
+                            rkfirst_out, nb_out_conseq)
+
+  dplyr::arrange(out_data,
+                 rkfirst_ok, desc(nb_ok_conseq),
+                 desc(rkfirst_out), desc(nb_out_conseq)) %>%
+    dplyr::select(- rkfirst_ok, - nb_ok_conseq,
+                  - rkfirst_out, - nb_out_conseq)
+
+}
