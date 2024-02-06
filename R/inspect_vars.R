@@ -48,6 +48,13 @@ inspect <- function(data_frame, nrow = FALSE) {
 
 # Variable detection pattern function -------------------------------------
 
+#' Variable detection patterns
+#'
+#' @param data_frames The datasets to explore. Need to exist in the Global Environment.
+#' @return Variable list and indicators of presences/absences across all inputted datasets.
+#' @examples
+#' vars_detect(c("cars", "mtcars"))
+
 vars_detect <- function (data_frames) {
 
   require(magrittr)
@@ -100,5 +107,54 @@ vars_detect <- function (data_frames) {
                  desc(rkfirst_out), desc(nb_out_conseq)) %>%
     dplyr::select(- rkfirst_ok, - nb_ok_conseq,
                   - rkfirst_out, - nb_out_conseq)
+
+}
+
+# Complement: extract presence/absence inconsistency:
+
+#' Variable detection - inconsistent patterns
+#'
+#' @param vars_detect_table Output of the vars_detect() function in this package.
+#' This object must exists into the Global Environment.
+#' @return From vars_detect_table, extract variables that are not always present through all the datasets.
+#' @examples
+#' vdetect_table <- vars_detect(c("cars", "mtcars"))
+#' vars_detect_not_everywhere(vdetect_table)
+
+vars_detect_not_everywhere <- function (vars_detect_table) {
+
+  vars_detect_table %>% (function (d) {
+
+    not_everywhere <-
+      apply(d, 1, function (x) !
+              identical(unique(x[-1]), "ok")) %>% unlist
+    d[not_everywhere, ]
+
+  })
+
+}
+
+
+# Complement: extract variables that are presents across all datasets:
+
+#' Variable detection - presence across all the datasets
+#'
+#' @param vars_detect_table Output of the vars_detect() function in this package.
+#' This object must exists into the Global Environment.
+#' @return From vars_detect_table, extract variables that are always present through all the datasets.
+#' @examples
+#' vdetect_table <- vars_detect(c("cars", "mtcars"))
+#' vars_detect_everywhere(vdetect_table)
+
+vars_detect_everywhere <- function (vars_detect_table) {
+
+  vars_detect_table %>% (function (d) {
+
+    everywhere <-
+      apply(d, 1,
+            function (x) identical(unique(x[-1]), "ok")) %>% unlist
+    d[everywhere, ]
+
+  })
 
 }
