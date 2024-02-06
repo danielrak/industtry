@@ -2,7 +2,6 @@
 
 # Inspect function --------------------------------------------------------
 
-
 #' Inspect a data frame
 #'
 #' @param data_frame The data.frame to explore. Need to exist in the Global Environment.
@@ -133,7 +132,6 @@ vars_detect_not_everywhere <- function (vars_detect_table) {
   })
 
 }
-
 
 # Complement: extract variables that are presents across all datasets:
 
