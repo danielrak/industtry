@@ -18,5 +18,5 @@ Variable list of the dataset and systematic informations for each variable.
 Inspect a data frame
 }
 \examples{
-inspect(diamonds)
+inspect(CO2)
 }
