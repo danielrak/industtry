@@ -7,10 +7,10 @@
 dupl_show(data_frame, vars)
 }
 \arguments{
+\item{data_frame}{Input data frame. Need to be in the Global Environment and has a data.frame class}
+
 \item{vars}{A character vector of variable or combination of variables
 from which duplicates are checked}
-
-\item{data}{Input data frame. Need to be in the Global Environment and has a data.frame class}
 }
 \value{
 The part inputted data frame with all observations of duplicated values of

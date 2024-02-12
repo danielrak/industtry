@@ -4,7 +4,7 @@ library(magrittr)
 
 
 #' Show observations of all duplicated values of a variable or a combination of variables
-#' @param data Input data frame. Need to be in the Global Environment and has a data.frame class
+#' @param data_frame Input data frame. Need to be in the Global Environment and has a data.frame class
 #' @param vars A character vector of variable or combination of variables
 #' from which duplicates are checked
 #' @return The part inputted data frame with all observations of duplicated values of
