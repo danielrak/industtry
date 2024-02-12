@@ -1,5 +1,7 @@
 # dupl_show
 
+library(magrittr)
+
 
 #' Show observations of all duplicated values of a variable or a combination of variables
 #' @param data Input data frame. Need to be in the Global Environment and has a data.frame class

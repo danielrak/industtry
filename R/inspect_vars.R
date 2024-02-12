@@ -1,4 +1,4 @@
-
+library(magrittr)
 
 # Inspect function --------------------------------------------------------
 
@@ -8,7 +8,7 @@
 #' @param nrow Logical. If TRUE, the number of observations of the dataset is rendered in addition.
 #' @return Variable list of the dataset and systematic informations for each variable.
 #' @examples
-#' inspect(diamonds)
+#' inspect(CO2)
 
 inspect <- function(data_frame, nrow = FALSE) {
 
