@@ -22,7 +22,7 @@ inspect <- function(data_frame, nrow = FALSE) {
     dplyr::mutate_if(lubridate::is.POSIXct, \(x)
                      as.character(x) %>% structure(class = "Date-time")) %>%
 
-    # Computing inspection infos:
+    # Compute inspection infos:
     purrr::map_df(~ {
       dplyr::tibble(
         class = class(.x),
@@ -81,7 +81,7 @@ vars_detect <- function (data_frames) {
         (\(d2) {names(d2)[1] <- "vars_union" ; d2})
     })
 
-  # Arranging lines to better visualize presence/absence patterns.
+  # Arrange lines to better visualize presence/absence patterns.
   # Critrias: rkfirst_ok, desc(nb_ok_conseq), desc(rkfirst_out),
   # desc(nb_out_conseq):
 
@@ -226,3 +226,144 @@ vars_compclasses_allsame <- function (vars_compclasses_table) {
     d[allsame,]
   })
 }
+
+# inspect_vars() - The main function ---------------------------------
+
+#' Inspect a collection of datasets
+#'
+#' @param input_path Folder path of datasets to explore
+#' @param output_path Folder path where the exploration output will be stored
+#' @param output_label 1-length character vector describing concisely the collection to explore
+#' @param considered_extensions Character vector of extensions of datasets retained for exploration
+#' in the input folder. Do not type the "." (dot) in it. E.g ("parquet" but not ".parquet")
+#' @return An excel file written on the computer containing exploration information
+#' @examples
+#' saveRDS(cars, "./cars1.rds")
+#' saveRDS(mtcars, "./cars2.rds")
+#'
+#' # Code below illustrates how to use the function:
+#' inspect_vars(input_path = ".", output_path = ".",
+#'              output_label = "cardata", considered_extensions = "rds")
+#'
+#' purrr::map(1:10, \(x)
+#'            rio::import("./inspect_vars_cardata.xlsx",
+#'                        sheet = x)) %>%
+#' setNames(c("dims", "inspect_tot", "inspect_cars1", "inspect_cars2",
+#'            "vars_detect", "vars_detect_everywhere", "vars_detect_not_everywhere",
+#'            "vars_compclasses", "vars_compclasses_allsame", "vars_compclasses_not_allsame"))
+#'            # code above illustrates all 10 sheets of the output
+#'
+#' file.remove(c("./cars1.rds", "./cars2.rds", "./inspect_vars_cardata.xlsx"))
+#'
+inspect_vars <- function (input_path, output_path,
+                          output_label, considered_extensions) {
+  # Import datasets:
+  # file extensions
+  ext <- paste0("\\.", considered_extensions, "$") %>%
+    paste0(collapse = "|")
+  # files found in input folder
+  lfiles <- list.files(input_path) %>%
+    purrr::keep(stringr::str_detect(., ext))
+  lfiles %>%
+    # load each dataset
+    purrr::map(\(x) {
+
+      assign(x,
+             rio::import(file.path(input_path, x),
+                         encoding = "latin1"),
+             pos = globalenv())
+      invisible()
+    })
+
+  # Compute all datasets inspection as R objects:
+  lfiles %>% purrr::map(\(x) {
+    data <- get(x)
+    inspect <- inspect(data)
+    inspect <- inspect %>%
+      (\(i) rbind(c("Obs = ", nrow(data),
+                            rep("", ncol(i) - 1)),
+                          c("Nvars = ", nrow(i),
+                            rep("", ncol(i) - 1)),
+                          cbind(1:nrow(i), i)))
+    assign(paste0("inspect_", x), inspect, pos = globalenv())
+    invisible()
+  })
+
+  # Datasets dimensions:
+  dims <-
+    paste0("inspect_", lfiles) %>%
+    (\(l)
+      purrr::map(l, get) %>%
+       purrr::map(\(x) x[1:2, 2] %>% t %>%
+                    as.numeric) %>% setNames(l) %>%
+       do.call(what = rbind)) %>%
+    magrittr::set_colnames(c("nobs", "nvar")) %>%
+    as.data.frame() %>%
+    tibble::rownames_to_column(var = "datasets") %>%
+    dplyr::mutate(datasets = stringr::str_remove(datasets, "ˆinspect\\_") %>%
+                    stringr::str_remove(paste0(".", considered_extensions) %>%
+                                          paste(collapse = "|")))
+
+  # Bind all inspection outputs:
+  inspect_tot <-
+    paste0("inspect_", lfiles) %>%
+    (\(l)
+      purrr::map(l, function (x) get(x)[- c(1:2), - 1] %>%
+                   dplyr::mutate(datasets = x) %>% dplyr::relocate(datasets))) %>%
+    do.call(what = rbind) %>%
+    dplyr::mutate(datasets = stringr::str_remove(datasets, "ˆinspect\\_") %>%
+                    stringr::str_remove(paste0(".", considered_extensions) %>%
+                                          paste(collapse = "|"))) %>%
+    dplyr::left_join(dims, by = "datasets") %>%
+    dplyr::relocate(nvar, nobs, .after = datasets)
+
+
+  # Compute outputs of variable detection and type comparison above:
+  vars_detect_data <- vars_detect(lfiles)
+  vars_detect_everywhere_data <-
+    vars_detect_everywhere(vars_detect_data)
+  vars_detect_not_everywhere_data <-
+    vars_detect_not_everywhere(vars_detect_data)
+  vars_compclasses_data <- vars_compclasses(lfiles)
+  # Same order as vars_detect:
+  # (source :
+  # https://stackoverflow.com/questions/27362718/reordering-rows-in-a-dataframe-
+  # according-to-the-order-of-rows-in-another-datafra)
+  vars_compclasses_data <- vars_compclasses_data %>%
+    (\(d) d[order(match(vars_compclasses_data$vars_union,
+                                vars_detect_data$vars_union)), ])
+  vars_compclasses_allsame_data <-
+    vars_compclasses_allsame(vars_compclasses_data)
+  vars_compclasses_not_allsame_data <-
+    vars_compclasses_not_allsame(vars_compclasses_data)
+
+  # Write all outputs in an Excel file:
+  writexl::write_xlsx(
+    list(
+      list("dims" = dims),
+      list("inspect_tot" = inspect_tot),
+      paste0("inspect_", lfiles) %>%
+        (\(l) purrr::map(l, get) %>%
+           setNames(l %>%
+                    stringr::str_remove("ˆinspect\\_") %>%
+                      (\(s)
+                        stringr::str_remove(s, paste0("\\.",
+                                                      tools::file_ext(s)))))),
+      list("vars_detect" = vars_detect_data),
+      list("vars_detect_everywhere" = vars_detect_everywhere_data),
+      list("vars_detect_not_everywhere" = vars_detect_not_everywhere_data),
+      list("vars_compclasses" = vars_compclasses_data),
+      list("vars_compclasses_allsame" = vars_compclasses_allsame_data),
+      list("vars_compclasses_not_allsame" = vars_compclasses_not_allsame_data)
+    ) %>% purrr::flatten(),
+    file.path(output_path, paste0("inspect_vars_", output_label, ".xlsx"))
+  )
+
+  # Remove intermediate outputs in Global Environment to lighten the user:
+  rm(list = ls(envir = globalenv()) %>%
+       (\(ls)
+         ls[ls %in%
+              c(lfiles, paste0("inspect_", lfiles))]),
+     envir = globalenv())
+}
+
