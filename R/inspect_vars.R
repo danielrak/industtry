@@ -32,10 +32,12 @@ inspect <- function(data_frame, nrow = FALSE) {
         prop_na = nb_na / rows,
         nb_void = sum(.x == "", na.rm = TRUE),
         prop_void = nb_void / rows,
+        nchars = paste(unique(sort(nchar(as.character(.x))))[
+          1:min(dplyr::n_distinct(nchar(as.character(.x))), 10)],
+          collapse = " / "),
         modalities = paste(sort(unique(.x))[
           1:min(dplyr::n_distinct(.x), 10)],
-          collapse =
-            " / ")
+          collapse = " / ")
       )
     }, .id = "variables")
   if (nrow) {
