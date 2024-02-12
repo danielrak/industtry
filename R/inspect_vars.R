@@ -49,7 +49,7 @@ inspect <- function(data_frame, nrow = FALSE) {
 
 #' Variable detection patterns
 #'
-#' @param data_frames The datasets to explore. Need to exist in the Global Environment.
+#' @param data_frames The datasets to explore. Need to exist in the Global Environment
 #' @return Variable list and indicators of presences/absences across all inputted datasets.
 #' @examples
 #' vars_detect(c("cars", "mtcars"))
@@ -86,16 +86,16 @@ vars_detect <- function (data_frames) {
   # desc(nb_out_conseq):
 
   rkfirst_ok <- out_data[, - 1] %>%
-    apply(1, function (x) min(which(x == "ok")))
+    apply(1, \(x) min(which(x == "ok")))
 
   nb_ok_conseq <- out_data %>%
-    apply(1, function (x) rle(as.numeric(x == "ok"))$lengths[2])
+    apply(1, \(x) rle(as.numeric(x == "ok"))$lengths[2])
 
   rkfirst_out <- out_data[, - 1] %>%
-    apply(1, function (x) min(which(x == "-")))
+    apply(1, \(x) min(which(x == "-")))
 
   nb_out_conseq <- out_data %>%
-    apply(1, function (x) rle(as.numeric(x == "-"))$lengths[2])
+    apply(1, \(x) rle(as.numeric(x == "-"))$lengths[2])
 
   out_data <- dplyr::mutate(out_data,
                             rkfirst_ok, nb_ok_conseq,
@@ -122,10 +122,10 @@ vars_detect <- function (data_frames) {
 
 vars_detect_not_everywhere <- function (vars_detect_table) {
 
-  vars_detect_table %>% (function (d) {
+  vars_detect_table %>% (\(d) {
 
     not_everywhere <-
-      apply(d, 1, function (x) !
+      apply(d, 1, \(x) !
               identical(unique(x[-1]), "ok")) %>% unlist
     d[not_everywhere, ]
 
@@ -150,9 +150,79 @@ vars_detect_everywhere <- function (vars_detect_table) {
 
     everywhere <-
       apply(d, 1,
-            function (x) identical(unique(x[-1]), "ok")) %>% unlist
+            \(x) identical(unique(x[-1]), "ok")) %>% unlist
     d[everywhere, ]
 
   })
 
+}
+
+# Variable class comparison -----------------------------------------------
+
+#' Collection-level variables types comparison
+#'
+#'@param data_frames The datasets to explore. Need to exist in the Global Environment
+#'@return Variable list and their respective types across all inputted datasets.
+#'@examples vars_compclasses(c("cars", "mtcars"))
+
+vars_compclasses <- function (data_frames) {
+
+  vars_union <- purrr::map(data_frames, get) %>%
+    purrr::map(names) %>% unlist %>% unique
+  data_frames %>% (\(ll) purrr::map(ll, \(x) {
+    g <- get(x)
+    purrr::map(vars_union,
+               \(y)
+               ifelse(ncol(g) > 0, class(g[[y]]) %>%
+                        # avoid problems with 2L class variables:
+                        paste(collapse = "/"), NULL) %>%
+                 stringr::str_replace("ˆNULL$", "-")) %>%
+      do.call(what = rbind)}) %>%
+      do.call(what = cbind) %>%
+      magrittr::set_rownames(vars_union) %>%
+      magrittr::set_colnames(ll)) %>%
+    as.data.frame %>%
+    tibble::rownames_to_column() %>%
+    (\(d) {
+      names(d)[1] <- "vars_union"
+      d
+    })
+}
+
+
+#' Variable class comparison - not all of same type across all datasets
+#'
+#' @param vars_compclasses_table Output of the vars_compclasses() function in this package.
+#' @return From vars_compclasses_table, extract type-inconsistent variables through all the datasets.
+#' @examples
+#' vcompclasses_table <- vars_compclasses(c("cars", "mtcars"))
+#' vars_compclasses_not_allsame(vcompclasses_table)
+#'
+vars_compclasses_not_allsame <- function (vars_compclasses_table) {
+  vars_compclasses_table %>% (function (d) {
+    not_allsame <- apply(d, 1, function (x)
+      length(unique(x[-1] %>%
+                    (function (xx)
+                      xx[xx != "-"]))) != 1) %>% unlist
+    d[not_allsame,]
+  })
+}
+
+
+#' Variable class comparison - all of same type across all datasets
+#'
+#' @param vars_compclasses_table Output of the vars_compclasses() function in this package.
+#' @return From vars_compclasses_table, extract type-consistent variables through all the datasets.
+#' @examples
+#' vcompclasses_table <- vars_compclasses(c("cars", "mtcars"))
+#' vars_compclasses_allsame(vcompclasses_table)
+#'
+vars_compclasses_allsame <- function (vars_compclasses_table) {
+  vars_compclasses_table %>% (\(d) {
+    allsame <- apply(d, 1, function (x)
+      length(unique(x[-1] %>%
+                      (\(xx)
+                        xx[xx != "-"]))) == 1) %>% unlist
+    d[allsame,]
+  })
 }

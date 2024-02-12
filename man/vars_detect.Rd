@@ -7,7 +7,7 @@
 vars_detect(data_frames)
 }
 \arguments{
-\item{data_frames}{The datasets to explore. Need to exist in the Global Environment.}
+\item{data_frames}{The datasets to explore. Need to exist in the Global Environment}
 }
 \value{
 Variable list and indicators of presences/absences across all inputted datasets.
