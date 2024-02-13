@@ -3,6 +3,7 @@
 # Current script location -------------------------------------------------
 
 #'Get exact path of the currently opened script
+#' @return A character vector indicating exact path of currently opened script
 #' @examples current_script_location()
 #'
 current_script_location <- function (x) {

@@ -6,6 +6,9 @@
 \usage{
 current_script_location(x)
 }
+\value{
+A character vector indicating exact path of currently opened script
+}
 \description{
 Get exact path of the currently opened script
 }
