@@ -50,7 +50,7 @@ convert_r <- function (mask_path, output_path) {
   # (3) eliminate eventual spaces in character values corners,
   # (4) export resulting dataset in output_path as indicated in the mask
   sp %>% (\(l) {
-    purrr::map(names(l), function (x) {
+    purrr::map(names(l), \(x) {
       l <- l
       output_path <- output_path
       job::job({

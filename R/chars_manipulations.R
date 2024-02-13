@@ -2,18 +2,18 @@
 
 # Remove accents and special chars ----------------------------------------
 
-unaccent <- function(text) {
-
-  text <- gsub("['`^~\"]", " ", text)
-  text <- iconv(text, to="ASCII//TRANSLIT//IGNORE")
-  text <- gsub("['`^~\"]", "", text)
-  return(text)
-}
-
+# To be added.
 
 # Characters structure ----------------------------------------------------
 
 # Experimental version. To be developed substantially.
+
+#' Get [:alpha:] / [:digit:] patterns from each symbol of character vector
+#' @param input_vector Character vector to process
+#' @return Character vector describing structure of each elements of input_vector,
+#' see example
+#' @examples chars_structure(c("ABC123", "DE4F56", "789GHI"))
+#'
 chars_structure <- function (input_vector) {
 
   require(magrittr)

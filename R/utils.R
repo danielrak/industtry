@@ -3,17 +3,7 @@
 
 # Collapse NAs----------------------------------------------------------------
 
-# Not working yet.
-collapse_nas <- function (data_frame, groups) {
-
-  require(magrittr)
-
-  data_frame %>% dplyr::group_by(!!sym(groups)) %>%
-    dplyr::summarise_all(
-      \(x) ifelse(! is.na(unique(x)), na.omit(x), x)) %>%
-    dplyr::ungroup() %>% dplyr::distinct()
-
-}
+# To be added.
 
 # Left join + checks ------------------------------------------------------
 

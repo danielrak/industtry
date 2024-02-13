@@ -64,23 +64,31 @@ fsrepl <- folder_structure_replicate
 
 # Path level --------------------------------------------------------------
 
+# Needs revision.
+
+#' Extract a part of file path with levels
+#' @param path Path to process
+#' @param level Positive or negative integer. Level of the path, see example.
+#' @examples
+#' path_level("level_1/level_2/file.ext", 1)
+#' path_level("level_1/level_2/file.ext", - 1)
+#' path_level("level_1/level_2/file.ext", 0)
+#'
 path_level <- function (path, level) {
 
   require(magrittr)
 
   strsplit(path, "/") %>%
-    purrr::map(\(x) x[1:(length(x) + level)] %>%
+    purrr::map(\(x) x[
+
+      if(level > 0) {level} else
+        if (level < 0) {1:length(x) + level} else
+          stop("The level argument must be a strictly positive or strictly negative integer.")
+      ] %>%
            paste(collapse = "/")) %>%
     unlist()
 }
 
-# Path move ---------------------------------------------------------------
 
-path_move <- function (path, level, move = NULL) {
-
-  require(magrittr)
-
-  path_level(path, level = level) %>%
-    (\(p) file.path(p, move))
-}
+# Path move not included / need revision ----------------------------------
 

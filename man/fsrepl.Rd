@@ -10,7 +10,3 @@ fsrepl(dir, to)
 \description{
 A wrapper of folder_structure_replicate()
 }
-\examples{
-fsrepl()
-
-}
