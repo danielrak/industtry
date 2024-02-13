@@ -25,17 +25,62 @@ csloc <- current_script_location
 # Filename extraction given a filepath ------------------------------------
 
 #' Extract filename given a filepath
-#' @param filepath A 1L character vector. The file path from which file name will be extracted
+#' @param file_path A 1L character vector. The file path from which file name will be extracted
 #' @param split Indicates the path separator symbol
 #' @return Last level of filepath
 #' @examples file_extract(filepath = "level_1/level_2/file.ext",
 #'                        split = "/")
 #'
-file_extract <- function (filepath, split = "/") {
+file_extract <- function (file_path, split = "/") {
 
   require(magrittr)
 
-  strsplit(filepath, split = split) %>%
+  strsplit(file_path, split = split) %>%
     purrr::map(\(x) x[length(x)]) %>%
-    unlist
+    unlist()
 }
+
+# Replicate folder structure ----------------------------------------------
+
+#' Replicate the folder structure of a given directory
+#' @param dir Path of directory which structure will be replicated
+#' @param to Path of an output directory in which replicated structured will be placed
+#'
+folder_structure_replicate <- function (dir, to) {
+
+  require(magrittr)
+
+  list.dirs(dir, full.names = FALSE) %>%
+    (\(l) for (i in l)
+      dir.create(here(to, i), recursive = TRUE))
+}
+
+
+#' A wrapper of folder_structure_replicate()
+#' @aliases folder_structure_replicate()
+#'
+fsrepl <- folder_structure_replicate
+
+
+# Path level --------------------------------------------------------------
+
+path_level <- function (path, level) {
+
+  require(magrittr)
+
+  strsplit(path, "/") %>%
+    purrr::map(\(x) x[1:(length(x) + level)] %>%
+           paste(collapse = "/")) %>%
+    unlist()
+}
+
+# Path move ---------------------------------------------------------------
+
+path_move <- function (path, level, move = NULL) {
+
+  require(magrittr)
+
+  path_level(path, level = level) %>%
+    (\(p) file.path(p, move))
+}
+
