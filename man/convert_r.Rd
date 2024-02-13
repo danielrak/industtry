@@ -7,9 +7,9 @@
 convert_r(mask_path, output_path)
 }
 \arguments{
-\item{output_path}{Folder path where the converted datasets will be placed.}
+\item{output_path}{Folder path where the converted datasets will be placed}
 
-\item{mask_filepath}{Entire file path of the excel mask.}
+\item{mask_filepath}{Entire file path of the excel mask}
 }
 \description{
 Industrialized dataset formats conversion
