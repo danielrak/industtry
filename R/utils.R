@@ -1,0 +1,45 @@
+# utils - Unclassified (yet) tools that may be useful
+
+
+# Collapse NAs----------------------------------------------------------------
+
+# Not working yet.
+collapse_nas <- function (data_frame, groups) {
+
+  require(magrittr)
+
+  data_frame %>% dplyr::group_by(!!sym(groups)) %>%
+    dplyr::summarise_all(
+      \(x) ifelse(! is.na(unique(x)), na.omit(x), x)) %>%
+    dplyr::ungroup() %>% dplyr::distinct()
+
+}
+
+# Left join + checks ------------------------------------------------------
+
+ljoin_checks <- function (ltable, rtable, ...) {
+
+  require(magrittr)
+
+  result <- dplyr::left_join(x = ltable, y = rtable, ...)
+
+  lrows <- nrow(ltable)
+  rrows <- nrow(rtable)
+  jrows <- nrow(result)
+
+  lvars <- names(ltable)
+  rvars <- names(rtable)
+  ivars <- intersect(lvars, rvars)
+
+  message("Checks : \n",
+          paste0("ltable rows : ", lrows),
+          "\n",
+          paste0("rtable rows :", rrows),
+          "\n",
+          paste0("jtable rows : ", jrows),
+          "\n",
+          paste0(ivars, collapse = ", ") %>%
+            paste0(" are common var names accross the two tables"))
+
+  return(result)
+}
