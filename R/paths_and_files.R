@@ -8,7 +8,7 @@
 #'
 current_script_location <- function (x) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   rstudioapi::getSourceEditorContext()$path %>%
     strsplit("\\/") %>% unlist %>%
@@ -33,7 +33,7 @@ csloc <- current_script_location
 #'
 file_extract <- function (file_path, split = "/") {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   strsplit(file_path, split = split) %>%
     purrr::map(\(x) x[length(x)]) %>%
@@ -48,7 +48,7 @@ file_extract <- function (file_path, split = "/") {
 #'
 folder_structure_replicate <- function (dir, to) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   list.dirs(dir, full.names = FALSE) %>%
     (\(l) for (i in l)
@@ -76,7 +76,7 @@ fsrepl <- folder_structure_replicate
 #'
 path_level <- function (path, level) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   strsplit(path, "/") %>%
     purrr::map(\(x) x[

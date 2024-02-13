@@ -22,7 +22,7 @@
 replace_multiple <- function (input_vector, replacements,
                               replace_all = FALSE) {
 
-  library(magrittr)
+  requireNamespace("magrittr")
 
   # if replace_all == TRUE, use str_replace_all instead of str_replace:
   replace_function <- function (...) {

@@ -7,9 +7,17 @@
 
 # Left join + checks ------------------------------------------------------
 
+#' Perform a classical dplyr::left_join() and add check information related to join
+#'
+#' @param ltable Left data frame in the join
+#' @param rtable Right data frame in the join
+#' @return Output of dplyr::left_join() with messages on number of observations
+#' in left, right and joined data frames and list of common variables between
+#' ltable and rtable
+#'
 ljoin_checks <- function (ltable, rtable, ...) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   result <- dplyr::left_join(x = ltable, y = rtable, ...)
 

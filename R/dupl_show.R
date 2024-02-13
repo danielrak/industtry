@@ -9,7 +9,7 @@
 #' indicated variable or combination of variables
 dupl_show <- function (data_frame, vars) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
   # Insert element-wise combination of vars input components within the data:
   # idvarsdupl
   data <- dplyr::mutate(data_frame,

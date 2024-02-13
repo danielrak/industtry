@@ -11,7 +11,7 @@
 
 inspect <- function(data_frame, nrow = FALSE) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   # Observations:
   rows <- nrow(data_frame)
@@ -57,7 +57,7 @@ inspect <- function(data_frame, nrow = FALSE) {
 
 vars_detect <- function (data_frames) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   out_data <- data_frames %>%
     purrr::map(\(x) get(x) %>% names %>% as.data.frame %>%
@@ -123,7 +123,7 @@ vars_detect <- function (data_frames) {
 
 vars_detect_not_everywhere <- function (vars_detect_table) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   vars_detect_table %>% (\(d) {
 
@@ -149,7 +149,7 @@ vars_detect_not_everywhere <- function (vars_detect_table) {
 
 vars_detect_everywhere <- function (vars_detect_table) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   vars_detect_table %>% (function (d) {
 
@@ -172,7 +172,7 @@ vars_detect_everywhere <- function (vars_detect_table) {
 
 vars_compclasses <- function (data_frames) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   vars_union <- purrr::map(data_frames, get) %>%
     purrr::map(names) %>% unlist %>% unique
@@ -207,7 +207,7 @@ vars_compclasses <- function (data_frames) {
 #'
 vars_compclasses_not_allsame <- function (vars_compclasses_table) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   vars_compclasses_table %>% (function (d) {
     not_allsame <- apply(d, 1, function (x)
@@ -229,7 +229,7 @@ vars_compclasses_not_allsame <- function (vars_compclasses_table) {
 #'
 vars_compclasses_allsame <- function (vars_compclasses_table) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   vars_compclasses_table %>% (\(d) {
     allsame <- apply(d, 1, function (x)
@@ -271,7 +271,7 @@ vars_compclasses_allsame <- function (vars_compclasses_table) {
 inspect_vars <- function (input_path, output_path,
                           output_label, considered_extensions) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   # Import datasets:
   # file extensions

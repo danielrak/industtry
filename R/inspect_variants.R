@@ -11,7 +11,7 @@
 
 inspect_write <- function (data_frame_name, output_path, output_label = NULL) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   if (is.null(output_label)) {
 

@@ -16,7 +16,7 @@
 #'
 chars_structure <- function (input_vector) {
 
-  require(magrittr)
+  requireNamespace("magrittr")
 
   input_vector %>% unique %>%
     strsplit("") %>%
