@@ -1,7 +1,5 @@
 # dupl_show
 
-library(magrittr)
-
 
 #' Show observations of all duplicated values of a variable or a combination of variables
 #' @param data_frame Input data frame. Need to be in the Global Environment and has a data.frame class
@@ -11,6 +9,7 @@ library(magrittr)
 #' indicated variable or combination of variables
 dupl_show <- function (data_frame, vars) {
 
+  require(magrittr)
   # Insert element-wise combination of vars input components within the data:
   # idvarsdupl
   data <- dplyr::mutate(data_frame,

@@ -1,4 +1,3 @@
-library(magrittr)
 
 # Inspect function --------------------------------------------------------
 
@@ -124,6 +123,8 @@ vars_detect <- function (data_frames) {
 
 vars_detect_not_everywhere <- function (vars_detect_table) {
 
+  require(magrittr)
+
   vars_detect_table %>% (\(d) {
 
     not_everywhere <-
@@ -148,6 +149,8 @@ vars_detect_not_everywhere <- function (vars_detect_table) {
 
 vars_detect_everywhere <- function (vars_detect_table) {
 
+  require(magrittr)
+
   vars_detect_table %>% (function (d) {
 
     everywhere <-
@@ -168,6 +171,8 @@ vars_detect_everywhere <- function (vars_detect_table) {
 #'@examples vars_compclasses(c("cars", "mtcars"))
 
 vars_compclasses <- function (data_frames) {
+
+  require(magrittr)
 
   vars_union <- purrr::map(data_frames, get) %>%
     purrr::map(names) %>% unlist %>% unique
@@ -201,6 +206,9 @@ vars_compclasses <- function (data_frames) {
 #' vars_compclasses_not_allsame(vcompclasses_table)
 #'
 vars_compclasses_not_allsame <- function (vars_compclasses_table) {
+
+  require(magrittr)
+
   vars_compclasses_table %>% (function (d) {
     not_allsame <- apply(d, 1, function (x)
       length(unique(x[-1] %>%
@@ -220,6 +228,9 @@ vars_compclasses_not_allsame <- function (vars_compclasses_table) {
 #' vars_compclasses_allsame(vcompclasses_table)
 #'
 vars_compclasses_allsame <- function (vars_compclasses_table) {
+
+  require(magrittr)
+
   vars_compclasses_table %>% (\(d) {
     allsame <- apply(d, 1, function (x)
       length(unique(x[-1] %>%
@@ -259,6 +270,9 @@ vars_compclasses_allsame <- function (vars_compclasses_table) {
 #'
 inspect_vars <- function (input_path, output_path,
                           output_label, considered_extensions) {
+
+  require(magrittr)
+
   # Import datasets:
   # file extensions
   ext <- paste0("\\.", considered_extensions, "$") %>%
