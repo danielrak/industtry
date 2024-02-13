@@ -4,10 +4,10 @@
 \alias{file_extract}
 \title{Extract filename given a filepath}
 \usage{
-file_extract(filepath, split = "/")
+file_extract(file_path, split = "/")
 }
 \arguments{
-\item{filepath}{A 1L character vector. The file path from which file name will be extracted}
+\item{file_path}{A 1L character vector. The file path from which file name will be extracted}
 
 \item{split}{Indicates the path separator symbol}
 }
