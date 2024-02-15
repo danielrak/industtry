@@ -18,7 +18,7 @@ Last level of filepath
 Extract filename given a filepath
 }
 \examples{
-file_extract(filepath = "level_1/level_2/file.ext",
+library(magrittr)
+file_extract(file_path = "level_1/level_2/file.ext",
                        split = "/")
-
 }

@@ -1,4 +1,3 @@
-library(magrittr)
 
 # ext_tract ---------------------------------------------------------------
 
@@ -6,7 +5,10 @@ library(magrittr)
 #' @param path A valid R path
 #' @param split Path levels delimiter
 #' @return A character vector corresponding to the last level of the path
+#'
 ext_tract <- function (path, split = "/") {
+
+  requireNamespace("magrittr")
 
   strsplit(path, split = split) %>%
     purrr::map(\(y) y[length(y)]) %>%
@@ -20,8 +22,9 @@ ext_tract <- function (path, split = "/") {
 #' @param file_paths A character vector of valid absolute file paths of
 #' datasets to import
 #' @return After jobs completion, see the datasets imported in the Global Environment
-
-
+#' @importFrom magrittr %>%
+#' @export
+#'
 parallel_import <- function (file_paths) {
 
   # For each absolute file path inputted, launch a background job that

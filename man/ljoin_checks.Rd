@@ -10,6 +10,8 @@ ljoin_checks(ltable, rtable, ...)
 \item{ltable}{Left data frame in the join}
 
 \item{rtable}{Right data frame in the join}
+
+\item{...}{Any other arguments of dplyr::left_join()}
 }
 \value{
 Output of dplyr::left_join() with messages on number of observations

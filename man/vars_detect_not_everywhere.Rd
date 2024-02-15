@@ -17,6 +17,7 @@ From vars_detect_table, extract variables that are not always present through al
 Variable detection - inconsistent patterns
 }
 \examples{
+library(magrittr)
 vdetect_table <- vars_detect(c("cars", "mtcars"))
 vars_detect_not_everywhere(vdetect_table)
 }

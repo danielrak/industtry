@@ -18,5 +18,6 @@ Variable list of the dataset and systematic informations for each variable.
 Inspect a data frame
 }
 \examples{
+library(magrittr)
 inspect(CO2)
 }

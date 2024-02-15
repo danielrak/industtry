@@ -8,6 +8,9 @@
 #' @param output_label Optional 1-length character vector to label output file.
 #' If NULL, data_frame_name will also used as label
 #' @return Variable list of the dataset and systematic informations for each variable
+#' @importFrom magrittr %>%
+#' @export
+#'
 
 inspect_write <- function (data_frame_name, output_path, output_label = NULL) {
 

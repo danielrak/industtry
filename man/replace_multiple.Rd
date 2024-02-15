@@ -18,6 +18,7 @@ instead of stringr::str_replace()}
 Replace character vector values using a correspondence approach
 }
 \examples{
+library(magrittr)
 input <- c("one-one", "two-two-one", "three-three-two")
 
 replace_multiple(input,
@@ -30,5 +31,4 @@ replace_multiple(input,
                      c("one" = "1", "two" = "2",
                        "three" = "3"),
                  replace_all = TRUE)
-
 }

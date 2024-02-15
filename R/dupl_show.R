@@ -1,12 +1,14 @@
 # dupl_show
 
-
 #' Show observations of all duplicated values of a variable or a combination of variables
 #' @param data_frame Input data frame. Need to be in the Global Environment and has a data.frame class
 #' @param vars A character vector of variable or combination of variables
 #' from which duplicates are checked
 #' @return The part inputted data frame with all observations of duplicated values of
 #' indicated variable or combination of variables
+#' @importFrom magrittr %>%
+#' @export
+#'
 dupl_show <- function (data_frame, vars) {
 
   requireNamespace("magrittr")
@@ -32,7 +34,7 @@ dupl_show <- function (data_frame, vars) {
     dplyr::arrange(!!dplyr::sym("idvarsdupl")) %>%
 
     # put vars input to first variable(s) location(s):
-    dplyr::relocate(all_of(vars)) %>%
+    dplyr::relocate(dplyr::all_of(vars)) %>%
 
     # remove idvarsdupl:
     dplyr::select(- !!dplyr::sym("idvarsdupl"))

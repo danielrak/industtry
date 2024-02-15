@@ -16,7 +16,7 @@ From vars_compclasses_table, extract type-inconsistent variables through all the
 Variable class comparison - not all of same type across all datasets
 }
 \examples{
+library(magrittr)
 vcompclasses_table <- vars_compclasses(c("cars", "mtcars"))
 vars_compclasses_not_allsame(vcompclasses_table)
-
 }

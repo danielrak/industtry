@@ -5,12 +5,8 @@
 \alias{current_script_location()}
 \title{A wrapper of current_script_location()}
 \usage{
-csloc(x)
+csloc()
 }
 \description{
 A wrapper of current_script_location()
-}
-\examples{
-csloc()
-
 }

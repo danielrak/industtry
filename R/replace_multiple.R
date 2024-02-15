@@ -6,6 +6,7 @@
 #' @param replace_all Logical. If TRUE, stringr::str_replace_all() is used
 #' instead of stringr::str_replace()
 #' @examples
+#' library(magrittr)
 #' input <- c("one-one", "two-two-one", "three-three-two")
 #'
 #' replace_multiple(input,
@@ -18,6 +19,8 @@
 #'                      c("one" = "1", "two" = "2",
 #'                        "three" = "3"),
 #'                  replace_all = TRUE)
+#' @importFrom magrittr %>%
+#' @export
 #'
 replace_multiple <- function (input_vector, replacements,
                               replace_all = FALSE) {

@@ -15,8 +15,7 @@ path_level(path, level)
 Extract a part of file path with levels
 }
 \examples{
+library(magrittr)
 path_level("level_1/level_2/file.ext", 1)
 path_level("level_1/level_2/file.ext", - 1)
-path_level("level_1/level_2/file.ext", 0)
-
 }

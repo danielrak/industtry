@@ -7,6 +7,11 @@
 \usage{
 fsrepl(dir, to)
 }
+\arguments{
+\item{dir}{Path of directory which structure will be replicated}
+
+\item{to}{Path of an output directory in which replicated structured will be placed}
+}
 \description{
 A wrapper of folder_structure_replicate()
 }

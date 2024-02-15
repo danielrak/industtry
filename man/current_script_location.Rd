@@ -4,15 +4,11 @@
 \alias{current_script_location}
 \title{Get exact path of the currently opened script}
 \usage{
-current_script_location(x)
+current_script_location()
 }
 \value{
 A character vector indicating exact path of currently opened script
 }
 \description{
 Get exact path of the currently opened script
-}
-\examples{
-current_script_location()
-
 }

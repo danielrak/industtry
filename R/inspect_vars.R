@@ -1,4 +1,3 @@
-
 # Inspect function --------------------------------------------------------
 
 #' Inspect a data frame
@@ -7,7 +6,11 @@
 #' @param nrow Logical. If TRUE, the number of observations of the dataset is rendered in addition.
 #' @return Variable list of the dataset and systematic informations for each variable.
 #' @examples
+#' library(magrittr)
 #' inspect(CO2)
+#' @importFrom magrittr %>%
+#' @export
+#'
 
 inspect <- function(data_frame, nrow = FALSE) {
 
@@ -53,7 +56,11 @@ inspect <- function(data_frame, nrow = FALSE) {
 #' @param data_frames The datasets to explore. Need to exist in the Global Environment
 #' @return Variable list and indicators of presences/absences across all inputted datasets.
 #' @examples
+#' library(magrittr)
 #' vars_detect(c("cars", "mtcars"))
+#' @importFrom magrittr %>%
+#' @export
+#'
 
 vars_detect <- function (data_frames) {
 
@@ -61,7 +68,7 @@ vars_detect <- function (data_frames) {
 
   out_data <- data_frames %>%
     purrr::map(\(x) get(x) %>% names %>% as.data.frame %>%
-                 setNames(x) %>% (\(x2) cbind(x2, x2) %>%
+                 magrittr::set_names(x) %>% (\(x2) cbind(x2, x2) %>%
                                     (\(c) {
                                       colnames(c)[1] <- "union"
                                       c
@@ -72,7 +79,7 @@ vars_detect <- function (data_frames) {
                       purrr::flatten() %>%
                       (\(l2) {
                         l2[[1]] <- as.data.frame(l2[[1]]) %>%
-                          setNames("union")
+                          magrittr::set_names("union")
                         l2
                       }), type = "left")) %>%
     (\(d) {
@@ -103,8 +110,8 @@ vars_detect <- function (data_frames) {
                             rkfirst_out, nb_out_conseq)
 
   dplyr::arrange(out_data,
-                 rkfirst_ok, desc(nb_ok_conseq),
-                 desc(rkfirst_out), desc(nb_out_conseq)) %>%
+                 rkfirst_ok, dplyr::desc(nb_ok_conseq),
+                 dplyr::desc(rkfirst_out), dplyr::desc(nb_out_conseq)) %>%
     dplyr::select(- rkfirst_ok, - nb_ok_conseq,
                   - rkfirst_out, - nb_out_conseq)
 
@@ -118,8 +125,12 @@ vars_detect <- function (data_frames) {
 #' This object must exists into the Global Environment.
 #' @return From vars_detect_table, extract variables that are not always present through all the datasets.
 #' @examples
+#' library(magrittr)
 #' vdetect_table <- vars_detect(c("cars", "mtcars"))
 #' vars_detect_not_everywhere(vdetect_table)
+#' @importFrom magrittr %>%
+#' @export
+#'
 
 vars_detect_not_everywhere <- function (vars_detect_table) {
 
@@ -144,8 +155,12 @@ vars_detect_not_everywhere <- function (vars_detect_table) {
 #' This object must exists into the Global Environment.
 #' @return From vars_detect_table, extract variables that are always present through all the datasets.
 #' @examples
+#' library(magrittr)
 #' vdetect_table <- vars_detect(c("cars", "mtcars"))
 #' vars_detect_everywhere(vdetect_table)
+#' @importFrom magrittr %>%
+#' @export
+#'
 
 vars_detect_everywhere <- function (vars_detect_table) {
 
@@ -168,7 +183,12 @@ vars_detect_everywhere <- function (vars_detect_table) {
 #'
 #'@param data_frames The datasets to explore. Need to exist in the Global Environment
 #'@return Variable list and their respective types across all inputted datasets.
-#'@examples vars_compclasses(c("cars", "mtcars"))
+#'@examples
+#' library(magrittr)
+#'vars_compclasses(c("cars", "mtcars"))
+#' @importFrom magrittr %>%
+#' @export
+#'
 
 vars_compclasses <- function (data_frames) {
 
@@ -183,7 +203,7 @@ vars_compclasses <- function (data_frames) {
                ifelse(ncol(g) > 0, class(g[[y]]) %>%
                         # avoid problems with 2L class variables:
                         paste(collapse = "/"), NULL) %>%
-                 stringr::str_replace("ˆNULL$", "-")) %>%
+                 stringr::str_replace("NULL$", "-")) %>%
       do.call(what = rbind)}) %>%
       do.call(what = cbind) %>%
       magrittr::set_rownames(vars_union) %>%
@@ -202,8 +222,11 @@ vars_compclasses <- function (data_frames) {
 #' @param vars_compclasses_table Output of the vars_compclasses() function in this package.
 #' @return From vars_compclasses_table, extract type-inconsistent variables through all the datasets.
 #' @examples
+#' library(magrittr)
 #' vcompclasses_table <- vars_compclasses(c("cars", "mtcars"))
 #' vars_compclasses_not_allsame(vcompclasses_table)
+#' @importFrom magrittr %>%
+#' @export
 #'
 vars_compclasses_not_allsame <- function (vars_compclasses_table) {
 
@@ -224,8 +247,11 @@ vars_compclasses_not_allsame <- function (vars_compclasses_table) {
 #' @param vars_compclasses_table Output of the vars_compclasses() function in this package.
 #' @return From vars_compclasses_table, extract type-consistent variables through all the datasets.
 #' @examples
+#' library(magrittr)
 #' vcompclasses_table <- vars_compclasses(c("cars", "mtcars"))
 #' vars_compclasses_allsame(vcompclasses_table)
+#' @importFrom magrittr %>%
+#' @export
 #'
 vars_compclasses_allsame <- function (vars_compclasses_table) {
 
@@ -251,6 +277,7 @@ vars_compclasses_allsame <- function (vars_compclasses_table) {
 #' in the input folder. Do not type the "." (dot) in it. E.g ("parquet" but not ".parquet")
 #' @return An excel file written on the computer containing exploration information
 #' @examples
+#' library(magrittr)
 #' saveRDS(cars, "./cars1.rds")
 #' saveRDS(mtcars, "./cars2.rds")
 #'
@@ -261,12 +288,14 @@ vars_compclasses_allsame <- function (vars_compclasses_table) {
 #' purrr::map(1:10, \(x)
 #'            rio::import("./inspect_vars_cardata.xlsx",
 #'                        sheet = x)) %>%
-#' setNames(c("dims", "inspect_tot", "inspect_cars1", "inspect_cars2",
+#' magrittr::set_names(c("dims", "inspect_tot", "inspect_cars1", "inspect_cars2",
 #'            "vars_detect", "vars_detect_everywhere", "vars_detect_not_everywhere",
 #'            "vars_compclasses", "vars_compclasses_allsame", "vars_compclasses_not_allsame"))
 #'            # code above illustrates all 10 sheets of the output
 #'
 #' file.remove(c("./cars1.rds", "./cars2.rds", "./inspect_vars_cardata.xlsx"))
+#' @importFrom magrittr %>%
+#' @export
 #'
 inspect_vars <- function (input_path, output_path,
                           output_label, considered_extensions) {
@@ -311,12 +340,12 @@ inspect_vars <- function (input_path, output_path,
     (\(l)
       purrr::map(l, get) %>%
        purrr::map(\(x) x[1:2, 2] %>% t %>%
-                    as.numeric) %>% setNames(l) %>%
+                    as.numeric) %>% magrittr::set_names(l) %>%
        do.call(what = rbind)) %>%
     magrittr::set_colnames(c("nobs", "nvar")) %>%
     as.data.frame() %>%
     tibble::rownames_to_column(var = "datasets") %>%
-    dplyr::mutate(datasets = stringr::str_remove(datasets, "ˆinspect\\_") %>%
+    dplyr::mutate(datasets = stringr::str_remove(datasets, "inspect\\_") %>%
                     stringr::str_remove(paste0(".", considered_extensions) %>%
                                           paste(collapse = "|")))
 
@@ -327,7 +356,7 @@ inspect_vars <- function (input_path, output_path,
       purrr::map(l, function (x) get(x)[- c(1:2), - 1] %>%
                    dplyr::mutate(datasets = x) %>% dplyr::relocate(datasets))) %>%
     do.call(what = rbind) %>%
-    dplyr::mutate(datasets = stringr::str_remove(datasets, "ˆinspect\\_") %>%
+    dplyr::mutate(datasets = stringr::str_remove(datasets, "inspect\\_") %>%
                     stringr::str_remove(paste0(".", considered_extensions) %>%
                                           paste(collapse = "|"))) %>%
     dplyr::left_join(dims, by = "datasets") %>%
@@ -360,8 +389,8 @@ inspect_vars <- function (input_path, output_path,
       list("inspect_tot" = inspect_tot),
       paste0("inspect_", lfiles) %>%
         (\(l) purrr::map(l, get) %>%
-           setNames(l %>%
-                    stringr::str_remove("ˆinspect\\_") %>%
+           magrittr::set_names(l %>%
+                    stringr::str_remove("inspect\\_") %>%
                       (\(s)
                         stringr::str_remove(s, paste0("\\.",
                                                       tools::file_ext(s)))))),

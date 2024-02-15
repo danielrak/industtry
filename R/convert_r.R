@@ -1,7 +1,4 @@
-
-
 # Compatible mask ---------------------------------------------------------
-
 
 #' Create an excel mask compatible with the convert_r() function
 #' @param output_path Folder path where the mask will be created
@@ -26,8 +23,10 @@ mask_convert_r <- function (output_path,
 #' Industrialized dataset formats conversion
 #' @param mask_filepath Entire file path of the excel mask
 #' @param output_path Folder path where the converted datasets will be placed
+#' @importFrom magrittr %>%
+#' @export
 #'
-convert_r <- function (mask_path, output_path) {
+convert_r <- function (mask_filepath, output_path) {
 
   requireNamespace("magrittr")
 
@@ -42,7 +41,7 @@ convert_r <- function (mask_path, output_path) {
 
   # transform imported mask of r rows into a list of r elements:
   sp <- split(prm, prm$row_number) %>%
-    setNames(paste0(prm$folder_path, "/", prm$file))
+    magrittr::set_names(paste0(prm$folder_path, "/", prm$file))
 
   # for each element of the list, run a job that
   # (1) import indicated datasets,
@@ -56,7 +55,7 @@ convert_r <- function (mask_path, output_path) {
       job::job({
         rio::import(file.path(l[[x]][["folder_path"]], l[[x]][["file"]])) %>%
           dplyr::mutate_all(\(y) {y[nchar(y) == 0] <- NA ; y}) %>%
-          dplyr::mutate_if(is.character, str_trim) %>%
+          dplyr::mutate_if(is.character, stringr::str_trim()) %>%
           rio::export(file.path(output_path, l[[x]][["converted_file"]]))
         job::export("none")
       }, title = x %>% strsplit("/") %>%

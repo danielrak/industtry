@@ -16,5 +16,6 @@ Variable list and indicators of presences/absences across all inputted datasets.
 Variable detection patterns
 }
 \examples{
+library(magrittr)
 vars_detect(c("cars", "mtcars"))
 }

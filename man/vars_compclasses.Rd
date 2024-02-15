@@ -16,5 +16,6 @@ Variable list and their respective types across all inputted datasets.
 Collection-level variables types comparison
 }
 \examples{
+library(magrittr)
 vars_compclasses(c("cars", "mtcars"))
 }

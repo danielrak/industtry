@@ -23,6 +23,7 @@ An excel file written on the computer containing exploration information
 Inspect a collection of datasets
 }
 \examples{
+library(magrittr)
 saveRDS(cars, "./cars1.rds")
 saveRDS(mtcars, "./cars2.rds")
 
@@ -33,11 +34,10 @@ inspect_vars(input_path = ".", output_path = ".",
 purrr::map(1:10, \(x)
            rio::import("./inspect_vars_cardata.xlsx",
                        sheet = x)) \%>\%
-setNames(c("dims", "inspect_tot", "inspect_cars1", "inspect_cars2",
+magrittr::set_names(c("dims", "inspect_tot", "inspect_cars1", "inspect_cars2",
            "vars_detect", "vars_detect_everywhere", "vars_detect_not_everywhere",
            "vars_compclasses", "vars_compclasses_allsame", "vars_compclasses_not_allsame"))
            # code above illustrates all 10 sheets of the output
 
 file.remove(c("./cars1.rds", "./cars2.rds", "./inspect_vars_cardata.xlsx"))
-
 }

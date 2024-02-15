@@ -12,7 +12,11 @@
 #' @param input_vector Character vector to process
 #' @return Character vector describing structure of each elements of input_vector,
 #' see example
-#' @examples chars_structure(c("ABC123", "DE4F56", "789GHI"))
+#' @examples
+#' library(magrittr)
+#' chars_structure(c("ABC123", "DE4F56", "789GHI"))
+#' @importFrom magrittr %>%
+#' @export
 #'
 chars_structure <- function (input_vector) {
 

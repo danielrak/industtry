@@ -16,7 +16,7 @@ From vars_compclasses_table, extract type-consistent variables through all the d
 Variable class comparison - all of same type across all datasets
 }
 \examples{
+library(magrittr)
 vcompclasses_table <- vars_compclasses(c("cars", "mtcars"))
 vars_compclasses_allsame(vcompclasses_table)
-
 }

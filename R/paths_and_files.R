@@ -4,9 +4,10 @@
 
 #'Get exact path of the currently opened script
 #' @return A character vector indicating exact path of currently opened script
-#' @examples current_script_location()
+#' @importFrom magrittr %>%
+#' @export
 #'
-current_script_location <- function (x) {
+current_script_location <- function () {
 
   requireNamespace("magrittr")
 
@@ -18,7 +19,8 @@ current_script_location <- function (x) {
 
 #' A wrapper of current_script_location()
 #' @aliases current_script_location()
-#' @examples csloc()
+#' @importFrom magrittr %>%
+#' @export
 #'
 csloc <- current_script_location
 
@@ -28,8 +30,12 @@ csloc <- current_script_location
 #' @param file_path A 1L character vector. The file path from which file name will be extracted
 #' @param split Indicates the path separator symbol
 #' @return Last level of filepath
-#' @examples file_extract(filepath = "level_1/level_2/file.ext",
+#' @examples
+#' library(magrittr)
+#' file_extract(file_path = "level_1/level_2/file.ext",
 #'                        split = "/")
+#' @importFrom magrittr %>%
+#' @export
 #'
 file_extract <- function (file_path, split = "/") {
 
@@ -45,6 +51,8 @@ file_extract <- function (file_path, split = "/") {
 #' Replicate the folder structure of a given directory
 #' @param dir Path of directory which structure will be replicated
 #' @param to Path of an output directory in which replicated structured will be placed
+#' @importFrom magrittr %>%
+#' @export
 #'
 folder_structure_replicate <- function (dir, to) {
 
@@ -52,12 +60,16 @@ folder_structure_replicate <- function (dir, to) {
 
   list.dirs(dir, full.names = FALSE) %>%
     (\(l) for (i in l)
-      dir.create(here(to, i), recursive = TRUE))
+      dir.create(file.path(to, i), recursive = TRUE))
 }
 
 
 #' A wrapper of folder_structure_replicate()
+#' @param dir Path of directory which structure will be replicated
+#' @param to Path of an output directory in which replicated structured will be placed
 #' @aliases folder_structure_replicate()
+#' @importFrom magrittr %>%
+#' @export
 #'
 fsrepl <- folder_structure_replicate
 
@@ -70,9 +82,11 @@ fsrepl <- folder_structure_replicate
 #' @param path Path to process
 #' @param level Positive or negative integer. Level of the path, see example.
 #' @examples
+#' library(magrittr)
 #' path_level("level_1/level_2/file.ext", 1)
 #' path_level("level_1/level_2/file.ext", - 1)
-#' path_level("level_1/level_2/file.ext", 0)
+#' @importFrom magrittr %>%
+#' @export
 #'
 path_level <- function (path, level) {
 

@@ -17,6 +17,6 @@ see example
 Get [:alpha:] / [:digit:] patterns from each symbol of character vector
 }
 \examples{
+library(magrittr)
 chars_structure(c("ABC123", "DE4F56", "789GHI"))
-
 }

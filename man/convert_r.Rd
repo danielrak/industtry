@@ -4,12 +4,12 @@
 \alias{convert_r}
 \title{Industrialized dataset formats conversion}
 \usage{
-convert_r(mask_path, output_path)
+convert_r(mask_filepath, output_path)
 }
 \arguments{
-\item{output_path}{Folder path where the converted datasets will be placed}
-
 \item{mask_filepath}{Entire file path of the excel mask}
+
+\item{output_path}{Folder path where the converted datasets will be placed}
 }
 \description{
 Industrialized dataset formats conversion

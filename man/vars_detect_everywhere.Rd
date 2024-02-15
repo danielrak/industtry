@@ -17,6 +17,7 @@ From vars_detect_table, extract variables that are always present through all th
 Variable detection - presence across all the datasets
 }
 \examples{
+library(magrittr)
 vdetect_table <- vars_detect(c("cars", "mtcars"))
 vars_detect_everywhere(vdetect_table)
 }
