@@ -10,15 +10,11 @@
 #'
 parallel_import <- function (file_paths) {
 
-  requireNamespace("magrittr")
-
   # For each absolute file path inputted, launch a background job that
   # imports the data set mentioned in the corresponding path;
   # the R object being the file name itself:
   purrr::map(file_paths,
              \(x) {job::job({
-
-               library(magrittr)
 
                assign(file_extract(x),
                       dplyr::as_tibble(rio::import(x)),
