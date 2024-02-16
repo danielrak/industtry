@@ -27,6 +27,8 @@ ext_tract <- function (path, split = "/") {
 #'
 parallel_import <- function (file_paths) {
 
+  requireNamespace("magrittr")
+
   # For each absolute file path inputted, launch a background job that
   # imports the data set mentioned in the corresponding path;
   # the R object being the file name itself:
