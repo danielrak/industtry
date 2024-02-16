@@ -75,7 +75,7 @@ vars_detect <- function (data_frames) {
                                     }))) %>%
     (\(l)
      plyr::join_all(list(as.data.frame(unique(unlist(l))),
-                         l %>% purrr::map(as.data.frame)) %>%
+                         l %>% purrr::map(\(x) as.data.frame(x))) %>%
                       purrr::flatten() %>%
                       (\(l2) {
                         l2[[1]] <- as.data.frame(l2[[1]]) %>%
