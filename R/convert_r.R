@@ -59,7 +59,7 @@ convert_r <- function (mask_filepath, output_path) {
 
         rio::import(file.path(l[[x]][["folder_path"]], l[[x]][["file"]])) %>%
           dplyr::mutate_all(\(y) {y[nchar(y) == 0] <- NA ; y}) %>%
-          dplyr::mutate_if(is.character, stringr::str_trim()) %>%
+          dplyr::mutate_if(is.character, stringr::str_trim) %>%
           rio::export(file.path(output_path, l[[x]][["converted_file"]]))
         job::export("none")
       }, title = x %>% strsplit("/") %>%
