@@ -25,7 +25,8 @@ chars_structure <- function (input_vector) {
   input_vector %>% unique %>%
     strsplit("") %>%
     purrr::map(\(x) stringr::str_replace(x, "^[:alpha:]$", "A") %>%
-                  stringr::str_replace("^[:digit:]$", "D")) %>%
+                  stringr::str_replace("^[:digit:]$", "D") %>%
+                  stringr::str_replace(" ", "[space]")) %>%
     purrr::map(rle) %>%
     purrr::map(\(x) paste0(x$lengths, x$values) %>%
                   paste(collapse = ", ")) %>%
