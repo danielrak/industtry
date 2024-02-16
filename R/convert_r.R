@@ -55,7 +55,7 @@ convert_r <- function (mask_filepath, output_path) {
       output_path <- output_path
       job::job({
 
-        library(magrittr)
+        requireNamespace("magrittr")
 
         rio::import(file.path(l[[x]][["folder_path"]], l[[x]][["file"]])) %>%
           dplyr::mutate_all(\(y) {y[nchar(y) == 0] <- NA ; y}) %>%
