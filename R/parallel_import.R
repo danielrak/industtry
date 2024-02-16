@@ -5,6 +5,7 @@
 #' @param path A valid R path
 #' @param split Path levels delimiter
 #' @return A character vector corresponding to the last level of the path
+#' @export
 #'
 ext_tract <- function (path, split = "/") {
 
