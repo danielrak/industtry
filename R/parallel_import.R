@@ -32,6 +32,9 @@ parallel_import <- function (file_paths) {
   # the R object being the file name itself:
   purrr::map(file_paths,
              \(x) {job::job({
+
+               library(magrittr)
+
                assign(ext_tract(x),
                       dplyr::as_tibble(rio::import(x)),
                       pos = - 1)
