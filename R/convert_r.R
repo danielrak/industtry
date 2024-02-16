@@ -3,6 +3,7 @@
 #' Create an excel mask compatible with the convert_r() function
 #' @param output_path Folder path where the mask will be created
 #' @param output_filename File name (with extension) of the mask
+#' @export
 #'
 mask_convert_r <- function (output_path,
                             output_filename = "mask_convert_r.xlsx") {
