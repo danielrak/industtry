@@ -29,7 +29,9 @@ mask_convert_r <- function (output_path,
 #'
 convert_r <- function (mask_filepath, output_path) {
 
-  require_magrittr() <- function () requireNamespace("magrittr")
+  require_magrittr <- function () requireNamespace("magrittr")
+
+  rerequire_magrittr()
 
   # import mask:
   prm <- rio::import(mask_filepath)
