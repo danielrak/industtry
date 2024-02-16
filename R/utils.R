@@ -44,3 +44,29 @@ ljoin_checks <- function (ltable, rtable, ...) {
 
   return(result)
 }
+
+# Frequencies and proportions ----------------------------------------------
+
+
+#' Frequencies and proportions in one output
+#'
+#' Combines base::table() and base::prop.table() outputs in a single one
+#'
+#' @param ... Arguments passed to base::table()
+#' @param margin The same argument as in base::prop.table()
+#' @aliases base::table() base::prop.table()
+#' @param round Number of digits after decimal in base::prop.table() output
+#' @param noquote Logical. If TRUE, return an object of class noquote that provides better view of the output
+#' @return Frequencies with proportions in brackets
+#' @export
+#'
+table_prop <- function (..., margin = NULL, round = 3, noquote = FALSE) {
+
+  table <- table(...)
+  ptable <- round(prop.table(table, margin), round)
+
+  result <- matrix(paste0(table, " (", ptable, ")"), nrow = nrow(table))
+  dimnames(result) <- dimnames(table)
+
+  if (noquote) noquote(result) else result
+}
