@@ -57,7 +57,7 @@ ljoin_checks <- function (ltable, rtable, ...) {
 #' @aliases base::table() base::prop.table()
 #' @param round Number of digits after decimal in base::prop.table() output
 #' @param noquote Logical. If TRUE, return an object of class noquote that provides better view of the output
-#' @return Frequencies with proportions in brackets
+#' @return Frequencies with proportions in brackets, within a matrix
 #' @examples
 #' df <- data.frame(
 #'                  "variable_1" = c("v1_1", "v1_1",

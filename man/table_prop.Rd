@@ -18,7 +18,7 @@ table_prop(..., margin = NULL, round = 3, noquote = FALSE)
 \item{noquote}{Logical. If TRUE, return an object of class noquote that provides better view of the output}
 }
 \value{
-Frequencies with proportions in brackets
+Frequencies with proportions in brackets, within a matrix
 }
 \description{
 Combines base::table() and base::prop.table() outputs in a single one
