@@ -23,6 +23,7 @@ parallel_import <- function (file_paths) {
                assign(file_extract(x),
                       dplyr::as_tibble(rio::import(x)),
                       pos = - 1)
-             })
-             })
+             }, title = paste0("Importation of ",
+                               file_extract(x)))
+             }, .progress = TRUE)
 }
