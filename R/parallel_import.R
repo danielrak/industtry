@@ -1,22 +1,4 @@
 
-# ext_tract ---------------------------------------------------------------
-
-#' Isolate the last level of an absolute file path
-#' @param path A valid R path
-#' @param split Path levels delimiter
-#' @return A character vector corresponding to the last level of the path
-#' @export
-#'
-ext_tract <- function (path, split = "/") {
-
-  requireNamespace("magrittr")
-
-  strsplit(path, split = split) %>%
-    purrr::map(\(y) y[length(y)]) %>%
-    unlist()
-}
-
-
 # parallel_import ---------------------------------------------------------
 
 #' Import a collection of datasets into the Global Environment
@@ -38,7 +20,7 @@ parallel_import <- function (file_paths) {
 
                library(magrittr)
 
-               assign(ext_tract(x),
+               assign(file_extract(x),
                       dplyr::as_tibble(rio::import(x)),
                       pos = - 1)
              })
