@@ -29,7 +29,7 @@ mask_convert_r <- function (output_path,
 #'
 convert_r <- function (mask_filepath, output_path) {
 
-  requireNamespace("magrittr")
+  require_magrittr() <- function () requireNamespace("magrittr")
 
   # import mask:
   prm <- rio::import(mask_filepath)
@@ -54,6 +54,9 @@ convert_r <- function (mask_filepath, output_path) {
       l <- l
       output_path <- output_path
       job::job({
+
+        require_magrittr()
+
         rio::import(file.path(l[[x]][["folder_path"]], l[[x]][["file"]])) %>%
           dplyr::mutate_all(\(y) {y[nchar(y) == 0] <- NA ; y}) %>%
           dplyr::mutate_if(is.character, stringr::str_trim()) %>%
