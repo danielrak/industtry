@@ -35,7 +35,7 @@ convert_r <- function (mask_filepath, output_path) {
   prm <- rio::import(mask_filepath)
 
   # filter only datasets to convert:
-  prm <- dplyr::filter(prm, a_convertir == 1)
+  prm <- dplyr::filter(prm, to_convert == 1)
 
   # indicate row number (technically useful):
   prm <- dplyr::mutate(prm, row_number = 1:nrow(prm))

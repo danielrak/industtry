@@ -1,4 +1,4 @@
-utils::globalVariables(c("a_convertir",
+utils::globalVariables(c("to_convert",
                          "idvarsdupl",
                          ".",
                          "datasets",
