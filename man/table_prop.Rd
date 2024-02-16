@@ -23,3 +23,14 @@ Frequencies with proportions in brackets
 \description{
 Combines base::table() and base::prop.table() outputs in a single one
 }
+\examples{
+df <- data.frame(
+                 "variable_1" = c("v1_1", "v1_1",
+                                  "v1_2", "v1_2", "v1_2", "v1_2"),
+                 "variable_2" = c("v2_1", "v2_1", "v2_1", "v2_1",
+                                  "v2_2", "v2_2")
+                                  )
+table_prop(df$variable_1)
+table_prop(df$variable_1, df$variable_2)
+table_prop(df$variable_1, df$variable_2, margin = 2, noquote = TRUE)
+}

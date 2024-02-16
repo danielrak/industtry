@@ -58,6 +58,16 @@ ljoin_checks <- function (ltable, rtable, ...) {
 #' @param round Number of digits after decimal in base::prop.table() output
 #' @param noquote Logical. If TRUE, return an object of class noquote that provides better view of the output
 #' @return Frequencies with proportions in brackets
+#' @examples
+#' df <- data.frame(
+#'                  "variable_1" = c("v1_1", "v1_1",
+#'                                   "v1_2", "v1_2", "v1_2", "v1_2"),
+#'                  "variable_2" = c("v2_1", "v2_1", "v2_1", "v2_1",
+#'                                   "v2_2", "v2_2")
+#'                                   )
+#' table_prop(df$variable_1)
+#' table_prop(df$variable_1, df$variable_2)
+#' table_prop(df$variable_1, df$variable_2, margin = 2, noquote = TRUE)
 #' @export
 #'
 table_prop <- function (..., margin = NULL, round = 3, noquote = FALSE) {
