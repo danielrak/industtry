@@ -59,7 +59,7 @@ serial_import <- function (file_paths, background_job = FALSE) {
 
                            assign(file_extract(x),
                                   rio::import(x),
-                                  pos = globalenv())
+                                  pos = - 1)
                            invisible()
                          })}, title = "Importation of indicated datasets")
   }

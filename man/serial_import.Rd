@@ -4,11 +4,14 @@
 \alias{serial_import}
 \title{Import a collection of datasets into the Global Environment (serialized)}
 \usage{
-serial_import(file_paths, pos = globalenv())
+serial_import(file_paths, background_job = FALSE)
 }
 \arguments{
 \item{file_paths}{A character vector of valid absolute file paths of
 datasets to import}
+
+\item{background_job}{Logical. If TRUE, importation is launched in a
+background job}
 }
 \value{
 After completion, see the datasets imported in the Global Environment
