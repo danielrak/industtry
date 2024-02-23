@@ -44,27 +44,12 @@ serial_import <- function (file_paths, background_job = FALSE) {
   # imports the data set mentioned in the corresponding path;
   # the R object being the file name itself:
 
-  if (! background_job) {
+  purrr::map(file_paths,
+             \(x) {
 
-    purrr::map(file_paths,
-               \(x) {
-
-                 assign(file_extract(x),
-                        rio::import(x),
-                        pos = globalenv())
-                 invisible()
-               })
-  } else {
-
-    job::job({purrr::map(file_paths,
-                         \(x) {
-
-                           assign(file_extract(x),
-                                  rio::import(x),
-                                  pos = globalenv())
-                           invisible()
-                         })
-      },
-      title = "Importation of indicated datasets")
-  }
+               assign(file_extract(x),
+                      rio::import(x),
+                      pos = globalenv())
+               invisible()
+             })
 }
