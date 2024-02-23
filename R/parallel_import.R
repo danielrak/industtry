@@ -17,9 +17,11 @@ parallel_import <- function (file_paths) {
              \(x) {job::job({
 
                assign(file_extract(x),
-                      dplyr::as_tibble(rio::import(x)),
+                      rio::import(x),
                       pos = - 1)
+
+               invisible()
              }, title = paste0("Importation of ",
                                file_extract(x)))
-             }, .progress = TRUE)
+             })
 }
