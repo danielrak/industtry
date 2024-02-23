@@ -1,7 +1,6 @@
 test_that("chars_structure() output", {
 
   library(stringr)
-  context("Character manipulations outputs")
 
   input <- c("ABC123", "DE4F56", "789GHI")
   output <- chars_structure(input)
