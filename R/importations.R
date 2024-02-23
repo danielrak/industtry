@@ -46,7 +46,7 @@ serial_import <- function (file_paths) {
 
                assign(file_extract(x),
                       rio::import(x),
-                      pos = - 1)
+                      pos = globalenv())
 
                invisible()
              })
