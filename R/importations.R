@@ -61,10 +61,9 @@ serial_import <- function (file_paths, background_job = FALSE) {
 
                            assign(file_extract(x),
                                   rio::import(x),
-                                  pos = - 1)
+                                  pos = globalenv())
                            invisible()
                          })
-      job::export("all")
       },
       title = "Importation of indicated datasets")
   }
