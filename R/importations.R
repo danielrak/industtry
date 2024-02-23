@@ -36,7 +36,7 @@ parallel_import <- function (file_paths) {
 #' @importFrom magrittr %>%
 #' @export
 #'
-serial_import <- function (file_paths, pos = globalenv()) {
+serial_import <- function (file_paths) {
 
   # For each absolute file path inputted, launch a background job that
   # imports the data set mentioned in the corresponding path;
@@ -44,8 +44,8 @@ serial_import <- function (file_paths, pos = globalenv()) {
   purrr::map(file_paths,
              \(x) {
 
-               assign(file_extract(x),
-                      rio::import(x),
-                    pos = globalenv())
+               `<-`(file_extract(x),
+                      rio::import(x))
+               invisible()
              })
 }
