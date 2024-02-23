@@ -44,10 +44,7 @@ serial_import <- function (file_paths) {
   purrr::map(file_paths,
              \(x) {
 
-               assign(file_extract(x),
-                      rio::import(x),
-                      pos = globalenv())
-
-               invisible()
+               `<-`(file_extract(x),
+                      rio::import(x))
              })
 }
