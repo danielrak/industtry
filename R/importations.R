@@ -50,3 +50,4 @@ serial_import <- function (file_paths) {
 
                invisible()
              })
+}
