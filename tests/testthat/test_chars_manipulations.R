@@ -1,4 +1,4 @@
-test_that("chars_structure output", {
+test_that("chars_structure() output", {
 
   library(stringr)
   context("Character manipulations outputs")
