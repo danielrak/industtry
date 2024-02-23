@@ -32,6 +32,8 @@ parallel_import <- function (file_paths) {
 #' Import a collection of datasets into the Global Environment (serialized)
 #' @param file_paths A character vector of valid absolute file paths of
 #' datasets to import
+#' @param background_job Logical. If TRUE, importation is launched in a
+#' background job
 #' @return After completion, see the datasets imported in the Global Environment
 #' @importFrom magrittr %>%
 #' @export
@@ -61,6 +63,9 @@ serial_import <- function (file_paths, background_job = FALSE) {
                                   rio::import(x),
                                   pos = - 1)
                            invisible()
-                         })}, title = "Importation of indicated datasets")
+                         })
+      job::export("all")
+      },
+      title = "Importation of indicated datasets")
   }
 }
