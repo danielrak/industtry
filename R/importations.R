@@ -64,3 +64,4 @@ serial_import <- function (file_paths, background_job = FALSE) {
                          invisible()
                        })}, title = "Importation of indicated datasets")
 }
+}
