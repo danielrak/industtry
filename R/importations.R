@@ -52,16 +52,15 @@ serial_import <- function (file_paths, background_job = FALSE) {
                         pos = globalenv())
                  invisible()
                })
+  } else {
+
+    job::job({purrr::map(file_paths,
+                         \(x) {
+
+                           assign(file_extract(x),
+                                  rio::import(x),
+                                  pos = globalenv())
+                           invisible()
+                         })}, title = "Importation of indicated datasets")
   }
-} else {
-
-  job::job({purrr::map(file_paths,
-                       \(x) {
-
-                         assign(file_extract(x),
-                                rio::import(x),
-                                pos = globalenv())
-                         invisible()
-                       })}, title = "Importation of indicated datasets")
-}
 }
