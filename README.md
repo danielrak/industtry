@@ -1,4 +1,4 @@
-WARNING: This package, even if it acquired some maturity, is still be in development. Contributions are welcome. 
+WARNING: This package, even if it acquired some maturity, is still in development. Contributions are welcome. 
 
 This package intends to be a toolkit for structured datasets exploitation. 
 Included functions help exploiting structured datasets (principally data frames) with an industrialization approach. 
