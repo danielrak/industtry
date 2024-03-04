@@ -4,7 +4,7 @@
 \alias{serial_import}
 \title{Import a collection of datasets into the Global Environment (serialized)}
 \usage{
-serial_import(file_paths, background_job = FALSE)
+serial_import(file_paths)
 }
 \arguments{
 \item{file_paths}{A character vector of valid absolute file paths of
