@@ -1,0 +1,6 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {section}{\numberline {2}Loading datasets}{1}{section.2}%
+\contentsline {section}{\numberline {3}Information processing from datasets}{1}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Exploration of a collection of datasets}{1}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Some micro-tools to process information}{1}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Datasets format conversion}{1}{section.4}%
