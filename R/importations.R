@@ -53,3 +53,25 @@ serial_import <- function (file_paths) {
                invisible()
              })
 }
+
+#' Import datasets with a file selector
+#' @param files Where user interactive choices are stored
+#' @param split Path separator, depending on user OS
+#' The default value "/" is used on Linux
+#' Use "\\\\" on Windows
+#' @return After completion, see the datasets imported in the Global Environment
+#' @importFrom magrittr %>%
+#' @export
+#'
+import_files <- function (files = rChoiceDialogs::rchoose.files(),
+                         split = "/") {
+
+  purrr::map(files,
+             \(x) {
+
+               assign(file_extract(x, split = split),
+                      rio::import(x),
+                      pos = globalenv())
+               invisible()
+             })
+}
