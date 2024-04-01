@@ -58,7 +58,7 @@ serial_import <- function (file_paths) {
 #' @param files Where user interactive choices are stored
 #' @param split Path separator, depending on user OS
 #' The default value "/" is used on Linux
-#' Use "\\\\" on Windows
+#' Use 4 successive "\" on Windows
 #' @return After completion, see the datasets imported in the Global Environment
 #' @importFrom magrittr %>%
 #' @export

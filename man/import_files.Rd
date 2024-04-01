@@ -11,7 +11,7 @@ import_files(files = rChoiceDialogs::rchoose.files(), split = "/")
 
 \item{split}{Path separator, depending on user OS
 The default value "/" is used on Linux
-Use "\\\\" on Windows}
+Use 4 successive "\" on Windows}
 }
 \value{
 After completion, see the datasets imported in the Global Environment
