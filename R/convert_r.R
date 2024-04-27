@@ -58,7 +58,7 @@ convert_r <- function (mask_filepath, output_path) {
         library(magrittr)
 
         rio::import(file.path(l[[x]][["folder_path"]], l[[x]][["file"]])) %>%
-          dplyr::mutate_all(\(y) {y[nchar(y) == 0] <- NA ; y}) %>%
+          dplyr::mutate_all(\(y) {y[nchar(as.character(y)) == 0] <- NA ; y}) %>%
           dplyr::mutate_if(is.character, \(c) stringr::str_trim(c)) %>%
           rio::export(file.path(output_path, l[[x]][["converted_file"]]))
         job::export("none")
