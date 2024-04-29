@@ -48,8 +48,8 @@ dupl_show <- function (data_frame, vars) {
 #' @param data_frame Input data frame. Need to be in the Global Environment and has a data.frame class
 #' @param vars A character vector of variable or combination of variables
 #' from which duplicates are checked
-#' @return The part inputted data frame with all observations of duplicated values of
-#' indicated variable or combination of variables
+#' @return For each duplicated row regarding to vars, different values of the same variable
+#' are shown, separated by AND
 #' @importFrom magrittr %>%
 #' @export
 #'

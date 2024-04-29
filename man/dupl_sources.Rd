@@ -13,8 +13,8 @@ dupl_sources(data_frame, vars)
 from which duplicates are checked}
 }
 \value{
-The part inputted data frame with all observations of duplicated values of
-indicated variable or combination of variables
+For each duplicated row regarding to vars, different values of the same variable
+are shown, separated by AND
 }
 \description{
 Illustrate sources of all duplicated values of a variable or a combination of variables
