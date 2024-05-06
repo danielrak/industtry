@@ -80,10 +80,11 @@ dupl_sources <- function (data_frame, vars) {
     # put vars input to first variable(s) location(s):
     dplyr::relocate(dplyr::all_of(vars)) %>%
 
-    (\(d) dplyr::group_by(d, idvarsdupl) %>%
+    (\(d) dplyr::group_by(d, !!dplyr::sym("idvarsdupl")) %>%
         dplyr::summarise_all(\(x) na.omit(unique(x)) %>%
                                 paste0(collapse = " [AND] ")) %>%
         dplyr::ungroup() %>%
-        apply(1, \(x) c(x[[1]], x[str_detect(x, " \\[AND\\] ")]))) %>%
+        apply(1, \(x) c(paste0(x[[1]], collapse = " "),
+                        x[str_detect(x, " \\[AND\\] ")]))) %>%
     purrr::map(as.data.frame)
 }

@@ -96,7 +96,7 @@ path_level <- function (path, level) {
     purrr::map(\(x) x[
 
       if(level > 0) {level} else
-        if (level < 0) {1:length(x) + level} else
+        if (level < 0) {1:(length(x) + level)} else
           stop("The level argument must be a strictly positive or strictly negative integer.")
       ] %>%
            paste(collapse = "/")) %>%
