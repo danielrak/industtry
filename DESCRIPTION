@@ -1,0 +1,15 @@
+Package: industtry
+Version: 0.0.0.9000
+Title: A Toolkit for Structured Datasets Exploitation
+Description: A toolkit for structured datasets exploitation. A set of functions that helps 
+    exploiting structured datasets (data frames) with an industrialization approach. 
+    Industrialization here means applying as efficiently as possible the same
+    procedure to any number of inputs as long as these inputs have an identified common structure.
+Authors@R: person(given = "Daniel",
+       family = "Rakotomalala",
+       role = c("aut", "cre"),
+       email = "john@email.me")
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
