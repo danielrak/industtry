@@ -1,0 +1,18 @@
+flat_paths_and_files.Rmd:
+  path: dev/flat_paths_and_files.Rmd
+  state: active
+  R:
+  - R/current_script_location.R
+  - R/folder_structure_replicate.R
+  tests:
+  - tests/testthat/test-current_script_location.R
+  - tests/testthat/test-folder_structure_replicate.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_paths_and_files.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
