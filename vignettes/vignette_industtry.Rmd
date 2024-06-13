@@ -30,6 +30,8 @@ library(industtry)
 
 # Introduction
 
+# Datasets format conversion
+
 # Loading datasets
 
 # Information processing from datasets
@@ -38,5 +40,5 @@ library(industtry)
 
 ## Some micro-tools to process information
 
-# Datasets format conversion
+
 
