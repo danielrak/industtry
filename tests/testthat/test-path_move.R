@@ -42,3 +42,26 @@ test_that("Valid outputs are consistent", {
     )
   
 })
+
+test_that("Errors are consistent", {
+ 
+  pvector <- c(
+    "level_1/level_2/level_3/file_1.ext", 
+    "level_1/level_2/level_3/file_2.ext"
+  )
+  
+  expect_error(
+    object = path_move(pvector, "/", 0), 
+    regexp = "move must be different from 0"
+  )
+  
+  expect_error(
+    object = path_move(pvector, "/", 5),
+    regexp = "level must be comprised between one of these values : 1, 2, 3, 4"
+  )
+  
+  expect_error(
+    object = path_move(pvector, "/", -4),
+    regexp = "move absolute value must be strictly positive and strictly lesser than 4"
+  )
+})
