@@ -31,8 +31,16 @@ pkgload::load_all(export_all = FALSE)
 replace_multiple <- function (input_vector, replacements,
                               replace_all = FALSE) {
 
-  requireNamespace("magrittr")
-
+  if (isFALSE(is.character(input_vector))) {
+    
+    stop("input_vector must be a character vector")
+  }
+  
+  if (isFALSE(is.character(replacements))) {
+    
+    stop("replacements must be a character vector")
+  }
+  
   # if replace_all == TRUE, use str_replace_all instead of str_replace:
   replace_function <- function (...) {
 
@@ -41,13 +49,13 @@ replace_multiple <- function (input_vector, replacements,
 
   }
 
-  input = names(replacements)
+  input <- names(replacements)
 
   if (length(unique(input)) != length(input)) {
     stop("Original values must be unique in the `replacements` argument.")
   }
 
-  output = unname(replacements)
+  output <- unname(replacements)
 
   replace_table <- data.frame(
     input, output
@@ -66,7 +74,6 @@ replace_multiple <- function (input_vector, replacements,
 ```
 
 ```{r examples-replace_multiple}
-library(magrittr)
 input <- c("one-one", "two-two-one", "three-three-two")
 
 replace_multiple(input,
@@ -82,8 +89,41 @@ replace_multiple(input,
 ```
 
 ```{r tests-replace_multiple}
-test_that("replace_multiple works", {
-  expect_true(inherits(replace_multiple, "function"))
+test_that("Valid outputs are consistent", {
+  
+  input <- c("one-one", "two-two-one", "three-three-two")
+  
+  expect_identical(
+    object = replace_multiple(input,
+                              replacements =
+                                c("one" = "1", "two" = "2",
+                                  "three" = "3")), 
+    expected = c("1-one", "2-two-one", "3-three-two")
+  )
+  
+  expect_identical(
+    object = replace_multiple(input,
+                 replacements =
+                   c("one" = "1", "two" = "2",
+                     "three" = "3"),
+                 replace_all = TRUE), 
+    expected = c("1-1", "2-2-one", "3-3-two")
+  )
+})
+
+test_that("Errors are consistent", {
+  
+  expect_error(
+    object = replace_multiple(input_vector = 1:2, 
+                              replacements = c("A", "B")), 
+    regexp = "input_vector must be a character vector"
+  )
+  
+  expect_error(
+    object = replace_multiple(input_vector = c("A", "B"), 
+                              replacements = 1:2), 
+    regexp = "replacements must be a character vector"
+  )
 })
 ```
 
