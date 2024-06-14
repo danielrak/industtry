@@ -3,5 +3,6 @@
 export(current_script_location)
 export(folder_structure_replicate)
 export(path_move)
+export(replace_multiple)
 importFrom(glue,glue)
 importFrom(magrittr,"%>%")

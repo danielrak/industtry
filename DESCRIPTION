@@ -10,10 +10,12 @@ Description: A toolkit for structured datasets exploitation. A set of
     as long as these inputs have an identified common structure.
 License: MIT + file LICENSE
 Imports: 
+    dplyr,
     glue,
     magrittr,
     purrr,
-    rstudioapi
+    rstudioapi,
+    stringr
 Suggests: 
     testthat
 Config/fusen/version: 0.6.0.9002

@@ -18,3 +18,17 @@ flat_paths_and_files.Rmd:
     document: true
     overwrite: ask
     clean: ask
+flat_replace_multiple.Rmd:
+  path: dev/flat_replace_multiple.Rmd
+  state: active
+  R: R/replace_multiple.R
+  tests: tests/testthat/test-replace_multiple.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_replace_multiple.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
