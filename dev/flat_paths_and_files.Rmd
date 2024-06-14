@@ -158,7 +158,253 @@ test_that("Structures are effectively the same", {
 })
 ```
   
+# path_move
+    
+```{r development-path_move}
+# You can prepare the code of the path_move() function here
 
+epath <- c("n1/n2/n3/f1", "n1/n2/n3/f2")
+split <- strsplit(epath, "/")
+
+plevels <- map_dbl(split, length)
+
+if (isFALSE(length(rle(plevels)$values) == 1)) {
+  
+  df_error <- data.frame("path_vector" = epath, 
+             "number_of_levels" = plevels)
+  
+  print(df_error)
+  
+  stop("All path_vector elements must have the same number of levels")
+}
+
+pmatrix <- split %>% do.call(what = rbind)
+ncol <- ncol(pmatrix)
+upmove <- - 1
+upmove <- as.integer(upmove)
+
+if (isTRUE(abs(upmove) >= ncol(pmatrix))) {
+  
+  stop(glue::glue("upmove absolute value must be strictly positive and strictly lesser than {ncol}"))
+}
+pmatrix[, - (ncol(pmatrix):(ncol(pmatrix) + upmove + 1)), drop = FALSE] %>% 
+  apply(1, \(x) paste(x, collapse = "/"))# ok. 
+
+level <- 2
+
+if (isFALSE(level %in% 1:ncol)) {
+  
+  stop(glue::glue("level must be comprised between one of these values : {1:ncol}"))
+}
+
+pmatrix[, 1:level, drop = FALSE] %>% 
+  apply(1, \(x) paste(x, collapse = "/"))
+
+
+path_move <- function (path_vector, path_separator = "/", move) {
+  
+  if (isFALSE(is.character(path_vector))) {
+    
+    stop("path_vector must be a character vector")
+  }
+  
+  if (isFALSE(is.numeric(move))) {
+    
+    stop("move must be a numeric")
+  }
+  
+  if (isTRUE(move == 0)) {
+    
+    stop("move must be different from 0")
+  }
+  
+  split <- strsplit(path_vector, path_separator)
+  plevels <- purrr::map_dbl(split, length)
+  
+  if (isFALSE(length(rle(plevels)$values) == 1)) {
+    
+    df_error <- data.frame("path_vector" = epath, 
+                           "number_of_levels" = plevels)
+    
+    print(df_error)
+    
+    stop("All path_vector elements must have the same number of levels")
+  }
+  
+  pmatrix <- split %>% do.call(what = rbind)
+  ncol <- ncol(pmatrix)
+  move <- as.integer(move)
+  
+  if (move > 0) {
+    
+    if (isFALSE(level %in% 1:ncol)) {
+      
+      stop(glue::glue("level must be comprised between one of these values : {1:ncol}"))
+    }
+    
+    pmatrix[, 1:level, drop = FALSE] %>% 
+      apply(1, \(x) paste(x, collapse = path_separator))
+    
+  } else {
+    
+    if (isTRUE(abs(upmove) >= ncol(pmatrix))) {
+  
+      stop(glue::glue(
+        "upmove absolute value must be strictly positive and strictly lesser than {ncol}"))
+    }
+    
+    pmatrix[, - (ncol(pmatrix):(ncol(pmatrix) + upmove + 1)), drop = FALSE] %>% 
+      apply(1, \(x) paste(x, collapse = path_separator))
+  }
+}
+```
+
+```{r function-path_move}
+#' Title
+#'
+#' @param path_vector Character vector. Vector of paths with equal number of levels
+#' @param path_separator 1L character vector. Path separator 
+#' (adapted to your OS for instance)
+#' @param move 1L integer. 
+#' If move > 0, outputs path till specified level in move. 
+#' If move < 0, remove the last specified level(s) in move.
+#'
+#' @return Character vector. Transformed vector of paths. 
+#' @importFrom magrittr %>% 
+#' @importFrom glue glue
+#' @export
+#'
+#' @examples
+path_move <- function (path_vector, path_separator = "/", move) {
+  
+  if (isFALSE(is.character(path_vector))) {
+    
+    stop("path_vector must be a character vector")
+  }
+  
+  if (isFALSE(is.numeric(move))) {
+    
+    stop("move must be a numeric")
+  }
+  
+  if (isTRUE(move == 0)) {
+    
+    stop("move must be different from 0")
+  }
+  
+  split <- strsplit(path_vector, path_separator)
+  plevels <- purrr::map_dbl(split, length)
+  
+  if (isFALSE(length(rle(plevels)$values) == 1)) {
+    
+    df_error <- data.frame("path_vector" = path_vector, 
+                           "number_of_levels" = plevels)
+    
+    print(df_error)
+    
+    stop("All path_vector elements must have the same number of levels")
+  }
+  
+  pmatrix <- split %>% do.call(what = rbind)
+  ncol <- ncol(pmatrix)
+  move <- as.integer(move)
+  
+  if (move > 0) {
+    
+    if (isFALSE(move %in% 1:ncol)) {
+      
+      stop(glue::glue("level must be comprised between one of these values : {
+                      paste(1:ncol, collapse = ', ')}"))
+    }
+    
+    pmatrix[, 1:move, drop = FALSE] %>% 
+      apply(1, \(x) 
+            paste(x, collapse = path_separator))
+    
+  } else {
+    
+    if (isTRUE(abs(move) >= ncol(pmatrix))) {
+      
+      stop(glue::glue(
+        "move absolute value must be strictly positive and strictly lesser than {ncol}"))
+    }
+    
+    pmatrix[, - (ncol(pmatrix):(ncol(pmatrix) + move + 1)), drop = FALSE] %>% 
+      apply(1, \(x) 
+            paste(x, collapse = path_separator))
+  }
+}
+```
+  
+```{r example-path_move}
+pvector <- c(
+  "level_1/level_2/level_3/file_1.ext", 
+  "level_1/level_2/level_3/file_2.ext"
+)
+
+path_move(path_vector = pvector, 
+          path_separator = "/", 
+          move = 1)
+
+path_move(path_vector = pvector, 
+          path_separator = "/", 
+          move = 2)
+
+path_move(path_vector = pvector, 
+          path_separator = "/", 
+          move = - 1)
+
+path_move(path_vector = pvector, 
+          path_separator = "/", 
+          move = - 2)
+```
+  
+```{r tests-path_move}
+test_that("Valid outputs are consistent", {
+ 
+  pvector <- c(
+    "level_1/level_2/level_3/file_1.ext", 
+    "level_1/level_2/level_3/file_2.ext"
+  )
+  
+  expect_identical(
+    object = path_move(pvector, "/", 1),
+    expected = c("level_1", "level_1")
+  )
+  
+  expect_identical(
+    object = path_move(pvector, "/", 2),
+    expected = c("level_1/level_2", "level_1/level_2")
+  )
+  
+  expect_identical(
+    object = path_move(pvector, "/", 3),
+    expected = c("level_1/level_2/level_3", 
+                 "level_1/level_2/level_3")
+  )
+  
+  expect_identical(
+    object = path_move(pvector, "/", - 1), 
+    expected = c("level_1/level_2/level_3", 
+                 "level_1/level_2/level_3")
+    )
+  
+  expect_identical(
+    object = path_move(pvector, "/", - 2), 
+    expected = c("level_1/level_2", 
+                 "level_1/level_2")
+    )
+  
+  expect_identical(
+    object = path_move(pvector, "/", - 3), 
+    expected = c("level_1", 
+                 "level_1")
+    )
+  
+})
+```
+    
+  
 ```{r development-inflate, eval=FALSE}
 # Run but keep eval=FALSE to avoid infinite loop
 # Execute in the console directly

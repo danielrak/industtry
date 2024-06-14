@@ -12,6 +12,7 @@ License: MIT + file LICENSE
 Imports: 
     glue,
     magrittr,
+    purrr,
     rstudioapi
 Suggests: 
     knitr,

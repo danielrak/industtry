@@ -2,4 +2,6 @@
 
 export(current_script_location)
 export(folder_structure_replicate)
+export(path_move)
+importFrom(glue,glue)
 importFrom(magrittr,"%>%")

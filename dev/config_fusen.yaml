@@ -4,9 +4,11 @@ flat_paths_and_files.Rmd:
   R:
   - R/current_script_location.R
   - R/folder_structure_replicate.R
+  - R/path_move.R
   tests:
   - tests/testthat/test-current_script_location.R
   - tests/testthat/test-folder_structure_replicate.R
+  - tests/testthat/test-path_move.R
   vignettes: []
   inflate:
     flat_file: dev/flat_paths_and_files.Rmd
