@@ -69,7 +69,6 @@ replace_multiple <- function (input_vector, replacements,
     dplyr::left_join(replace_table, by = c("origin" = "input")) %>%
     dplyr::mutate(destination = replace_function(input_vector, origin, output)) %>%
     dplyr::pull(destination)
-
 }
 ```
 
