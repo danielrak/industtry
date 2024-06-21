@@ -1,0 +1,156 @@
+---
+title: "flat_inspect_variants.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+# inspect_write
+    
+```{r development-inspect_write}
+# You can prepare the code of the inspect_write() function here
+```
+  
+```{r function-inspect_write}
+#' Inspect a data frame and write the output in an excel file
+#'
+#' @param data_frame_name Character vector.
+#' The data.frame to explore. Need to exist in the Global Environment
+#' @param output_path Folder path where to write the excel output
+#' @param output_label Optional 1-length character vector to label output file.
+#' If NULL, data_frame_name will also used as label
+#' @return Variable list of the dataset and systematic informations for each variable
+#' @importFrom magrittr %>%
+#' @export
+#'
+inspect_write <- function (data_frame_name, output_path, output_label = NULL) {
+
+  requireNamespace("magrittr")
+  
+  if (isFALSE(data_frame_name %in% ls(envir = globalenv()))) {
+    
+    stop("data_frame_name must exists in the global environment")
+  }
+  
+  if (isFALSE(is.data.frame(get(data_frame_name)))) {
+    
+    stop(glue::glue("data_frame_name : {data_frame_name} must be of class data.frame"))
+  }
+  
+  if (isFALSE(dir.exists(output_path))) {
+    
+    stop("output_path doesn't exist. Check validity")
+  }
+
+  if (is.null(output_label)) {
+
+    name <- data_frame_name
+  } else {
+
+    name <- output_label
+  }
+
+  df <- get(data_frame_name)
+
+  writexl::write_xlsx(
+    inspect(df) %>%
+      (\(i)
+        rbind(
+          c("Obs = ", nrow(df),
+            rep("", ncol(i) - 1)),
+          c("Nvars = ", nrow(i),
+            rep("", ncol(i) - 1)),
+          cbind(1:nrow(i), i)
+        )),
+    file.path(output_path, paste0("inspect_", name, ".xlsx")))
+}
+```
+  
+```{r example-inspect_write}
+library(magrittr)
+data(cars)
+mydir <- tempdir()
+dir.create(mydir)
+inspect_write(data_frame_name = "cars", 
+              output_path = mydir, 
+              output_label = "cars")
+readxl::read_xlsx(file.path(mydir, "inspect_cars.xlsx"))
+unlink(mydir, recursive = TRUE)
+```
+  
+```{r tests-inspect_write}
+test_that("Valid outputs are consistent", {
+  library(magrittr)
+  data(cars)
+  mydir <- tempdir()
+  dir.create(mydir)
+  inspect_write(data_frame_name = "cars", 
+                output_path = mydir, 
+                output_label = "cars")
+  comparison <- readxl::read_xlsx(file.path(mydir, "inspect_cars.xlsx"))
+  compared <- structure(list(
+    `1:nrow(i)` = c("Obs =", "Nvars =", "1", "2"), 
+    variables = c("50", "2", "speed", "dist"), 
+    class = c(NA, NA, "numeric", "numeric"), 
+    nb_distinct = c(NA, NA, "19", "35"), 
+    prop_distinct = c(NA, NA, "0.38", "0.7"), 
+    nb_na = c(NA, NA, "0", "0"), 
+    prop_na = c(NA, NA, "0", "0"), 
+    nb_void = c(NA, NA, "0", "0"), 
+    prop_void = c(NA, NA, "0", "0"), 
+    nchars = c(NA, NA, "1 / 2", "1 / 2 / 3"), 
+    modalities = c(NA, NA, "4 / 7 / 8 / 9 / 10 / 11 / 12 / 13 / 14 / 15", 
+    "2 / 4 / 10 / 14 / 16 / 17 / 18 / 20 / 22 / 24")), 
+    class = c("tbl_df", 
+              "tbl", "data.frame"), 
+    row.names = c(NA, -4L))
+
+  expect_equal(object = comparison, expected = compared)
+  
+  unlink(mydir, recursive = TRUE)
+})
+
+test_that("Errors are consistent", {
+  
+  library(magrittr)
+  data(cars)
+  data(uspop)
+  mydir <- tempdir()
+  dir.create(mydir)
+  
+  expect_error(inspect_write(data_frame_name = "cars_noexist", 
+                             output_path = mydir, output_label = "cars"))
+  
+  expect_error(inspect_write(data_frame_name = "cars", 
+                             output_path = paste0(mydir, "noexist"), 
+                             output_label = "cars"))
+  
+  expect_error(inspect_write(data_frame_name = "cars", 
+                             output_path = paste0(mydir, "noexist"), 
+                             output_label = "cars"))
+  
+  expect_error(inspect_write(data_frame_name = "uspop", 
+                             output_path = mydir, 
+                             output_label = "cars"))
+  
+  unlink(mydir, recursive = TRUE)
+})
+```
+  
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_inspect_variants.Rmd", 
+               vignette_name = NA)
+```
+

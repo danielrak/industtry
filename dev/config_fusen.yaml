@@ -12,6 +12,20 @@ flat_assign_to_global.Rmd:
     document: true
     overwrite: ask
     clean: ask
+flat_inspect_variants.Rmd:
+  path: dev/flat_inspect_variants.Rmd
+  state: active
+  R: R/inspect_write.R
+  tests: tests/testthat/test-inspect_write.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_inspect_variants.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
 flat_inspect_vars.Rmd:
   path: dev/flat_inspect_vars.Rmd
   state: active
