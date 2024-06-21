@@ -1,3 +1,47 @@
+flat_assign_to_global.Rmd:
+  path: dev/flat_assign_to_global.Rmd
+  state: active
+  R: R/assign_to_global.R
+  tests: []
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_assign_to_global.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_inspect_vars.Rmd:
+  path: dev/flat_inspect_vars.Rmd
+  state: active
+  R:
+  - R/inspect.R
+  - R/inspect_vars.R
+  - R/vars_compclasses.R
+  - R/vars_compclasses_allsame.R
+  - R/vars_compclasses_not_allsame.R
+  - R/vars_detect.R
+  - R/vars_detect_everywhere.R
+  - R/vars_detect_not_everywhere.R
+  tests:
+  - tests/testthat/test-inspect.R
+  - tests/testthat/test-vars_detect.R
+  - tests/testthat/test-vars_detect_not_everywhere.R
+  - tests/testthat/test-vars_detect_everywhere.R
+  - tests/testthat/test-vars_compclasses.R
+  - tests/testthat/test-vars_compclasses_not_allsame.R
+  - tests/testthat/test-vars_compclasses_allsame.R
+  - tests/testthat/test-inspect_vars.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_inspect_vars.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
 flat_paths_and_files.Rmd:
   path: dev/flat_paths_and_files.Rmd
   state: active

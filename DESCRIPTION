@@ -12,10 +12,17 @@ License: MIT + file LICENSE
 Imports: 
     dplyr,
     glue,
+    lubridate,
     magrittr,
+    plyr,
     purrr,
+    rio,
     rstudioapi,
-    stringr
+    stats,
+    stringr,
+    tibble,
+    tools,
+    writexl
 Suggests: 
     testthat
 Config/fusen/version: 0.6.0.9002

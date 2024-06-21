@@ -1,0 +1,1193 @@
+---
+title: "flat_inspect_vars.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+# inspect
+    
+```{r development-inspect}
+# You can prepare the code of the inspect() function here
+```
+  
+```{r function-inspect}
+#' Inspect a data frame
+#'
+#' @param data_frame The data.frame to explore. Need to exist in the Global Environment.
+#' @param nrow Logical. If TRUE, the number of observations of the dataset is rendered in addition.
+#' @return Variable list of the dataset and systematic informations for each variable.
+#' @examples
+#' @importFrom magrittr %>%
+#' @export
+#'
+inspect <- function(data_frame, nrow = FALSE) {
+
+  requireNamespace("magrittr")
+  
+  if (isFALSE(is.data.frame(data_frame))) {
+    
+    stop("data_frame must be an object of data.frame class")
+  }
+
+  # Observations:
+  rows <- nrow(data_frame)
+  df <- data_frame %>%
+
+    # Date-time class correction to make it compatible with class(.x):
+    dplyr::mutate_if(lubridate::is.POSIXct, \(x)
+                     as.character(x) %>% structure(class = "Date-time")) %>%
+
+    # Compute inspection infos:
+    purrr::map_df(~ {
+      dplyr::tibble(
+        class = class(.x),
+        nb_distinct = dplyr::n_distinct(.x),
+        prop_distinct = nb_distinct / rows,
+        nb_na = sum(is.na(.x)),
+        prop_na = nb_na / rows,
+        nb_void = sum(.x == "", na.rm = TRUE),
+        prop_void = nb_void / rows,
+        nchars = paste(unique(sort(nchar(as.character(.x))))[
+          1:min(dplyr::n_distinct(nchar(as.character(.x))), 10)],
+          collapse = " / "),
+        modalities = paste(sort(unique(.x))[
+          1:min(dplyr::n_distinct(.x), 10)],
+          collapse = " / ")
+      )
+    }, .id = "variables")
+  if (nrow) {
+    print(nrow(data_frame))
+    df
+  } else
+    df
+}
+```
+  
+```{r example-inspect}
+library(magrittr)
+inspect(CO2)
+```
+  
+```{r tests-inspect}
+test_that("Valid outputs are consistent", {
+  
+  library(magrittr)
+  data("CO2")
+  
+  insp <- inspect(CO2)
+  
+  expect_equal(
+    object = insp, 
+    expected = structure(
+      list(variables = c("Plant", "Plant", "Type", "Treatment", 
+                         "conc", "uptake"), 
+           class = c("ordered", "factor", "factor", "factor", 
+                     "numeric", "numeric"), 
+           nb_distinct = c(12L, 12L, 2L, 2L, 7L, 
+                           76L), 
+           prop_distinct = c(0.142857142857143, 0.142857142857143, 
+                             0.0238095238095238, 0.0238095238095238, 0.0833333333333333, 0.904761904761905
+                                                                                             ), 
+           nb_na = c(0L, 0L, 0L, 0L, 0L, 0L), 
+           prop_na = c(0, 0, 0, 0, 
+                       0, 0), 
+           nb_void = c(0L, 0L, 0L, 0L, 0L, 0L), 
+           prop_void = c(0, 
+                         0, 0, 0, 0, 0), 
+           nchars = c("3", "3", "6 / 11", "7 / 10", "2 / 3 / 4", 
+                      "2 / 3 / 4"), 
+           modalities = c("Qn1 / Qn2 / Qn3 / Qc1 / Qc3 / Qc2 / Mn3 / Mn2 / Mn1 / Mc2", 
+                          "Qn1 / Qn2 / Qn3 / Qc1 / Qc3 / Qc2 / Mn3 / Mn2 / Mn1 / Mc2", 
+                          "Quebec / Mississippi", "nonchilled / chilled", "95 / 175 / 250 / 350 / 500 / 675 / 1000", 
+                          "7.7 / 9.3 / 10.5 / 10.6 / 11.3 / 11.4 / 12 / 12.3 / 12.5 / 13")), 
+      class = c("tbl_df", "tbl", "data.frame"), 
+      row.names = c(NA, -6L)))
+  })
+
+test_that("Errors are consistent", {
+  
+  library(magrittr)
+  data(CO2)
+  co2_matrix <- as.matrix(CO2)
+  
+  expect_error(
+    object = inspect(co2_matrix), 
+    regexp = "data_frame must be an object of data.frame class")
+})
+```
+
+# vars_detect
+    
+```{r development-vars_detect}
+# You can prepare the code of the vars_detect() function here
+```
+  
+```{r function-vars_detect}
+#' Variable detection patterns
+#'
+#' @param data_frames The datasets to explore. Need to exist in the Global Environment
+#' @return Variable list and indicators of presences/absences across all inputted datasets.
+#' @examples
+#' @importFrom magrittr %>%
+#' @export
+#'
+vars_detect <- function (data_frames) {
+  
+  requireNamespace("magrittr")
+  
+  if (isFALSE(all(data_frames %in% ls(envir = globalenv())))) {
+    
+    stop("data_frames must be a vector of object names that exist in the global environment")
+  }
+  
+  # Warnings here are mechanical and not harmful nor falsifying: 
+  suppressWarnings({
+    out_data <- data_frames %>%
+      purrr::map(\(x) get(x) %>% names %>% as.data.frame %>%
+                   magrittr::set_names(x) %>% (\(x2) cbind(x2, x2) %>%
+                                                 (\(c) {
+                                                   colnames(c)[1] <- "union"
+                                                   c
+                                                 }))) %>%
+      (\(l)
+       plyr::join_all(list(as.data.frame(unique(unlist(l))),
+                           l %>% purrr::map(as.data.frame)) %>%
+                        purrr::flatten() %>%
+                        (\(l2) {
+                          l2[[1]] <- as.data.frame(l2[[1]]) %>%
+                            magrittr::set_names("union")
+                          l2
+                        }), type = "left")) %>%
+      (\(d) {
+        cbind(d[, 1],
+              dplyr::mutate_all(d[, 2:ncol(d)],
+                                \(x) ifelse(! is.na(x), "ok", "-"))) %>%
+          (\(d2) {names(d2)[1] <- "vars_union" ; d2})
+      })
+    
+    # Arrange lines to better visualize presence/absence patterns.
+    # Critrias: rkfirst_ok, desc(nb_ok_conseq), desc(rkfirst_out),
+    # desc(nb_out_conseq):
+    
+    rkfirst_ok <- out_data[, - 1] %>%
+      apply(1, \(x) min(which(x == "ok")))
+    
+    nb_ok_conseq <- out_data %>%
+      apply(1, \(x) rle(as.numeric(x == "ok"))$lengths[2])
+    
+    rkfirst_out <- out_data[, - 1] %>%
+      apply(1, \(x) min(which(x == "-")))
+    
+    nb_out_conseq <- out_data %>%
+      apply(1, \(x) rle(as.numeric(x == "-"))$lengths[2])
+    
+    out_data <- dplyr::mutate(out_data,
+                              rkfirst_ok, nb_ok_conseq,
+                              rkfirst_out, nb_out_conseq)
+    
+    dplyr::arrange(out_data,
+                   rkfirst_ok, dplyr::desc(nb_ok_conseq),
+                   dplyr::desc(rkfirst_out), dplyr::desc(nb_out_conseq)) %>%
+      dplyr::select(- rkfirst_ok, - nb_ok_conseq,
+                    - rkfirst_out, - nb_out_conseq)
+  })
+}
+```
+
+```{r example-vars_detect}
+library(magrittr)
+data(cars)
+data(mtcars)
+vars_detect(c("cars", "mtcars"))
+```
+
+```{r tests-vars_detect}
+test_that("Valid outputs are consistent", {
+  
+  library(magrittr)
+  data(cars)
+  data(mtcars)
+  
+  expect_equal(
+    object = vars_detect(c("cars", "mtcars")), 
+    expected = structure(
+      list(
+        vars_union = c("speed", "dist", "mpg", "cyl", 
+                       "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb"
+        ), 
+        cars = c("ok", "ok", "-", "-", "-", "-", "-", "-", "-", "-", 
+                 "-", "-", "-"), 
+        mtcars = c("-", "-", "ok", "ok", "ok", "ok", 
+                   "ok", "ok", "ok", "ok", "ok", "ok", "ok")), 
+      class = "data.frame", 
+      row.names = c(NA, -13L)))
+})
+```
+  
+  
+# vars_detect_not_everywhere
+    
+```{r development-vars_detect_not_everywhere}
+# You can prepare the code of the vars_detect_not_everywhere() function here
+```
+  
+```{r function-vars_detect_not_everywhere}
+#' Variable detection - inconsistent patterns
+#'
+#' @param vars_detect_table Output of the vars_detect() function in this package.
+#' This object must exists into the Global Environment.
+#' @return From vars_detect_table, extract variables that are not always present through all the datasets.
+#' @examples
+#' @importFrom magrittr %>%
+#' @export
+#'
+vars_detect_not_everywhere <- function (vars_detect_table) {
+
+  requireNamespace("magrittr")
+
+  vars_detect_table %>% (\(d) {
+
+    not_everywhere <-
+      apply(d, 1, \(x) !
+              identical(unique(x[-1]), "ok")) %>% unlist
+    d[not_everywhere, ]
+  })
+}
+```
+  
+```{r example-vars_detect_not_everywhere}
+library(magrittr)
+data(cars)
+data(mtcars)
+vdetect_table <- vars_detect(c("cars", "mtcars"))
+vars_detect_not_everywhere(vdetect_table)
+```
+  
+```{r tests-vars_detect_not_everywhere}
+test_that("Valid outputs are consistent", {
+  
+  library(magrittr)
+  data(cars)
+  data(mtcars)
+  vdetect_table <- vars_detect(c("cars", "mtcars"))
+  
+  expect_equal(
+    object = vars_detect_not_everywhere(vdetect_table), 
+    expected = structure(
+      list(
+        vars_union = c("speed", "dist", "mpg", "cyl", 
+                       "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb"), 
+        cars = c("ok", "ok", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"), 
+        mtcars = c("-", "-", "ok", "ok", "ok", "ok", 
+                   "ok", "ok", "ok", "ok", "ok", "ok", "ok")), 
+      row.names = c(NA, 13L), 
+      class = "data.frame"))
+})
+```
+    
+# vars_detect_everywhere
+    
+```{r development-vars_detect_everywhere}
+# You can prepare the code of the vars_detect_everywhere() function here
+```
+  
+```{r function-vars_detect_everywhere}
+#' Variable detection - presence across all the datasets
+#'
+#' @param vars_detect_table Output of the vars_detect() function in this package.
+#' This object must exists into the Global Environment.
+#' @return From vars_detect_table, extract variables that are always present through all the datasets.
+#' @examples
+#' @importFrom magrittr %>%
+#' @export
+#'
+vars_detect_everywhere <- function (vars_detect_table) {
+  
+  requireNamespace("magrittr")
+  
+  vars_detect_table %>% (function (d) {
+    
+    everywhere <-
+      apply(d, 1,
+            \(x) identical(unique(x[-1]), "ok")) %>% unlist
+    
+    d[everywhere, ]
+    
+  })
+}
+```
+  
+```{r example-vars_detect_everywhere}
+library(magrittr)
+library(dplyr)
+data(cars)
+data(mtcars)
+vdetect_table <- vars_detect(c("cars", "mtcars"))
+vars_detect_everywhere(vdetect_table)
+```
+  
+```{r tests-vars_detect_everywhere}
+test_that("Valid outputs are consistent", {
+  
+  library(magrittr)
+  library(dplyr)
+  data(cars)
+  data(mtcars)
+
+  vdetect_table <- vars_detect(c("cars", "mtcars"))
+  
+  expect_equal(
+    object = vars_detect_everywhere(vdetect_table), 
+    expected = structure(list(
+      vars_union = character(0), 
+      cars = character(0), 
+      mtcars = character(0)), 
+      row.names = integer(0), 
+      class = "data.frame"))
+})
+```
+  
+# vars_compclasses
+    
+```{r development-vars_compclasses}
+# You can prepare the code of the vars_compclasses() function here
+```
+  
+```{r function-vars_compclasses}
+#' Collection-level variables types comparison
+#'
+#'@param data_frames The datasets to explore. Need to exist in the Global Environment
+#'@return Variable list and their respective types across all inputted datasets.
+#'@examples
+#' @importFrom magrittr %>%
+#' @export
+#'
+vars_compclasses <- function (data_frames) {
+  
+  requireNamespace("magrittr")
+  
+  vars_union <- purrr::map(data_frames, get) %>%
+    purrr::map(names) %>% unlist %>% unique
+  data_frames %>% (\(ll) purrr::map(ll, \(x) {
+    g <- get(x)
+    purrr::map(vars_union,
+               \(y)
+               ifelse(ncol(g) > 0, class(g[[y]]) %>%
+                        # avoid problems with 2L class variables:
+                        paste(collapse = "/"), NULL) %>%
+                 stringr::str_replace("NULL$", "-")) %>%
+      do.call(what = rbind)}) %>%
+      do.call(what = cbind) %>%
+      magrittr::set_rownames(vars_union) %>%
+      magrittr::set_colnames(ll)) %>%
+    as.data.frame %>%
+    tibble::rownames_to_column() %>%
+    (\(d) {
+      names(d)[1] <- "vars_union"
+      d
+    })
+}
+```
+  
+  
+```{r example-vars_compclasses}
+library(magrittr)
+data(cars)
+data(mtcars)
+vars_compclasses(c("cars", "mtcars"))
+```
+  
+  
+```{r tests-vars_compclasses}
+test_that("vars_compclasses works", {
+  library(magrittr)
+  data(cars)
+  data(mtcars)
+  
+  expect_equal(
+    object = vars_compclasses(c("cars", "mtcars")), 
+    expected = structure(
+      list(
+        vars_union = c("speed", "dist", "mpg", "cyl", 
+                       "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb"), 
+        cars = c("numeric", "numeric", "-", "-", "-", "-", "-", "-", 
+                 "-", "-", "-", "-", "-"), 
+        mtcars = c("-", "-", "numeric", "numeric", 
+                   "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", 
+                   "numeric", "numeric", "numeric")), 
+      row.names = c(NA, -13L), 
+      class = "data.frame"))
+})
+```
+    
+# vars_compclasses_not_allsame
+    
+```{r development-vars_compclasses_not_allsame}
+# You can prepare the code of the vars_compclasses_not_allsame() function here
+```
+  
+```{r function-vars_compclasses_not_allsame}
+#' Variable class comparison - not all of same type across all datasets
+#'
+#' @param vars_compclasses_table Output of the vars_compclasses() function in this package.
+#' @return From vars_compclasses_table, extract type-inconsistent variables through all the datasets.
+#' @examples
+#' library(magrittr)
+#' vcompclasses_table <- vars_compclasses(c("cars", "mtcars"))
+#' vars_compclasses_not_allsame(vcompclasses_table)
+#' @importFrom magrittr %>%
+#' @export
+#'
+vars_compclasses_not_allsame <- function (vars_compclasses_table) {
+
+  requireNamespace("magrittr")
+
+  vars_compclasses_table %>% (function (d) {
+    not_allsame <- apply(d, 1, function (x)
+      length(unique(x[-1] %>%
+                    (function (xx)
+                      xx[xx != "-"]))) != 1) %>% unlist
+    d[not_allsame,]
+  })
+}
+```
+  
+```{r example-vars_compclasses_not_allsame}
+library(magrittr)
+data(cars)
+data(mtcars)
+vcompclasses <- vars_compclasses(c("cars", "mtcars"))
+vars_compclasses_not_allsame(vcompclasses)
+```
+  
+```{r tests-vars_compclasses_not_allsame}
+test_that("Valid outputs are consistent", {
+  
+  library(magrittr)
+  data(cars)
+  data(mtcars)
+  vcompclasses <- vars_compclasses(c("cars", "mtcars"))
+  
+  expect_equal(
+    object = vars_compclasses_not_allsame(vcompclasses),
+    expected = structure(list(
+      vars_union = character(0), 
+      cars = character(0), 
+      mtcars = character(0)), 
+      row.names = integer(0), 
+      class = "data.frame"))
+})
+```
+  
+# vars_compclasses_allsame
+    
+```{r development-vars_compclasses_allsame}
+# You can prepare the code of the vars_compclasses_allsame() function here
+```
+  
+```{r function-vars_compclasses_allsame}
+#' Variable class comparison - all of same type across all datasets
+#'
+#' @param vars_compclasses_table Output of the vars_compclasses() function in this package.
+#' @return From vars_compclasses_table, extract type-consistent variables through all the datasets.
+#' @examples
+#' library(magrittr)
+#' vcompclasses_table <- vars_compclasses(c("cars", "mtcars"))
+#' vars_compclasses_allsame(vcompclasses_table)
+#' @importFrom magrittr %>%
+#' @export
+#'
+vars_compclasses_allsame <- function (vars_compclasses_table) {
+  
+  requireNamespace("magrittr")
+  
+  vars_compclasses_table %>% (\(d) {
+    allsame <- apply(d, 1, function (x)
+      length(unique(x[-1] %>%
+                      (\(xx)
+                       xx[xx != "-"]))) == 1) %>% unlist
+    d[allsame,]
+  })
+}
+```
+  
+```{r example-vars_compclasses_allsame}
+library(magrittr)
+data(cars)
+data(mtcars)
+vcompclasses <- vars_compclasses(c("cars", "mtcars"))
+vars_compclasses_allsame(vcompclasses)
+```
+  
+```{r tests-vars_compclasses_allsame}
+test_that("Valid outputs are consistent", {
+  library(magrittr)
+  data(cars)
+  data(mtcars)
+  vcompclasses <- vars_compclasses(c("cars", "mtcars"))
+  
+  expect_equal(
+    object = vars_compclasses_allsame(vcompclasses),
+    expected = structure(list(
+      vars_union = c("speed", "dist", "mpg", "cyl", 
+                     "disp", "hp", "drat", "wt", "qsec", "vs", "am", "gear", "carb"), 
+      cars = c("numeric", "numeric", "-", "-", "-", "-", "-", "-", 
+               "-", "-", "-", "-", "-"), 
+      mtcars = c("-", "-", "numeric", "numeric", 
+                 "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", 
+                 "numeric", "numeric", "numeric")), 
+      row.names = c(NA, 13L), class = "data.frame"))
+})
+```
+    
+# inspect_vars
+    
+```{r development-inspect_vars}
+# You can prepare the code of the inspect_vars() function here
+```
+  
+```{r function-inspect_vars}
+#' Inspect a collection of datasets
+#'
+#' @param input_path Folder path of datasets to explore
+#' @param output_path Folder path where the exploration output will be stored
+#' @param output_label 1-length character vector describing concisely the collection to explore
+#' @param considered_extensions Character vector of extensions of datasets retained for exploration
+#' in the input folder. Do not type the "." (dot) in it. E.g ("parquet" but not ".parquet")
+#' @return An excel file written on the computer containing exploration information
+#' @examples
+#' @importFrom magrittr %>%
+#' @importFrom stats nobs
+#' @export
+#'
+inspect_vars <- function (input_path, output_path,
+                          output_label, considered_extensions) {
+  
+  requireNamespace("magrittr")
+  
+  # Import datasets:
+  # file extensions
+  ext <- paste0("\\.", considered_extensions, "$") %>%
+    paste0(collapse = "|")
+  # files found in input folder
+  lfiles <- list.files(input_path) %>%
+    purrr::keep(stringr::str_detect(., ext))
+  lfiles %>%
+    # load each dataset
+    purrr::map(\(x) {
+      
+      assign_to_global(x,
+             rio::import(file.path(input_path, x),
+                         encoding = "latin1"))
+      invisible()
+    })
+  
+  # Compute all datasets inspection as R objects:
+  lfiles %>% purrr::map(\(x) {
+    data <- get(x)
+    inspect <- inspect(data)
+    inspect <- inspect %>%
+      (\(i) rbind(c("Obs = ", nrow(data),
+                    rep("", ncol(i) - 1)),
+                  c("Nvars = ", nrow(i),
+                    rep("", ncol(i) - 1)),
+                  cbind(1:nrow(i), i)))
+    assign_to_global(paste0("inspect_", x), inspect)
+    invisible()
+  })
+  
+  # Datasets dimensions:
+  dims <-
+    paste0("inspect_", lfiles) %>%
+    (\(l)
+     purrr::map(l, get) %>%
+       purrr::map(\(x) x[1:2, 2] %>% t %>%
+                    as.numeric) %>% magrittr::set_names(l) %>%
+       do.call(what = rbind)) %>%
+    magrittr::set_colnames(c("nobs", "nvar")) %>%
+    as.data.frame() %>%
+    tibble::rownames_to_column(var = "datasets") %>%
+    dplyr::mutate(datasets = stringr::str_remove(datasets, "inspect\\_") %>%
+                    stringr::str_remove(paste0(".", considered_extensions) %>%
+                                          paste(collapse = "|")))
+  
+  # Bind all inspection outputs:
+  inspect_tot <-
+    paste0("inspect_", lfiles) %>%
+    (\(l)
+     purrr::map(l, function (x) get(x)[- c(1:2), - 1] %>%
+                  dplyr::mutate(datasets = x) %>% dplyr::relocate(datasets))) %>%
+    do.call(what = rbind) %>%
+    dplyr::mutate(datasets = stringr::str_remove(datasets, "inspect\\_") %>%
+                    stringr::str_remove(paste0(".", considered_extensions) %>%
+                                          paste(collapse = "|"))) %>%
+    dplyr::left_join(dims, by = "datasets") %>%
+    dplyr::relocate(nvar, nobs, .after = datasets)
+  
+  
+  # Compute outputs of variable detection and type comparison above:
+  vars_detect_data <- vars_detect(lfiles)
+  vars_detect_everywhere_data <-
+    vars_detect_everywhere(vars_detect_data)
+  vars_detect_not_everywhere_data <-
+    vars_detect_not_everywhere(vars_detect_data)
+  vars_compclasses_data <- vars_compclasses(lfiles)
+  # Same order as vars_detect:
+  # (source :
+  # https://stackoverflow.com/questions/27362718/reordering-rows-in-a-dataframe-
+  # according-to-the-order-of-rows-in-another-datafra)
+  vars_compclasses_data <- vars_compclasses_data %>%
+    (\(d) d[order(match(vars_compclasses_data$vars_union,
+                        vars_detect_data$vars_union)), ])
+  vars_compclasses_allsame_data <-
+    vars_compclasses_allsame(vars_compclasses_data)
+  vars_compclasses_not_allsame_data <-
+    vars_compclasses_not_allsame(vars_compclasses_data)
+  
+  # Write all outputs in an Excel file:
+  writexl::write_xlsx(
+    list(
+      list("dims" = dims),
+      list("inspect_tot" = inspect_tot),
+      paste0("inspect_", lfiles) %>%
+        (\(l) purrr::map(l, get) %>%
+           magrittr::set_names(l %>%
+                                 stringr::str_remove("inspect\\_") %>%
+                                 (\(s)
+                                  stringr::str_remove(s, paste0("\\.",
+                                                                tools::file_ext(s)))))),
+      list("vars_detect" = vars_detect_data),
+      list("vars_detect_everywhere" = vars_detect_everywhere_data),
+      list("vars_detect_not_everywhere" = vars_detect_not_everywhere_data),
+      list("vars_compclasses" = vars_compclasses_data),
+      list("vars_compclasses_allsame" = vars_compclasses_allsame_data),
+      list("vars_compclasses_not_allsame" = vars_compclasses_not_allsame_data)
+    ) %>% purrr::flatten(),
+    file.path(output_path, paste0("inspect_vars_", output_label, ".xlsx"))
+  )
+  
+  # Remove intermediate outputs in Global Environment to lighten the user:
+  rm(list = ls(envir = globalenv()) %>%
+       (\(ls)
+        ls[ls %in%
+             c(lfiles, paste0("inspect_", lfiles))]),
+     envir = globalenv())
+}
+```
+  
+```{r example-inspect_vars}
+mydir <- tempdir()
+dir.create(mydir)
+
+library(magrittr)
+saveRDS(cars, file.path(mydir, "cars1.rds"))
+saveRDS(mtcars, file.path(mydir, "cars2.rds"))
+
+# Code below illustrates how to use the function:
+inspect_vars(input_path = mydir, output_path = mydir,
+              output_label = "cardata", 
+             considered_extensions = "rds")
+
+ purrr::map(1:10, \(x)
+            rio::import(file.path(mydir, "inspect_vars_cardata.xlsx"),
+                        sheet = x)) %>%
+ magrittr::set_names(c("dims", "inspect_tot", "inspect_cars1", "inspect_cars2",
+            "vars_detect", "vars_detect_everywhere", "vars_detect_not_everywhere",
+            "vars_compclasses", "vars_compclasses_allsame", "vars_compclasses_not_allsame"))
+            # code above illustrates all 10 sheets of the output
+
+unlink(mydir, recursive = TRUE)
+```
+
+```{r tests-inspect_vars}
+test_that("inspect_vars works", {
+  mydir <- tempdir()
+  dir.create(mydir)
+  
+  library(magrittr)
+  saveRDS(cars, file.path(mydir, "cars1.rds"))
+  saveRDS(mtcars, file.path(mydir, "cars2.rds"))
+  
+  # Code below illustrates how to use the function:
+  inspect_vars(input_path = mydir, output_path = mydir,
+               output_label = "cardata", 
+               considered_extensions = "rds")
+  
+  compared <- purrr::map(1:10, \(x)
+                           rio::import(file.path(mydir, "inspect_vars_cardata.xlsx"),
+                                       sheet = x)) %>%
+    magrittr::set_names(c("dims", "inspect_tot", "inspect_cars1", "inspect_cars2",
+                          "vars_detect", "vars_detect_everywhere", "vars_detect_not_everywhere",
+                          "vars_compclasses", "vars_compclasses_allsame", "vars_compclasses_not_allsame"))
+  
+  comparison <- list(
+    dims = structure(
+      list(
+        datasets = c("cars1", "cars2"),
+        nobs = c(50, 32),
+        nvar = c(2, 11)
+      ),
+      class = "data.frame",
+      row.names = 1:2
+    ),
+    inspect_tot = structure(
+      list(
+        datasets = c(
+          "cars1",
+          "cars1",
+          "cars2",
+          "cars2",
+          "cars2",
+          "cars2",
+          "cars2",
+          "cars2",
+          "cars2",
+          "cars2",
+          "cars2",
+          "cars2",
+          "cars2"
+        ),
+        nvar = c(2, 2, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11),
+        nobs = c(50, 50, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32),
+        variables = c(
+          "speed",
+          "dist",
+          "mpg",
+          "cyl",
+          "disp",
+          "hp",
+          "drat",
+          "wt",
+          "qsec",
+          "vs",
+          "am",
+          "gear",
+          "carb"
+        ),
+        class = c(
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric"
+        ),
+        nb_distinct = c(
+          "19",
+          "35",
+          "25",
+          "3",
+          "27",
+          "22",
+          "22",
+          "29",
+          "30",
+          "2",
+          "2",
+          "3",
+          "6"
+        ),
+        prop_distinct = c(
+          "0.38",
+          "0.7",
+          "0.78125",
+          "0.09375",
+          "0.84375",
+          "0.6875",
+          "0.6875",
+          "0.90625",
+          "0.9375",
+          "0.0625",
+          "0.0625",
+          "0.09375",
+          "0.1875"
+        ),
+        nb_na = c("0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"),
+        prop_na = c("0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"),
+        nb_void = c("0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"),
+        prop_void = c("0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"),
+        nchars = c(
+          "1 / 2",
+          "1 / 2 / 3",
+          "2 / 4",
+          "1",
+          "2 / 3 / 4 / 5",
+          "2 / 3",
+          "1 / 3 / 4",
+          "3 / 4 / 5",
+          "2 / 4 / 5",
+          "1",
+          "1",
+          "1",
+          "1"
+        ),
+        modalities = c(
+          "4 / 7 / 8 / 9 / 10 / 11 / 12 / 13 / 14 / 15",
+          "2 / 4 / 10 / 14 / 16 / 17 / 18 / 20 / 22 / 24",
+          "10.4 / 13.3 / 14.3 / 14.7 / 15 / 15.2 / 15.5 / 15.8 / 16.4 / 17.3",
+          "4 / 6 / 8",
+          "71.1 / 75.7 / 78.7 / 79 / 95.1 / 108 / 120.1 / 120.3 / 121 / 140.8",
+          "52 / 62 / 65 / 66 / 91 / 93 / 95 / 97 / 105 / 109",
+          "2.76 / 2.93 / 3 / 3.07 / 3.08 / 3.15 / 3.21 / 3.23 / 3.54 / 3.62",
+          "1.513 / 1.615 / 1.835 / 1.935 / 2.14 / 2.2 / 2.32 / 2.465 / 2.62 / 2.77",
+          "14.5 / 14.6 / 15.41 / 15.5 / 15.84 / 16.46 / 16.7 / 16.87 / 16.9 / 17.02",
+          "0 / 1",
+          "0 / 1",
+          "3 / 4 / 5",
+          "1 / 2 / 3 / 4 / 6 / 8"
+        )
+      ),
+      class = "data.frame",
+      row.names = c(NA, 13L)
+    ),
+    inspect_cars1 = structure(
+      list(
+        `1:nrow(i)` = c("Obs =", "Nvars =", "1", "2"),
+        variables = c("50", "2", "speed", "dist"),
+        class = c(NA, NA, "numeric", "numeric"),
+        nb_distinct = c(NA, NA, "19", "35"),
+        prop_distinct = c(NA, NA, "0.38", "0.7"),
+        nb_na = c(NA, NA, "0", "0"),
+        prop_na = c(NA, NA, "0", "0"),
+        nb_void = c(NA, NA, "0", "0"),
+        prop_void = c(NA, NA, "0", "0"),
+        nchars = c(NA, NA, "1 / 2", "1 / 2 / 3"),
+        modalities = c(
+          NA,
+          NA,
+          "4 / 7 / 8 / 9 / 10 / 11 / 12 / 13 / 14 / 15",
+          "2 / 4 / 10 / 14 / 16 / 17 / 18 / 20 / 22 / 24"
+        )
+      ),
+      class = "data.frame",
+      row.names = c(NA, 4L)
+    ),
+    inspect_cars2 = structure(
+      list(
+        `1:nrow(i)` = c(
+          "Obs =",
+          "Nvars =",
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10",
+          "11"
+        ),
+        variables = c(
+          "32",
+          "11",
+          "mpg",
+          "cyl",
+          "disp",
+          "hp",
+          "drat",
+          "wt",
+          "qsec",
+          "vs",
+          "am",
+          "gear",
+          "carb"
+        ),
+        class = c(
+          NA,
+          NA,
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric"
+        ),
+        nb_distinct = c(NA, NA, "25", "3", "27", "22", "22", "29", "30", "2", "2", "3", "6"),
+        prop_distinct = c(
+          NA,
+          NA,
+          "0.78125",
+          "0.09375",
+          "0.84375",
+          "0.6875",
+          "0.6875",
+          "0.90625",
+          "0.9375",
+          "0.0625",
+          "0.0625",
+          "0.09375",
+          "0.1875"
+        ),
+        nb_na = c(NA, NA, "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"),
+        prop_na = c(NA, NA, "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"),
+        nb_void = c(NA, NA, "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"),
+        prop_void = c(NA, NA, "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"),
+        nchars = c(
+          NA,
+          NA,
+          "2 / 4",
+          "1",
+          "2 / 3 / 4 / 5",
+          "2 / 3",
+          "1 / 3 / 4",
+          "3 / 4 / 5",
+          "2 / 4 / 5",
+          "1",
+          "1",
+          "1",
+          "1"
+        ),
+        modalities = c(
+          NA,
+          NA,
+          "10.4 / 13.3 / 14.3 / 14.7 / 15 / 15.2 / 15.5 / 15.8 / 16.4 / 17.3",
+          "4 / 6 / 8",
+          "71.1 / 75.7 / 78.7 / 79 / 95.1 / 108 / 120.1 / 120.3 / 121 / 140.8",
+          "52 / 62 / 65 / 66 / 91 / 93 / 95 / 97 / 105 / 109",
+          "2.76 / 2.93 / 3 / 3.07 / 3.08 / 3.15 / 3.21 / 3.23 / 3.54 / 3.62",
+          "1.513 / 1.615 / 1.835 / 1.935 / 2.14 / 2.2 / 2.32 / 2.465 / 2.62 / 2.77",
+          "14.5 / 14.6 / 15.41 / 15.5 / 15.84 / 16.46 / 16.7 / 16.87 / 16.9 / 17.02",
+          "0 / 1",
+          "0 / 1",
+          "3 / 4 / 5",
+          "1 / 2 / 3 / 4 / 6 / 8"
+        )
+      ),
+      class = "data.frame",
+      row.names = c(NA, 13L)
+    ),
+    vars_detect = structure(
+      list(
+        vars_union = c(
+          "speed",
+          "dist",
+          "mpg",
+          "cyl",
+          "disp",
+          "hp",
+          "drat",
+          "wt",
+          "qsec",
+          "vs",
+          "am",
+          "gear",
+          "carb"
+        ),
+        cars1.rds = c("ok", "ok", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"),
+        cars2.rds = c(
+          "-",
+          "-",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok"
+        )
+      ),
+      class = "data.frame",
+      row.names = c(NA, 13L)
+    ),
+    vars_detect_everywhere = structure(
+      list(
+        vars_union = logical(0),
+        cars1.rds = logical(0),
+        cars2.rds = logical(0)
+      ),
+      class = "data.frame",
+      row.names = character(0)
+    ),
+    vars_detect_not_everywhere = structure(
+      list(
+        vars_union = c(
+          "speed",
+          "dist",
+          "mpg",
+          "cyl",
+          "disp",
+          "hp",
+          "drat",
+          "wt",
+          "qsec",
+          "vs",
+          "am",
+          "gear",
+          "carb"
+        ),
+        cars1.rds = c("ok", "ok", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-"),
+        cars2.rds = c(
+          "-",
+          "-",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok",
+          "ok"
+        )
+      ),
+      class = "data.frame",
+      row.names = c(NA, 13L)
+    ),
+    vars_compclasses = structure(
+      list(
+        vars_union = c(
+          "speed",
+          "dist",
+          "mpg",
+          "cyl",
+          "disp",
+          "hp",
+          "drat",
+          "wt",
+          "qsec",
+          "vs",
+          "am",
+          "gear",
+          "carb"
+        ),
+        cars1.rds = c(
+          "numeric",
+          "numeric",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-"
+        ),
+        cars2.rds = c(
+          "-",
+          "-",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric"
+        )
+      ),
+      class = "data.frame",
+      row.names = c(NA, 13L)
+    ),
+    vars_compclasses_allsame = structure(
+      list(
+        vars_union = c(
+          "speed",
+          "dist",
+          "mpg",
+          "cyl",
+          "disp",
+          "hp",
+          "drat",
+          "wt",
+          "qsec",
+          "vs",
+          "am",
+          "gear",
+          "carb"
+        ),
+        cars1.rds = c(
+          "numeric",
+          "numeric",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-",
+          "-"
+        ),
+        cars2.rds = c(
+          "-",
+          "-",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric",
+          "numeric"
+        )
+      ),
+      class = "data.frame",
+      row.names = c(NA, 13L)
+    ),
+    vars_compclasses_not_allsame = structure(
+      list(
+        vars_union = logical(0),
+        cars1.rds = logical(0),
+        cars2.rds = logical(0)
+      ),
+      class = "data.frame",
+      row.names = character(0)
+    )
+  )
+  
+  expect_equal(
+    object = comparison, expected = compared)
+  
+  unlink(mydir, recursive = TRUE)
+})
+```
+
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_inspect_vars.Rmd", 
+               vignette_name = NA)
+```
+

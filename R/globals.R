@@ -1,3 +1,3 @@
 globalVariables(unique(c(
-  "origin", "destination"
-)))
+  "origin", "destination",
+  ".", "datasets", "nvar", "nobs")))
