@@ -158,3 +158,21 @@ flat_replace_multiple.Rmd:
     document: true
     overwrite: ask
     clean: ask
+flat_utils.Rmd:
+  path: dev/flat_utils.Rmd
+  state: active
+  R:
+  - R/ljoin_checks.R
+  - R/table_prop.R
+  tests:
+  - tests/testthat/test-ljoin_checks.R
+  - tests/testthat/test-table_prop.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_utils.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask

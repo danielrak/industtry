@@ -1,0 +1,273 @@
+---
+title: "flat_utils.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+# ljoin_checks
+    
+```{r development-ljoin_checks}
+# You can prepare the code of the ljoin_checks() function here
+```
+  
+```{r function-ljoin_checks}
+#' Perform a classical dplyr::left_join() and add check information related to join
+#'
+#' @param ltable Left data frame in the join
+#' @param rtable Right data frame in the join
+#' @param ... Any other arguments of dplyr::left_join()
+#' @return Output of dplyr::left_join() with messages on number of observations
+#' in left, right and joined data frames and list of common variables between
+#' ltable and rtable
+#' @importFrom magrittr  %>%
+#' @export
+#'
+ljoin_checks <- function (ltable, rtable, ...) {
+
+  requireNamespace("magrittr")
+
+  result <- dplyr::left_join(x = ltable, y = rtable, ...)
+
+  lrows <- nrow(ltable)
+  rrows <- nrow(rtable)
+  jrows <- nrow(result)
+
+  lvars <- names(ltable)
+  rvars <- names(rtable)
+  ivars <- intersect(lvars, rvars)
+
+  message("Checks : \n",
+          paste0("ltable rows : ", lrows),
+          "\n",
+          paste0("rtable rows :", rrows),
+          "\n",
+          paste0("jtable rows : ", jrows),
+          "\n",
+          paste0(ivars, collapse = ", ") %>%
+            paste0(" are common var names accross the two tables"))
+
+  return(result)
+}
+```
+  
+```{r example-ljoin_checks}
+left_table <- data.frame("person_id" = c(1, 1, 2, 3,
+                                 2, 4, 5, 5 ,1),
+                 "person_age" = c(25, 25, 21, 32,
+                                  21, 48, 50, 50, 52),
+                 "survey_month" = c("jan", "feb", "mar", "apr",
+                                    "apr", "may", "jun", "jul", "jan"),
+                 "survey_answer" = c("no", "yes", "no", "yes",
+                                     "yes", "yes", "no", "yes", NA))
+
+right_table <- data.frame("person_id" = c(2, 5, 4, 3, 1), 
+                          "person_name" = c("John", "Marie", "Pierre", "Marc", "Jimmy"))
+
+list("left_table" = left_table, 
+     "right_table" = right_table)
+
+ljoin_checks(left_table, right_table, by = "person_id")
+```
+  
+```{r tests-ljoin_checks}
+test_that("Valid outputs are consistent", {
+  
+  left_table <- data.frame("person_id" = c(1, 1, 2, 3,
+                                           2, 4, 5, 5 ,1),
+                           "person_age" = c(25, 25, 21, 32,
+                                            21, 48, 50, 50, 52),
+                           "survey_month" = c("jan", "feb", "mar", "apr",
+                                              "apr", "may", "jun", "jul", "jan"),
+                           "survey_answer" = c("no", "yes", "no", "yes",
+                                               "yes", "yes", "no", "yes", NA))
+  
+  right_table <- data.frame("person_id" = c(2, 5, 4, 3, 1), 
+                            "person_name" = c("John", "Marie", "Pierre", "Marc", "Jimmy"))
+  
+  expect_equal(ljoin_checks(left_table, right_table, by = "person_id"), 
+               structure(
+                 list(
+                   person_id = c(1, 1, 2, 3, 2, 4, 5, 5, 1),
+                   person_age = c(25, 25, 21, 32, 21, 48, 50, 50, 52),
+                   survey_month = c("jan", "feb", "mar", "apr", "apr", "may", "jun", "jul", "jan"),
+                   survey_answer = c("no", "yes", "no", "yes", "yes", "yes", "no", "yes", NA),
+                   person_name = c(
+                     "Jimmy",
+                     "Jimmy",
+                     "John",
+                     "Marc",
+                     "John",
+                     "Pierre",
+                     "Marie",
+                     "Marie",
+                     "Jimmy"
+                   )
+                 ),
+                 class = "data.frame",
+                 row.names = c(NA, -9L)
+               ))
+  
+  expect_message(ljoin_checks(left_table, right_table, by = "person_id"), 
+                 "person_id are common var names accross the two tables")
+})
+```
+
+# table_prop
+    
+```{r development-table_prop}
+# You can prepare the code of the table_prop() function here
+```
+  
+```{r function-table_prop}
+#' Frequencies and proportions in one output
+#'
+#' Combines base::table() and base::prop.table() outputs in a single one
+#'
+#' @param ... Arguments passed to base::table()
+#' @param margin The same argument as in base::prop.table()
+#' @aliases base::table() base::prop.table()
+#' @param round Number of digits after decimal in base::prop.table() output
+#' @param noquote Logical. If TRUE, return an object of class noquote that provides better view of the output
+#' @return Frequencies with proportions in brackets, within a matrix
+#' @examples
+#' df <- data.frame(
+#'                  "variable_1" = c("v1_1", "v1_1",
+#'                                   "v1_2", "v1_2", "v1_2", "v1_2"),
+#'                  "variable_2" = c("v2_1", "v2_1", "v2_1", "v2_1",
+#'                                   "v2_2", "v2_2")
+#'                                   )
+#' table_prop(df$variable_1)
+#' table_prop(df$variable_1, df$variable_2)
+#' table_prop(df$variable_1, df$variable_2, margin = 2, noquote = TRUE)
+#' @export
+#'
+table_prop <- function (..., margin = NULL, round = 3, noquote = FALSE) {
+  
+  table <- table(...)
+  ptable <- round(prop.table(table, margin), round)
+  
+  result <- matrix(paste0(table, " (", ptable, ")"), nrow = nrow(table))
+  dimnames(result) <- dimnames(table)
+  
+  
+  if (noquote) noquote(result) else result
+}
+```
+  
+```{r example-table_prop}
+df <- data.frame("person_id" = c(1, 1, 2, 3,
+                                 2, 4, 5, 5 ,1),
+                 "person_age" = c(25, 25, 21, 32,
+                                  21, 48, 50, 50, 52),
+                 "survey_month" = c("jan", "feb", "mar", "apr",
+                                    "apr", "may", "jun", "jul", "jan"),
+                 "survey_answer" = c("no", "yes", "no", "yes",
+                                     "yes", "yes", "no", "yes", NA))
+
+table_prop(df$survey_month)
+table_prop(df$survey_month, df$survey_answer)
+table_prop(df$survey_month, df$survey_answer, 
+           margin = 2, round = 4)
+```
+
+```{r tests-table_prop}
+test_that("Valid outputs are consistent", {
+  
+  df <- data.frame("person_id" = c(1, 1, 2, 3,
+                                   2, 4, 5, 5 ,1),
+                   "person_age" = c(25, 25, 21, 32,
+                                    21, 48, 50, 50, 52),
+                   "survey_month" = c("jan", "feb", "mar", "apr",
+                                      "apr", "may", "jun", "jul", "jan"),
+                   "survey_answer" = c("no", "yes", "no", "yes",
+                                       "yes", "yes", "no", "yes", NA))
+  
+  expect_equal(object = table_prop(df$survey_month), 
+               expected = structure(
+                 c(
+                   "2 (0.222)",
+                   "1 (0.111)",
+                   "2 (0.222)",
+                   "1 (0.111)",
+                   "1 (0.111)",
+                   "1 (0.111)",
+                   "1 (0.111)"
+                 ),
+                 dim = c(7L, 1L),
+                 dimnames = structure(list(
+                   c("apr", "feb", "jan", "jul", "jun", "mar", "may"), NULL
+                 ), names = c("", ""))
+               ))
+  
+  expect_equal(object = table_prop(df$survey_month, df$survey_answer), 
+               expected = structure(
+                 c(
+                   "0 (0)",
+                   "0 (0)",
+                   "1 (0.125)",
+                   "0 (0)",
+                   "1 (0.125)",
+                   "1 (0.125)",
+                   "0 (0)",
+                   "2 (0.25)",
+                   "1 (0.125)",
+                   "0 (0)",
+                   "1 (0.125)",
+                   "0 (0)",
+                   "0 (0)",
+                   "1 (0.125)"
+                 ),
+                 dim = c(7L, 2L),
+                 dimnames = structure(list(
+                   c("apr", "feb", "jan", "jul", "jun", "mar", "may"), c("no", "yes")
+                 ), names = c("", ""))
+               ))
+  
+  expect_equal(
+    object = table_prop(df$survey_month, df$survey_answer, 
+           margin = 2, round = 4), 
+    expected = structure(
+      c(
+        "0 (0)",
+        "0 (0)",
+        "1 (0.3333)",
+        "0 (0)",
+        "1 (0.3333)",
+        "1 (0.3333)",
+        "0 (0)",
+        "2 (0.4)",
+        "1 (0.2)",
+        "0 (0)",
+        "1 (0.2)",
+        "0 (0)",
+        "0 (0)",
+        "1 (0.2)"
+      ),
+      dim = c(7L, 2L),
+      dimnames = structure(list(
+        c("apr", "feb", "jan", "jul", "jun", "mar", "may"), c("no", "yes")
+      ), names = c("", ""))
+    )
+  )
+})
+```
+
+
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_utils.Rmd", 
+               vignette_name = NA)
+```
+
