@@ -15,7 +15,7 @@ mask_convert_r(output_path, output_filename = "mask_convert_r.xlsx")
 Create an excel mask compatible with the convert_r() function
 }
 \examples{
-mydir <- tempdir()
+mydir <- file.path(tempdir(), "convert_r_tests_examples")
 dir.create(mydir)
 
 mask_convert_r(output_path = mydir)

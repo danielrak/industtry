@@ -2,7 +2,7 @@
 
 test_that("Valid output are consistent", {
   
-  mydir <- tempdir()
+  mydir <- file.path(tempdir(), "convert_r_tests_examples")
   dir.create(mydir)
   
   mask_convert_r(output_path = mydir)

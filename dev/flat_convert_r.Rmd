@@ -46,7 +46,7 @@ mask_convert_r <- function (output_path,
 ```
   
 ```{r example-mask_convert_r}
-mydir <- tempdir()
+mydir <- file.path(tempdir(), "convert_r_tests_examples")
 dir.create(mydir)
 
 mask_convert_r(output_path = mydir)
@@ -59,7 +59,7 @@ unlink(mydir, recursive = TRUE)
 ```{r tests-mask_convert_r}
 test_that("Valid output are consistent", {
   
-  mydir <- tempdir()
+  mydir <- file.path(tempdir(), "convert_r_tests_examples")
   dir.create(mydir)
   
   mask_convert_r(output_path = mydir)

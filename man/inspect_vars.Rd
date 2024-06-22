@@ -23,7 +23,7 @@ An excel file written on the computer containing exploration information
 Inspect a collection of datasets
 }
 \examples{
-mydir <- tempdir()
+mydir <- file.path(tempdir(), "inspect_vars_tests_examples")
 dir.create(mydir)
 
 library(magrittr)

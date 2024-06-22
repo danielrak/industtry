@@ -4,6 +4,9 @@
 # The industtry package - a toolkit for structured datasets exploitation
 
 <!-- badges: start -->
+
+[![Codecov test
+coverage](https://codecov.io/gh/danielrak/industtry/branch/master/graph/badge.svg)](https://app.codecov.io/gh/danielrak/industtry?branch=master)
 <!-- badges: end -->
 
 This package proposes a set of functions that helps exploiting

@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # The industtry package - a toolkit for structured datasets exploitation
 
 <!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/danielrak/industtry/branch/master/graph/badge.svg)](https://app.codecov.io/gh/danielrak/industtry?branch=master)
 <!-- badges: end -->
 
 This package proposes a set of functions that helps exploiting structured datasets (mostly data frames) with an industrialization approach. Industrialization here means applying as efficiently as possible the same procedure to any number of inputs as long as these inputs have an identified common structure. 

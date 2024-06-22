@@ -9,7 +9,7 @@
 #' in the input folder. Do not type the "." (dot) in it. E.g ("parquet" but not ".parquet")
 #' @return An excel file written on the computer containing exploration information
 #' @examples
-#' mydir <- tempdir()
+#' mydir <- file.path(tempdir(), "inspect_vars_tests_examples")
 #' dir.create(mydir)
 #'
 #' library(magrittr)

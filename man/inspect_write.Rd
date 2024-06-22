@@ -24,7 +24,7 @@ Inspect a data frame and write the output in an excel file
 \examples{
 library(magrittr)
 data(cars)
-mydir <- tempdir()
+mydir <- file.path(tempdir(), "inspect_variants_tests_examples")
 dir.create(mydir)
 inspect_write(data_frame_name = "cars", 
               output_path = mydir, 

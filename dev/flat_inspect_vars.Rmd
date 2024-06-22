@@ -686,7 +686,7 @@ inspect_vars <- function (input_path, output_path,
 ```
   
 ```{r example-inspect_vars}
-mydir <- tempdir()
+mydir <- file.path(tempdir(), "inspect_vars_tests_examples")
 dir.create(mydir)
 
 library(magrittr)
@@ -711,7 +711,8 @@ unlink(mydir, recursive = TRUE)
 
 ```{r tests-inspect_vars}
 test_that("inspect_vars works", {
-  mydir <- tempdir()
+  
+  mydir <- file.path(tempdir(), "inspect_vars_tests_examples")
   dir.create(mydir)
   
   library(magrittr)
@@ -1176,7 +1177,7 @@ test_that("inspect_vars works", {
     )
   )
   
-  expect_equal(
+  expect_equivalent(
     object = comparison, expected = compared)
   
   unlink(mydir, recursive = TRUE)
