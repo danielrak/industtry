@@ -78,7 +78,7 @@ inspect_write <- function (data_frame_name, output_path, output_label = NULL) {
 ```{r example-inspect_write}
 library(magrittr)
 data(cars)
-mydir <- tempdir()
+mydir <- file.path(tempdir(), "inspect_variants_tests_examples")
 dir.create(mydir)
 inspect_write(data_frame_name = "cars", 
               output_path = mydir, 
@@ -91,7 +91,7 @@ unlink(mydir, recursive = TRUE)
 test_that("Valid outputs are consistent", {
   library(magrittr)
   data(cars)
-  mydir <- tempdir()
+  mydir <- file.path(tempdir(), "inspect_variants_tests_examples")
   dir.create(mydir)
   inspect_write(data_frame_name = "cars", 
                 output_path = mydir, 
@@ -124,7 +124,7 @@ test_that("Errors are consistent", {
   library(magrittr)
   data(cars)
   data(uspop)
-  mydir <- tempdir()
+  mydir <- file.path(tempdir(), "inspect_variants_tests_examples")
   dir.create(mydir)
   
   expect_error(inspect_write(data_frame_name = "cars_noexist", 

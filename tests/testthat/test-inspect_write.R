@@ -3,7 +3,7 @@
 test_that("Valid outputs are consistent", {
   library(magrittr)
   data(cars)
-  mydir <- tempdir()
+  mydir <- file.path(tempdir(), "inspect_variants_tests_examples")
   dir.create(mydir)
   inspect_write(data_frame_name = "cars", 
                 output_path = mydir, 
@@ -36,7 +36,7 @@ test_that("Errors are consistent", {
   library(magrittr)
   data(cars)
   data(uspop)
-  mydir <- tempdir()
+  mydir <- file.path(tempdir(), "inspect_variants_tests_examples")
   dir.create(mydir)
   
   expect_error(inspect_write(data_frame_name = "cars_noexist", 

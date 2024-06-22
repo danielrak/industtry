@@ -3,3 +3,11 @@
 ^industtry\.Rproj$
 ^\.Rproj\.user$
 ^CODE_OF_CONDUCT\.md$
+^README\.Rmd$
+^codecov\.yml$
+^\.gitlab-ci\.yml$
+^ci/lib$
+^\.github$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
