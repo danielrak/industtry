@@ -2,8 +2,8 @@
 
 #' Inspect a data frame
 #'
-#' @param data_frame The data.frame to explore. Need to exist in the Global Environment.
-#' @param nrow Logical. If TRUE, the number of observations of the dataset is rendered in addition.
+#' @param data_frame Data.frame. The data.frame to explore. Need to exist in the Global Environment.
+#' @param nrow Logical 1L. If TRUE, the number of observations of the dataset is rendered in addition.
 #' @return Variable list of the dataset and systematic informations for each variable.
 #' @examples
 #' library(magrittr)

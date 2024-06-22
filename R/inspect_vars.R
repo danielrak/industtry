@@ -2,10 +2,10 @@
 
 #' Inspect a collection of datasets
 #'
-#' @param input_path Folder path of datasets to explore
-#' @param output_path Folder path where the exploration output will be stored
-#' @param output_label 1-length character vector describing concisely the collection to explore
-#' @param considered_extensions Character vector of extensions of datasets retained for exploration
+#' @param input_path Character 1L. Folder path of datasets to explore
+#' @param output_path Character 1L. Folder path where the exploration output will be stored
+#' @param output_label Character 1L. Describe concisely the collection to explore
+#' @param considered_extensions Character. Extensions of datasets retained for exploration
 #' in the input folder. Do not type the "." (dot) in it. E.g ("parquet" but not ".parquet")
 #' @return An excel file written on the computer containing exploration information
 #' @examples

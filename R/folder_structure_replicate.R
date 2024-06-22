@@ -2,8 +2,9 @@
 
 #' Replicate the folder structure of a given directory
 #'
-#' @param dir Path of directory which structure will be replicated
-#' @param to Path of an output directory in which replicated structured will be placed
+#' @param dir Character 1L. Path of directory which structure will be replicated
+#' @param to Character 1L. Path of an output directory in which replicated structured will be placed
+#' @return See directory indicated in `to` arg. 
 #' @importFrom magrittr %>%
 #' @export
 #'

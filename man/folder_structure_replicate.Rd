@@ -7,9 +7,12 @@
 folder_structure_replicate(dir, to)
 }
 \arguments{
-\item{dir}{Path of directory which structure will be replicated}
+\item{dir}{Character 1L. Path of directory which structure will be replicated}
 
-\item{to}{Path of an output directory in which replicated structured will be placed}
+\item{to}{Character 1L. Path of an output directory in which replicated structured will be placed}
+}
+\value{
+See directory indicated in \code{to} arg.
 }
 \description{
 Replicate the folder structure of a given directory

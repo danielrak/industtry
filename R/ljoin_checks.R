@@ -2,10 +2,10 @@
 
 #' Perform a classical dplyr::left_join() and add check information related to join
 #'
-#' @param ltable Left data frame in the join
-#' @param rtable Right data frame in the join
-#' @param ... Any other arguments of dplyr::left_join()
-#' @return Output of dplyr::left_join() with messages on number of observations
+#' @param ltable Data.frame. Left data frame in the join
+#' @param rtable Data.frame. Right data frame in the join
+#' @param ... Params. Any other arguments of dplyr::left_join()
+#' @return Data.frame. Output of dplyr::left_join() with messages on number of observations
 #' in left, right and joined data frames and list of common variables between
 #' ltable and rtable
 #' @importFrom magrittr  %>%
