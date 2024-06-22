@@ -2,7 +2,7 @@
 
 #' Collection-level variables types comparison
 #'
-#' @param data_frames The datasets to explore. Need to exist in the Global Environment
+#' @param data_frames Character. The datasets to explore. Need to exist in the Global Environment
 #' @return Variable list and their respective types across all inputted datasets.
 #' @examples
 #' library(magrittr)

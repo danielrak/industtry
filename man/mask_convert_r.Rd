@@ -7,9 +7,9 @@
 mask_convert_r(output_path, output_filename = "mask_convert_r.xlsx")
 }
 \arguments{
-\item{output_path}{Folder path where the mask will be created}
+\item{output_path}{Character 1L. Folder path where the mask will be created}
 
-\item{output_filename}{File name (with extension) of the mask}
+\item{output_filename}{Character 1L. File name (with extension) of the mask}
 }
 \description{
 Create an excel mask compatible with the convert_r() function

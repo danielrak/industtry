@@ -7,15 +7,15 @@
 dupl_sources(data_frame, vars, output_as_df = FALSE)
 }
 \arguments{
-\item{data_frame}{Input data frame. Need to be in the Global Environment and has a data.frame class}
+\item{data_frame}{Data.frame. Input data frame. Must be in the Global Environment and has a data.frame class}
 
-\item{vars}{A character vector of variable or combination of variables
+\item{vars}{Character. Vector of variable or combination of variables
 from which duplicates are checked}
 
-\item{output_as_df}{logical. If TRUE, output is rendered as a data.frame.}
+\item{output_as_df}{Logical 1L. If TRUE, output is rendered as a data.frame.}
 }
 \value{
-For each duplicated row regarding to vars, different values of the same variable
+List or data.frame. For each duplicated row regarding to vars, different values of the same variable
 are shown, separated by AND
 }
 \description{
