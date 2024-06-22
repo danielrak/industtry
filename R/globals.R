@@ -1,8 +1,4 @@
-utils::globalVariables(c("to_convert",
-                         "idvarsdupl",
-                         ".",
-                         "datasets",
-                         "nvar",
-                         "nobs",
-                         "origin",
-                         "destination"))
+globalVariables(unique(c(
+  "origin", "destination",
+  ".", "datasets", "nvar", "nobs",
+  "to_convert", "idvarsdupl")))

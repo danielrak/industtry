@@ -1,2 +1,5 @@
-^.*\.Rproj$
+^dev$
+^LICENSE\.md$
+^industtry\.Rproj$
 ^\.Rproj\.user$
+^CODE_OF_CONDUCT\.md$

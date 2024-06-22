@@ -1,0 +1,178 @@
+flat_assign_to_global.Rmd:
+  path: dev/flat_assign_to_global.Rmd
+  state: active
+  R: R/assign_to_global.R
+  tests: []
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_assign_to_global.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_chars_structure.Rmd:
+  path: dev/flat_chars_structure.Rmd
+  state: active
+  R: R/chars_structure.R
+  tests: tests/testthat/test-chars_structure.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_chars_structure.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_convert_r.Rmd:
+  path: dev/flat_convert_r.Rmd
+  state: active
+  R:
+  - R/convert_r.R
+  - R/mask_convert_r.R
+  tests:
+  - tests/testthat/test-mask_convert_r.R
+  - tests/testthat/test-convert_r.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_convert_r.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_dupl_show.Rmd:
+  path: dev/flat_dupl_show.Rmd
+  state: active
+  R:
+  - R/dupl_show.R
+  - R/dupl_sources.R
+  tests:
+  - tests/testthat/test-dupl_show.R
+  - tests/testthat/test-dupl_sources.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_dupl_show.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_importations.Rmd:
+  path: dev/flat_importations.Rmd
+  state: active
+  R:
+  - R/parallel_import.R
+  - R/serial_import.R
+  tests:
+  - tests/testthat/test-parallel_import.R
+  - tests/testthat/test-serial_import.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_importations.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_inspect_variants.Rmd:
+  path: dev/flat_inspect_variants.Rmd
+  state: active
+  R: R/inspect_write.R
+  tests: tests/testthat/test-inspect_write.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_inspect_variants.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_inspect_vars.Rmd:
+  path: dev/flat_inspect_vars.Rmd
+  state: active
+  R:
+  - R/inspect.R
+  - R/inspect_vars.R
+  - R/vars_compclasses.R
+  - R/vars_compclasses_allsame.R
+  - R/vars_compclasses_not_allsame.R
+  - R/vars_detect.R
+  - R/vars_detect_everywhere.R
+  - R/vars_detect_not_everywhere.R
+  tests:
+  - tests/testthat/test-inspect.R
+  - tests/testthat/test-vars_detect.R
+  - tests/testthat/test-vars_detect_not_everywhere.R
+  - tests/testthat/test-vars_detect_everywhere.R
+  - tests/testthat/test-vars_compclasses.R
+  - tests/testthat/test-vars_compclasses_not_allsame.R
+  - tests/testthat/test-vars_compclasses_allsame.R
+  - tests/testthat/test-inspect_vars.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_inspect_vars.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_paths_and_files.Rmd:
+  path: dev/flat_paths_and_files.Rmd
+  state: active
+  R:
+  - R/current_script_location.R
+  - R/folder_structure_replicate.R
+  - R/path_move.R
+  tests:
+  - tests/testthat/test-current_script_location.R
+  - tests/testthat/test-folder_structure_replicate.R
+  - tests/testthat/test-path_move.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_paths_and_files.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_replace_multiple.Rmd:
+  path: dev/flat_replace_multiple.Rmd
+  state: active
+  R: R/replace_multiple.R
+  tests: tests/testthat/test-replace_multiple.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_replace_multiple.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_utils.Rmd:
+  path: dev/flat_utils.Rmd
+  state: active
+  R:
+  - R/ljoin_checks.R
+  - R/table_prop.R
+  tests:
+  - tests/testthat/test-ljoin_checks.R
+  - tests/testthat/test-table_prop.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_utils.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask

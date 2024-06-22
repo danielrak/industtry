@@ -4,20 +4,12 @@
 \name{industtry-package}
 \alias{industtry}
 \alias{industtry-package}
-\title{industtry: A toolkit for structured datasets exploitation}
+\title{industtry: A Toolkit for Structured Datasets Exploitation}
 \description{
 A toolkit for structured datasets exploitation. A set of functions that helps exploiting structured datasets (data frames) with an industrialization approach. Industrialization here means applying as efficiently as possible the same procedure to any number of inputs as long as these inputs have an identified common structure.
 }
-\seealso{
-Useful links:
-\itemize{
-  \item \url{https://github.com/danielrak/industtry}
-  \item Report bugs at \url{https://github.com/danielrak/industtry/issues}
-}
-
-}
 \author{
-\strong{Maintainer}: Daniel Rakotomalala \email{rakdanielh@gmail.com}
+\strong{Maintainer}: Daniel Rakotomalala \email{john@email.me}
 
 }
 \keyword{internal}

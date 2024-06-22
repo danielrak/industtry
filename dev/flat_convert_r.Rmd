@@ -1,0 +1,249 @@
+---
+title: "flat_convert_r_9.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+# mask_convert_r
+    
+```{r development-mask_convert_r}
+# You can prepare the code of the mask_convert_r() function here
+```
+  
+```{r function-mask_convert_r}
+#' Create an excel mask compatible with the convert_r() function
+#' @param output_path Folder path where the mask will be created
+#' @param output_filename File name (with extension) of the mask
+#' @export
+#'
+mask_convert_r <- function (output_path,
+                            output_filename = "mask_convert_r.xlsx") {
+
+  if (isFALSE(dir.exists(output_path))) {
+    
+    stop("output_path doesn't exist")
+  }
+  
+  mask <- data.frame(folder_path = NA,
+                     file = NA,
+                     converted_file = NA,
+                     to_convert = NA)
+
+  writexl::write_xlsx(mask,
+                      path = file.path(output_path,
+                                       output_filename))
+}
+```
+  
+```{r example-mask_convert_r}
+mydir <- tempdir()
+dir.create(mydir)
+
+mask_convert_r(output_path = mydir)
+
+list.files(mydir)
+
+unlink(mydir, recursive = TRUE)
+```
+  
+```{r tests-mask_convert_r}
+test_that("Valid output are consistent", {
+  
+  mydir <- tempdir()
+  dir.create(mydir)
+  
+  mask_convert_r(output_path = mydir)
+  
+  expect_identical(
+    object = list.files(mydir), 
+    expected = "mask_convert_r.xlsx")
+  
+  expect_equal(
+    object = names(readxl::read_xlsx(file.path(mydir, "mask_convert_r.xlsx")))[1:4],
+    expected = c("folder_path", "file", "converted_file", "to_convert"))
+  
+  unlink(mydir, recursive = TRUE)
+})
+
+test_that("Errors are consistent", {
+  
+  expect_error(
+    mask_convert_r("~/noexist"), 
+    "output_path doesn't exist")
+})
+```
+  
+
+# convert_r
+
+```{r function-convert_r}
+#' Industrialized dataset formats conversion (RStudio only)
+#' @param mask_filepath Entire file path of the excel mask
+#' @param output_path Folder path where the converted datasets will be placed
+#' @importFrom magrittr %>%
+#' @export
+#'
+convert_r <- function (mask_filepath, output_path) {
+
+  requireNamespace("magrittr")
+
+  if (isFALSE(file.exists(mask_filepath))) {
+
+    stop("mask_filepath doesn't exist. It must be a valid and full path including the xlsx file.")
+  }
+
+  if (isFALSE(dir.exists(output_path))) {
+
+    stop("output_path doesn't exist. Check path validity.")
+  }
+
+  # import mask:
+  prm <- rio::import(mask_filepath)
+
+  # filter only datasets to convert:
+  prm <- dplyr::filter(prm, to_convert == 1)
+
+  # indicate row number (technically useful):
+  prm <- dplyr::mutate(prm, row_number = 1:nrow(prm))
+
+  # transform imported mask of r rows into a list of r elements:
+  sp <- split(prm, prm$row_number) %>%
+    magrittr::set_names(paste0(prm$folder_path, "/", prm$file))
+
+  # for each element of the list, run a job that
+  # (1) import indicated datasets,
+  # (2) for imported datasets, replace void character values with real NAs,
+  # (3) eliminate eventual spaces in character values corners,
+  # (4) export resulting dataset in output_path as indicated in the mask
+  sp %>% (\(l) {
+    purrr::map(names(l), \(x) {
+      l <- l
+      output_path <- output_path
+      job::job({
+
+        # library(magrittr) # causes a note.
+
+        rio::import(file.path(l[[x]][["folder_path"]], l[[x]][["file"]])) %>%
+          dplyr::mutate_all(\(y) {y[nchar(as.character(y)) == 0] <- NA ; y}) %>%
+          dplyr::mutate_if(is.character, \(c) stringr::str_trim(c)) %>%
+          rio::export(file.path(output_path, l[[x]][["converted_file"]]))
+        job::export("none")
+      }, title = x %>% strsplit("/") %>%
+        purrr::map(\(xx) xx[length(xx)]) %>% unlist %>% 
+        (\(u) paste("Conversion of ", u)))
+    })
+  })
+}
+```
+
+```{r examples-convert_r}
+library(magrittr)
+
+mydir <- system.file("permadir_examples_and_tests/convert_r", package = "industtry")
+
+# Datasets to convert (one-shot):
+# rio::export(cars, file.path(mydir, "original_cars.rds"))
+# rio::export(mtcars, file.path(mydir, "original_mtcars.csv"))
+
+# Create an artificial compatible mask with R:
+mask <- data.frame(
+  "folder_path" = rep(mydir, 2),
+  "file" = c("original_cars.rds", "original_mtcars.csv"),
+  "converted_file" = c("converted_cars.parquet", "converted_mtcars.parquet"),
+  "to_convert" = rep(1, 2)
+)
+writexl::write_xlsx(mask, file.path(mydir, "mask_convert_r.xlsx"))
+
+if (rstudioapi::isAvailable()) {
+  convert_r(
+    mask_filepath = file.path(mydir, "mask_convert_r.xlsx"),
+    output_path = mydir)} else {
+      message("You're not in RStudio. This example will not run.")
+    }
+
+# See original and converted files:
+list.files(mydir) %>% purrr::keep(stringr::str_detect(., "cars"))
+
+# Remove converted files for tests integrity:
+file.remove(file.path(
+  mydir,
+  c("converted_cars.parquet", "converted_mtcars.parquet")))
+```
+
+```{r tests-convert_r}
+test_that("Valid outputs are consistent", {
+
+  library(magrittr)
+
+  mydir <- system.file("permadir_examples_and_tests/convert_r", package = "industtry")
+
+  # Create an artificial compatible mask with R:
+  mask <- data.frame(
+    "folder_path" = rep(mydir, 2),
+    "file" = c("original_cars.rds", "original_mtcars.csv"),
+    "converted_file" = c("converted_cars.parquet", "converted_mtcars.parquet"),
+    "to_convert" = rep(1, 2)
+  )
+  writexl::write_xlsx(mask, file.path(mydir, "mask_convert_r_completed.xlsx"))
+
+  expect_equal(list.files(mydir) %>%
+                 purrr::keep(stringr::str_detect(., "mask\\_") &
+                               stringr::str_detect(., "completed")),
+               "mask_convert_r_completed.xlsx")
+
+  # As it intended to run into main RStudio session, it's difficult to test
+  # the convert_r() function in the R dev sense.
+  # The following test will only pass in check but not on live dev in RStudio:
+  expect_false(
+    object = rstudioapi::isAvailable())
+
+  # Remove completed mask for tests integrity:
+  file.remove(file.path(mydir, "mask_convert_r_completed.xlsx"))
+})
+
+test_that("Errors are consistent", {
+
+  library(magrittr)
+  
+  mydir <- system.file("permadir_examples_and_tests/convert_r", package = "industtry")
+  
+  expect_error(
+    convert_r("~/noexist/mask_convert_r.xlsx", 
+              output_path = mydir),
+    "mask_filepath doesn't exist. It must be a valid and full path including the xlsx file.")
+  
+  # Create an artificial compatible mask with R:
+  mask <- data.frame(
+    "folder_path" = rep(mydir, 2),
+    "file" = c("original_cars.rds", "original_mtcars.csv"),
+    "converted_file" = c("converted_cars.parquet", "converted_mtcars.parquet"),
+    "to_convert" = rep(1, 2)
+  )
+  writexl::write_xlsx(mask, file.path(mydir, "mask_convert_r.xlsx"))
+  
+  expect_error(
+    convert_r(file.path(mydir, "mask_convert_r.xlsx"), paste0(mydir, "noexist")), 
+    "output_path doesn't exist. Check path validity.")
+  
+  unlink(mydir)
+})
+```
+
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_convert_r.Rmd", 
+               vignette_name = NA)
+```
+

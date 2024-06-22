@@ -23,21 +23,25 @@ An excel file written on the computer containing exploration information
 Inspect a collection of datasets
 }
 \examples{
+mydir <- tempdir()
+dir.create(mydir)
+
 library(magrittr)
-saveRDS(cars, "./cars1.rds")
-saveRDS(mtcars, "./cars2.rds")
+saveRDS(cars, file.path(mydir, "cars1.rds"))
+saveRDS(mtcars, file.path(mydir, "cars2.rds"))
 
 # Code below illustrates how to use the function:
-inspect_vars(input_path = ".", output_path = ".",
-             output_label = "cardata", considered_extensions = "rds")
+inspect_vars(input_path = mydir, output_path = mydir,
+              output_label = "cardata", 
+             considered_extensions = "rds")
 
-purrr::map(1:10, \(x)
-           rio::import("./inspect_vars_cardata.xlsx",
-                       sheet = x)) \%>\%
-magrittr::set_names(c("dims", "inspect_tot", "inspect_cars1", "inspect_cars2",
-           "vars_detect", "vars_detect_everywhere", "vars_detect_not_everywhere",
-           "vars_compclasses", "vars_compclasses_allsame", "vars_compclasses_not_allsame"))
-           # code above illustrates all 10 sheets of the output
+ purrr::map(1:10, \(x)
+            rio::import(file.path(mydir, "inspect_vars_cardata.xlsx"),
+                        sheet = x)) \%>\%
+ magrittr::set_names(c("dims", "inspect_tot", "inspect_cars1", "inspect_cars2",
+            "vars_detect", "vars_detect_everywhere", "vars_detect_not_everywhere",
+            "vars_compclasses", "vars_compclasses_allsame", "vars_compclasses_not_allsame"))
+            # code above illustrates all 10 sheets of the output
 
-file.remove(c("./cars1.rds", "./cars2.rds", "./inspect_vars_cardata.xlsx"))
+unlink(mydir, recursive = TRUE)
 }
