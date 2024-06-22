@@ -2,7 +2,7 @@
 % Please edit documentation in R/path_move.R
 \name{path_move}
 \alias{path_move}
-\title{Title}
+\title{Move through paths}
 \usage{
 path_move(path_vector, path_separator = "/", move)
 }
@@ -20,7 +20,7 @@ If move < 0, remove the last specified level(s) in move.}
 Character vector. Transformed vector of paths.
 }
 \description{
-Title
+Move through paths
 }
 \examples{
 pvector <- c(

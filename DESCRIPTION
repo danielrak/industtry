@@ -12,6 +12,7 @@ License: MIT + file LICENSE
 Imports: 
     dplyr,
     glue,
+    job,
     lubridate,
     magrittr,
     plyr,

@@ -260,7 +260,7 @@ path_move <- function (path_vector, path_separator = "/", move) {
 ```
 
 ```{r function-path_move}
-#' Title
+#' Move through paths
 #'
 #' @param path_vector Character vector. Vector of paths with equal number of levels
 #' @param path_separator 1L character vector. Path separator 

@@ -17,7 +17,7 @@ pkgload::load_all(export_all = FALSE)
 # assign_to_global
 
 ```{r function-assign_to_global}
-#' Assign to global variable
+#' Assign to global environment
 #'
 #' @param name character. Name to assign the object 
 #' @param object Object to assign to the name
@@ -25,7 +25,7 @@ pkgload::load_all(export_all = FALSE)
 #'
 #' @return function. Assignment to global environment
 #' @export
-#' @source [https://stackoverflow.com/questions/28180989/r-cmd-check-found-the-following-assignments-to-the-global-environment]
+#' @source https://stackoverflow.com/questions/28180989/r-cmd-check-found-the-following-assignments-to-the-global-environment
 #'
 assign_to_global <- function(name, object, pos) {
   (function (name, object, pos)

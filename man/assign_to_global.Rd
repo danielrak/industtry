@@ -2,7 +2,7 @@
 % Please edit documentation in R/assign_to_global.R
 \name{assign_to_global}
 \alias{assign_to_global}
-\title{Assign to global variable}
+\title{Assign to global environment}
 \source{
 https://stackoverflow.com/questions/28180989/r-cmd-check-found-the-following-assignments-to-the-global-environment
 }
@@ -20,5 +20,5 @@ assign_to_global(name, object, pos)
 function. Assignment to global environment
 }
 \description{
-Assign to global variable
+Assign to global environment
 }
