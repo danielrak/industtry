@@ -1,6 +1,6 @@
 Package: industtry
 Title: A Toolkit for Structured Datasets Exploitation
-Version: 0.0.0.9000
+Version: 0.2.0
 Authors@R: 
     person("Daniel", "Rakotomalala", , "rakdanielh@gmail.com", role = c("aut", "cre"))
 Description: This package proposes a set of functions that helps
