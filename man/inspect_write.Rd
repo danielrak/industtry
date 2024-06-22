@@ -7,16 +7,16 @@
 inspect_write(data_frame_name, output_path, output_label = NULL)
 }
 \arguments{
-\item{data_frame_name}{Character vector.
-The data.frame to explore. Need to exist in the Global Environment}
+\item{data_frame_name}{Character 1L.
+The data.frame to explore. Must exist in the Global Environment}
 
-\item{output_path}{Folder path where to write the excel output}
+\item{output_path}{Character 1L. Folder path where to write the excel output}
 
-\item{output_label}{Optional 1-length character vector to label output file.
+\item{output_label}{Character 1L. Optional 1-length character vector to label output file.
 If NULL, data_frame_name will also used as label}
 }
 \value{
-Variable list of the dataset and systematic informations for each variable
+See output xlsx file. Variable list of the dataset and systematic informations for each variable
 }
 \description{
 Inspect a data frame and write the output in an excel file

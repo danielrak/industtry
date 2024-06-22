@@ -7,7 +7,7 @@
 serial_import(file_paths)
 }
 \arguments{
-\item{file_paths}{A character vector of valid absolute file paths of
+\item{file_paths}{Character. Vector of valid absolute file paths of
 datasets to import}
 }
 \value{

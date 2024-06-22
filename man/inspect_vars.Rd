@@ -7,13 +7,13 @@
 inspect_vars(input_path, output_path, output_label, considered_extensions)
 }
 \arguments{
-\item{input_path}{Folder path of datasets to explore}
+\item{input_path}{Character 1L. Folder path of datasets to explore}
 
-\item{output_path}{Folder path where the exploration output will be stored}
+\item{output_path}{Character 1L. Folder path where the exploration output will be stored}
 
-\item{output_label}{1-length character vector describing concisely the collection to explore}
+\item{output_label}{Character 1L. Describe concisely the collection to explore}
 
-\item{considered_extensions}{Character vector of extensions of datasets retained for exploration
+\item{considered_extensions}{Character. Extensions of datasets retained for exploration
 in the input folder. Do not type the "." (dot) in it. E.g ("parquet" but not ".parquet")}
 }
 \value{

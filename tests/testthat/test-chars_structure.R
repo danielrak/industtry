@@ -38,3 +38,10 @@ test_that("Valid outputs are consistent", {
                  `789GHI` = "3D, 3A", 
                  ABC123 = "3A, 3D"))
 })
+
+test_that("Errors are consistent", {
+  
+  expect_error(
+    object = chars_structure(input_vector = c(1, 2, 3)),
+    regexp = "input_vector must be a character vector")
+})

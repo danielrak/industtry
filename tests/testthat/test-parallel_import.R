@@ -14,7 +14,6 @@ test_that("Errors are consistent", {
                              file.path(mydir, "novalid", "cars2.rds"))
   lfiles <- list.files(mydir, recursive = TRUE, full.names = TRUE)
   
-  
   expect_error(
     object = parallel_import(lfiles), 
     regexp = "File names must be unique")

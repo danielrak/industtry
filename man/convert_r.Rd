@@ -7,9 +7,9 @@
 convert_r(mask_filepath, output_path)
 }
 \arguments{
-\item{mask_filepath}{Entire file path of the excel mask}
+\item{mask_filepath}{Character 1L. Entire file path of the excel mask}
 
-\item{output_path}{Folder path where the converted datasets will be placed}
+\item{output_path}{Character 1L. Folder path where the converted datasets will be placed}
 }
 \description{
 Industrialized dataset formats conversion (RStudio only)

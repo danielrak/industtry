@@ -7,9 +7,9 @@
 current_script_location()
 }
 \value{
-A character vector indicating exact path of currently opened script
+Character 1L. A character vector indicating exact path of currently opened script
 }
 \description{
-For this function to work, one must use RStudio and have an opened source document.
+This function only works in RStudio and with an opened source document.
 There is exceptionnaly no example and exact test since these are running in background sessions in checks.
 }

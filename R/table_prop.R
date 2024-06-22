@@ -4,12 +4,11 @@
 #'
 #' Combines base::table() and base::prop.table() outputs in a single one
 #'
-#' @param ... Arguments passed to base::table()
-#' @param margin The same argument as in base::prop.table()
-#' @aliases base::table() base::prop.table()
-#' @param round Number of digits after decimal in base::prop.table() output
-#' @param noquote Logical. If TRUE, return an object of class noquote that provides better view of the output
-#' @return Frequencies with proportions in brackets, within a matrix
+#' @param ... Params. Arguments passed to base::table()
+#' @param margin Integer 1L. The same argument as in base::prop.table()
+#' @param round Integer 1L. Number of digits after decimal in base::prop.table() output
+#' @param noquote Logical 1L. If TRUE, return an object of class noquote that provides better view of the output
+#' @return Matrix or noquote matrix. Frequencies with proportions in brackets, within a matrix
 #' @examples
 #' df <- data.frame(
 #'                  "variable_1" = c("v1_1", "v1_1",

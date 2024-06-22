@@ -7,9 +7,9 @@
 inspect(data_frame, nrow = FALSE)
 }
 \arguments{
-\item{data_frame}{The data.frame to explore. Need to exist in the Global Environment.}
+\item{data_frame}{Data.frame. The data.frame to explore. Need to exist in the Global Environment.}
 
-\item{nrow}{Logical. If TRUE, the number of observations of the dataset is rendered in addition.}
+\item{nrow}{Logical 1L. If TRUE, the number of observations of the dataset is rendered in addition.}
 }
 \value{
 Variable list of the dataset and systematic informations for each variable.
