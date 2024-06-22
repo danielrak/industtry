@@ -7,6 +7,7 @@
 
 [![Codecov test
 coverage](https://codecov.io/gh/danielrak/industtry/branch/master/graph/badge.svg)](https://app.codecov.io/gh/danielrak/industtry?branch=master)
+[![R-CMD-check](https://github.com/danielrak/industtry/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/danielrak/industtry/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 This package proposes a set of functions that helps exploiting
