@@ -29,3 +29,30 @@ test_that("Valid outputs are consistent", {
   # Remove completed mask for tests integrity:
   file.remove(file.path(mydir, "mask_convert_r_completed.xlsx"))
 })
+
+test_that("Errors are consistent", {
+
+  library(magrittr)
+  
+  mydir <- system.file("permadir_examples_and_tests/convert_r", package = "industtry")
+  
+  expect_error(
+    convert_r("~/noexist/mask_convert_r.xlsx", 
+              output_path = mydir),
+    "mask_filepath doesn't exist. It must be a valid and full path including the xlsx file.")
+  
+  # Create an artificial compatible mask with R:
+  mask <- data.frame(
+    "folder_path" = rep(mydir, 2),
+    "file" = c("original_cars.rds", "original_mtcars.csv"),
+    "converted_file" = c("converted_cars.parquet", "converted_mtcars.parquet"),
+    "to_convert" = rep(1, 2)
+  )
+  writexl::write_xlsx(mask, file.path(mydir, "mask_convert_r.xlsx"))
+  
+  expect_error(
+    convert_r(file.path(mydir, "mask_convert_r.xlsx"), paste0(mydir, "noexist")), 
+    "output_path doesn't exist. Check path validity.")
+  
+  unlink(mydir)
+})

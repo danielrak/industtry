@@ -17,3 +17,10 @@ test_that("Valid output are consistent", {
   
   unlink(mydir, recursive = TRUE)
 })
+
+test_that("Errors are consistent", {
+  
+  expect_error(
+    mask_convert_r("~/noexist"), 
+    "output_path doesn't exist")
+})
