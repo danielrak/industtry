@@ -1,3 +1,3 @@
-# industtry (development version)
+# industtry 0.1.0
 
 * Initial CRAN submission.
