@@ -22,7 +22,7 @@ pkgload::load_all(export_all = FALSE)
   
 ```{r function-parallel_import}
 #' Import a collection of datasets into the Global Environment (parallelized)
-#' @param file_paths A character vector of valid absolute file paths of
+#' @param file_paths Character. Vector of valid absolute file paths of
 #' datasets to import. File names must be unique.
 #' @return After jobs completion, see the datasets imported in the Global Environment
 #' @export
@@ -106,7 +106,7 @@ test_that("Errors are consistent", {
   
 ```{r function-serial_import}
 #' Import a collection of datasets into the Global Environment (serialized)
-#' @param file_paths A character vector of valid absolute file paths of
+#' @param file_paths Character. Vector of valid absolute file paths of
 #' datasets to import
 #' @return After completion, see the datasets imported in the Global Environment
 #' @importFrom magrittr %>%

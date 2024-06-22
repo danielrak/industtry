@@ -23,10 +23,10 @@ pkgload::load_all(export_all = FALSE)
 ```{r function-ljoin_checks}
 #' Perform a classical dplyr::left_join() and add check information related to join
 #'
-#' @param ltable Left data frame in the join
-#' @param rtable Right data frame in the join
-#' @param ... Any other arguments of dplyr::left_join()
-#' @return Output of dplyr::left_join() with messages on number of observations
+#' @param ltable Data.frame. Left data frame in the join
+#' @param rtable Data.frame. Right data frame in the join
+#' @param ... Params. Any other arguments of dplyr::left_join()
+#' @return Data.frame. Output of dplyr::left_join() with messages on number of observations
 #' in left, right and joined data frames and list of common variables between
 #' ltable and rtable
 #' @importFrom magrittr  %>%
@@ -133,12 +133,11 @@ test_that("Valid outputs are consistent", {
 #'
 #' Combines base::table() and base::prop.table() outputs in a single one
 #'
-#' @param ... Arguments passed to base::table()
-#' @param margin The same argument as in base::prop.table()
-#' @aliases base::table() base::prop.table()
-#' @param round Number of digits after decimal in base::prop.table() output
-#' @param noquote Logical. If TRUE, return an object of class noquote that provides better view of the output
-#' @return Frequencies with proportions in brackets, within a matrix
+#' @param ... Params. Arguments passed to base::table()
+#' @param margin Integer 1L. The same argument as in base::prop.table()
+#' @param round Integer 1L. Number of digits after decimal in base::prop.table() output
+#' @param noquote Logical 1L. If TRUE, return an object of class noquote that provides better view of the output
+#' @return Matrix or noquote matrix. Frequencies with proportions in brackets, within a matrix
 #' @examples
 #' df <- data.frame(
 #'                  "variable_1" = c("v1_1", "v1_1",

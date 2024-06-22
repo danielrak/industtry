@@ -20,8 +20,8 @@ pkgload::load_all(export_all = FALSE)
 # replace_multiple
 
 #' Replace character vector values using a correspondence approach
-#' @param input_vector Character vector on which replacements take place
-#' @param replacements Named character vector: replacement correspondences
+#' @param input_vector Character. Character vector on which replacements take place
+#' @param replacements Character. Named character vector: replacement correspondences
 #' @param replace_all Logical. If TRUE, stringr::str_replace_all() is used
 #' instead of stringr::str_replace()
 #' @examples

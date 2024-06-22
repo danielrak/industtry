@@ -21,12 +21,12 @@ pkgload::load_all(export_all = FALSE)
 ```
   
 ```{r function-current_script_location}
-#'RStudio only - Get exact path of the currently opened script
+#' RStudio only - Get exact path of the currently opened script
 #' 
-#' For this function to work, one must use RStudio and have an opened source document. 
+#' This function only works in RStudio and with an opened source document.  
 #' There is exceptionnaly no example and exact test since these are running in background sessions in checks. 
 #' 
-#' @return A character vector indicating exact path of currently opened script
+#' @return Character 1L. A character vector indicating exact path of currently opened script
 #' @export
 #'
 current_script_location <- function () {
@@ -75,8 +75,9 @@ test_that("No exact test but RStudio should not be available in the tests", {
 ```{r function-folder_structure_replicate}
 #' Replicate the folder structure of a given directory
 #'
-#' @param dir Path of directory which structure will be replicated
-#' @param to Path of an output directory in which replicated structured will be placed
+#' @param dir Character 1L. Path of directory which structure will be replicated
+#' @param to Character 1L. Path of an output directory in which replicated structured will be placed
+#' @return See directory indicated in `to` arg. 
 #' @importFrom magrittr %>%
 #' @export
 #'
@@ -262,14 +263,14 @@ path_move <- function (path_vector, path_separator = "/", move) {
 ```{r function-path_move}
 #' Move through paths
 #'
-#' @param path_vector Character vector. Vector of paths with equal number of levels
-#' @param path_separator 1L character vector. Path separator 
+#' @param path_vector Character. Vector of paths with equal number of levels
+#' @param path_separator Character 1L. Path separator 
 #' (adapted to your OS for instance)
-#' @param move 1L integer. 
+#' @param move Integer 1L. 
 #' If move > 0, outputs path till specified level in move. 
 #' If move < 0, remove the last specified level(s) in move.
 #'
-#' @return Character vector. Transformed vector of paths. 
+#' @return Character. Transformed vector of paths. 
 #' @importFrom magrittr %>% 
 #' @importFrom glue glue
 #' @export

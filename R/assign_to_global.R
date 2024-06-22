@@ -2,9 +2,9 @@
 
 #' Assign to global environment
 #'
-#' @param name character. Name to assign the object 
+#' @param name Character. Name to assign the object 
 #' @param object Object to assign to the name
-#' @param pos numeric. 1L
+#' @param pos Integer 1L
 #'
 #' @return function. Assignment to global environment
 #' @export
