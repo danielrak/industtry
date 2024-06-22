@@ -17,13 +17,13 @@ fusen::fill_description(overwrite = TRUE,
   pkg = here::here(),
   fields = list(
     Title = "A toolkit for structured datasets exploitation",
-    Description = "A toolkit for structured datasets exploitation. A set of functions that helps 
-    exploiting structured datasets (data frames) with an industrialization approach. 
+    Description = "This package proposes a set of functions that helps 
+    exploiting structured datasets (mostly data frames) with an industrialization approach. 
     Industrialization here means applying as efficiently as possible the same
     procedure to any number of inputs as long as these inputs have an identified common structure.",
     `Authors@R` = c(
       person("Daniel", "Rakotomalala", 
-             email = "john@email.me", 
+             email = "rakdanielh@gmail.com", 
              role = c("aut", "cre"))
     )
   )

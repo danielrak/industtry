@@ -20,11 +20,11 @@ pkgload::load_all(export_all = FALSE)
 # Characters structure
 
 #' Get :alpha: / :digit: patterns from each symbol of character vector
-#' @param input_vector Character vector to process
-#' @param unique logical. If TRUE, the result is reduced to unique values.
-#' @param named_output logical. If TRUE, output vector is named after corresponding input values. 
-#' @return Character vector describing structure of each elements of input_vector,
-#' see example
+#' @param input_vector Character. Vector to process
+#' @param unique Logical 1L. If TRUE, the result is reduced to unique values.
+#' @param named_output Logical 1L. If TRUE, output vector is named after corresponding input values. 
+#' @return Character. Vector describing structure of each elements of input_vector,
+#' see example. 
 #' @examples
 #' @importFrom magrittr %>%
 #' @export
