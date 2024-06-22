@@ -2,23 +2,21 @@
 % Please edit documentation in R/table_prop.R
 \name{table_prop}
 \alias{table_prop}
-\alias{base::table()}
-\alias{base::prop.table()}
 \title{Frequencies and proportions in one output}
 \usage{
 table_prop(..., margin = NULL, round = 3, noquote = FALSE)
 }
 \arguments{
-\item{...}{Arguments passed to base::table()}
+\item{...}{Params. Arguments passed to base::table()}
 
-\item{margin}{The same argument as in base::prop.table()}
+\item{margin}{Integer 1L. The same argument as in base::prop.table()}
 
-\item{round}{Number of digits after decimal in base::prop.table() output}
+\item{round}{Integer 1L. Number of digits after decimal in base::prop.table() output}
 
-\item{noquote}{Logical. If TRUE, return an object of class noquote that provides better view of the output}
+\item{noquote}{Logical 1L. If TRUE, return an object of class noquote that provides better view of the output}
 }
 \value{
-Frequencies with proportions in brackets, within a matrix
+Matrix or noquote matrix. Frequencies with proportions in brackets, within a matrix
 }
 \description{
 Combines base::table() and base::prop.table() outputs in a single one

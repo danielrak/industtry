@@ -7,15 +7,15 @@
 chars_structure(input_vector, unique = TRUE, named_output = TRUE)
 }
 \arguments{
-\item{input_vector}{Character vector to process}
+\item{input_vector}{Character. Vector to process}
 
-\item{unique}{logical. If TRUE, the result is reduced to unique values.}
+\item{unique}{Logical 1L. If TRUE, the result is reduced to unique values.}
 
-\item{named_output}{logical. If TRUE, output vector is named after corresponding input values.}
+\item{named_output}{Logical 1L. If TRUE, output vector is named after corresponding input values.}
 }
 \value{
-Character vector describing structure of each elements of input_vector,
-see example
+Character. Vector describing structure of each elements of input_vector,
+see example.
 }
 \description{
 Get :alpha: / :digit: patterns from each symbol of character vector

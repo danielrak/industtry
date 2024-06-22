@@ -2,14 +2,14 @@
 
 #' Move through paths
 #'
-#' @param path_vector Character vector. Vector of paths with equal number of levels
-#' @param path_separator 1L character vector. Path separator 
+#' @param path_vector Character. Vector of paths with equal number of levels
+#' @param path_separator Character 1L. Path separator 
 #' (adapted to your OS for instance)
-#' @param move 1L integer. 
+#' @param move Integer 1L. 
 #' If move > 0, outputs path till specified level in move. 
 #' If move < 0, remove the last specified level(s) in move.
 #'
-#' @return Character vector. Transformed vector of paths. 
+#' @return Character. Transformed vector of paths. 
 #' @importFrom magrittr %>% 
 #' @importFrom glue glue
 #' @export

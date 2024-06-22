@@ -7,17 +7,17 @@
 path_move(path_vector, path_separator = "/", move)
 }
 \arguments{
-\item{path_vector}{Character vector. Vector of paths with equal number of levels}
+\item{path_vector}{Character. Vector of paths with equal number of levels}
 
-\item{path_separator}{1L character vector. Path separator
+\item{path_separator}{Character 1L. Path separator
 (adapted to your OS for instance)}
 
-\item{move}{1L integer.
+\item{move}{Integer 1L.
 If move > 0, outputs path till specified level in move.
 If move < 0, remove the last specified level(s) in move.}
 }
 \value{
-Character vector. Transformed vector of paths.
+Character. Transformed vector of paths.
 }
 \description{
 Move through paths

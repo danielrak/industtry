@@ -7,14 +7,14 @@
 ljoin_checks(ltable, rtable, ...)
 }
 \arguments{
-\item{ltable}{Left data frame in the join}
+\item{ltable}{Data.frame. Left data frame in the join}
 
-\item{rtable}{Right data frame in the join}
+\item{rtable}{Data.frame. Right data frame in the join}
 
-\item{...}{Any other arguments of dplyr::left_join()}
+\item{...}{Params. Any other arguments of dplyr::left_join()}
 }
 \value{
-Output of dplyr::left_join() with messages on number of observations
+Data.frame. Output of dplyr::left_join() with messages on number of observations
 in left, right and joined data frames and list of common variables between
 ltable and rtable
 }
