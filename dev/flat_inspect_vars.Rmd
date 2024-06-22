@@ -23,8 +23,8 @@ pkgload::load_all(export_all = FALSE)
 ```{r function-inspect}
 #' Inspect a data frame
 #'
-#' @param data_frame The data.frame to explore. Need to exist in the Global Environment.
-#' @param nrow Logical. If TRUE, the number of observations of the dataset is rendered in addition.
+#' @param data_frame Data.frame. The data.frame to explore. Need to exist in the Global Environment.
+#' @param nrow Logical 1L. If TRUE, the number of observations of the dataset is rendered in addition.
 #' @return Variable list of the dataset and systematic informations for each variable.
 #' @examples
 #' @importFrom magrittr %>%
@@ -135,7 +135,7 @@ test_that("Errors are consistent", {
 ```{r function-vars_detect}
 #' Variable detection patterns
 #'
-#' @param data_frames The datasets to explore. Need to exist in the Global Environment
+#' @param data_frames Character. The datasets to explore. Need to exist in the Global Environment
 #' @return Variable list and indicators of presences/absences across all inputted datasets.
 #' @examples
 #' @importFrom magrittr %>%
@@ -366,7 +366,7 @@ test_that("Valid outputs are consistent", {
 ```{r function-vars_compclasses}
 #' Collection-level variables types comparison
 #'
-#'@param data_frames The datasets to explore. Need to exist in the Global Environment
+#'@param data_frames Character. The datasets to explore. Need to exist in the Global Environment
 #'@return Variable list and their respective types across all inputted datasets.
 #'@examples
 #' @importFrom magrittr %>%
@@ -559,10 +559,10 @@ test_that("Valid outputs are consistent", {
 ```{r function-inspect_vars}
 #' Inspect a collection of datasets
 #'
-#' @param input_path Folder path of datasets to explore
-#' @param output_path Folder path where the exploration output will be stored
-#' @param output_label 1-length character vector describing concisely the collection to explore
-#' @param considered_extensions Character vector of extensions of datasets retained for exploration
+#' @param input_path Character 1L. Folder path of datasets to explore
+#' @param output_path Character 1L. Folder path where the exploration output will be stored
+#' @param output_label Character 1L. Describe concisely the collection to explore
+#' @param considered_extensions Character. Extensions of datasets retained for exploration
 #' in the input folder. Do not type the "." (dot) in it. E.g ("parquet" but not ".parquet")
 #' @return An excel file written on the computer containing exploration information
 #' @examples

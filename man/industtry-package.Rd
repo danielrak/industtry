@@ -6,10 +6,10 @@
 \alias{industtry-package}
 \title{industtry: A Toolkit for Structured Datasets Exploitation}
 \description{
-A toolkit for structured datasets exploitation. A set of functions that helps exploiting structured datasets (data frames) with an industrialization approach. Industrialization here means applying as efficiently as possible the same procedure to any number of inputs as long as these inputs have an identified common structure.
+This package proposes a set of functions that helps exploiting structured datasets (mostly data frames) with an industrialization approach. Industrialization here means applying as efficiently as possible the same procedure to any number of inputs as long as these inputs have an identified common structure.
 }
 \author{
-\strong{Maintainer}: Daniel Rakotomalala \email{john@email.me}
+\strong{Maintainer}: Daniel Rakotomalala \email{rakdanielh@gmail.com}
 
 }
 \keyword{internal}

@@ -10,11 +10,11 @@ https://stackoverflow.com/questions/28180989/r-cmd-check-found-the-following-ass
 assign_to_global(name, object, pos)
 }
 \arguments{
-\item{name}{character. Name to assign the object}
+\item{name}{Character. Name to assign the object}
 
 \item{object}{Object to assign to the name}
 
-\item{pos}{numeric. 1L}
+\item{pos}{Integer 1L}
 }
 \value{
 function. Assignment to global environment
