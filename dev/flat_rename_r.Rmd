@@ -1,0 +1,125 @@
+---
+title: "flat_rename_r.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+# mask_rename_r
+    
+```{r development-mask_rename_r}
+# You can prepare the code of the mask_rename_r() function here
+```
+  
+```{r function-mask_rename_r}
+#' Create an excel mask compatible with the rename_r() function. This must be used on a collection of files, i.e stored within the same folder. 
+#' 
+#' @param input_path Character 1L. Folder containing the set of files to rename
+#' @param output_filename Character 1L. File name of the excel mask.
+#'
+#' @return See the created excel mask in the indicated input_path
+#' 
+#' @importFrom magrittr %>% 
+#' @export
+mask_rename_r <- function(input_path, 
+                          output_filename = "mask_rename_r.xlsx"){
+    
+  if (! dir.exists(input_path)) {
+    stop("input_path doesn't exist")
+  }
+  
+  if (length(list.files(input_path)) < 2) {
+    stop("input_path must contains at least two files. Renaming one file with this function is not worth it.")
+  }
+  
+  if (output_filename %in% list.files(input_path)) {
+    
+    stop(glue::glue("There is apparently already a mask in your folder: {output_filename}. Maybe you should complete it and run the rename_r() function."))
+  }
+  
+  mask <- data.frame(file = list.files(input_path), 
+                     renamed_file = NA, 
+                     to_rename = NA)
+  
+  writexl::write_xlsx(
+    mask, 
+    path = file.path(input_path, output_filename))
+}
+```
+  
+```{r example-mask_rename_r}
+library(magrittr)
+data(cars)
+data(mtcars)
+
+mydir <- tempfile()
+dir.create(mydir)
+
+saveRDS(cars, file.path(mydir, "cars.rds"))
+saveRDS(mtcars, file.path(mydir, "mtcars.rds"))
+
+list.files(mydir)
+
+mask_rename_r(input_path = mydir)
+
+list.files(mydir)
+
+readxl::read_xlsx(file.path(mydir, "mask_rename_r.xlsx"))
+
+unlink(mydir, recursive = TRUE)
+```
+  
+```{r tests-mask_rename_r}
+test_that("Valid outputs are consistent", {
+  
+  library(magrittr)
+  data(cars)
+  data(mtcars)
+  
+  mydir <- tempfile()
+  dir.create(mydir)
+  
+  saveRDS(cars, file.path(mydir, "cars.rds"))
+  saveRDS(mtcars, file.path(mydir, "mtcars.rds"))
+  
+  expect_equal(list.files(mydir), 
+               c("cars.rds", "mtcars.rds"))
+  
+  mask_rename_r(input_path = mydir)
+  
+  expect_equal(list.files(mydir), 
+               c("cars.rds", "mask_rename_r.xlsx", "mtcars.rds"))
+  
+  expect_equal(
+    readxl::read_xlsx(file.path(mydir, "mask_rename_r.xlsx")),
+    structure(
+      list(
+        file = c("cars.rds", "mtcars.rds"),
+        renamed_file = c(NA, NA),
+        to_rename = c(NA, NA)
+      ),
+      class = c("tbl_df", "tbl", "data.frame"),
+      row.names = c(NA, -2L)
+    ))
+  
+  unlink(mydir, recursive = TRUE)
+})
+```
+
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_rename_r.Rmd", 
+               vignette_name = NA)
+```
+
