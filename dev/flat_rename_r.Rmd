@@ -21,6 +21,8 @@ pkgload::load_all(export_all = FALSE)
 ```
   
 ```{r function-mask_rename_r}
+#' Create an excel mask compatible with the rename_r() function. 
+#' 
 #' Create an excel mask compatible with the rename_r() function. This must be used on a collection of files, i.e stored within the same folder. 
 #' 
 #' @param input_path Character 1L. Folder containing the set of files to rename
