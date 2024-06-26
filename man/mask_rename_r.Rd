@@ -2,7 +2,7 @@
 % Please edit documentation in R/mask_rename_r.R
 \name{mask_rename_r}
 \alias{mask_rename_r}
-\title{Create an excel mask compatible with the rename_r() function. This must be used on a collection of files, i.e stored within the same folder.}
+\title{Create an excel mask compatible with the rename_r() function.}
 \usage{
 mask_rename_r(input_path, output_filename = "mask_rename_r.xlsx")
 }

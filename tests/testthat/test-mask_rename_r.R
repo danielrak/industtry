@@ -34,3 +34,32 @@ test_that("Valid outputs are consistent", {
   
   unlink(mydir, recursive = TRUE)
 })
+
+test_that("Errors are consistent", {
+  
+  library(magrittr)
+  data(cars)
+  data(mtcars)
+  
+  mydir <- tempfile()
+  dir.create(mydir)
+  
+  saveRDS(cars, file.path(mydir, "cars.rds"))
+  # no second save to test error
+  
+  expect_error(
+    mask_rename_r(input_path = mydir %>% paste0("noexist")),
+    regexp = "input_path doesn't exist")
+  
+  expect_error(
+    mask_rename_r(input_path = mydir), 
+    regexp = "input_path must contains at least two files. Renaming a single file with this function is not worth it.")
+  
+  file.create(file.path(mydir, "mask_rename_r.xlsx"))
+  
+  expect_error(
+    mask_rename_r(input_path = mydir),
+    regexp = "There is apparently already a mask in your folder: ")
+  
+  file.remove(file.path(mydir, "mask_rename_r.xlsx"))
+})
