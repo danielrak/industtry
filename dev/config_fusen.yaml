@@ -147,8 +147,12 @@ flat_paths_and_files.Rmd:
 flat_rename_r.Rmd:
   path: dev/flat_rename_r.Rmd
   state: active
-  R: R/mask_rename_r.R
-  tests: tests/testthat/test-mask_rename_r.R
+  R:
+  - R/mask_rename_r.R
+  - R/rename_r.R
+  tests:
+  - tests/testthat/test-mask_rename_r.R
+  - tests/testthat/test-rename_r.R
   vignettes: []
   inflate:
     flat_file: dev/flat_rename_r.Rmd
