@@ -64,10 +64,16 @@
     <loc>/reference/mask_convert_r.html</loc>
   </url>
   <url>
+    <loc>/reference/mask_rename_r.html</loc>
+  </url>
+  <url>
     <loc>/reference/parallel_import.html</loc>
   </url>
   <url>
     <loc>/reference/path_move.html</loc>
+  </url>
+  <url>
+    <loc>/reference/rename_r.html</loc>
   </url>
   <url>
     <loc>/reference/replace_multiple.html</loc>
