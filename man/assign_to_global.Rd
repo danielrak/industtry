@@ -7,7 +7,7 @@
 https://stackoverflow.com/questions/28180989/r-cmd-check-found-the-following-assignments-to-the-global-environment
 }
 \usage{
-assign_to_global(name, object, pos)
+assign_to_global(name, object, pos = 1L)
 }
 \arguments{
 \item{name}{Character. Name to assign the object}

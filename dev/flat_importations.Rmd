@@ -51,10 +51,10 @@ parallel_import <- function (file_paths) {
   purrr::map(file_paths,
              \(x) {job::job({
 
-               assign_to_global(
+               assign(
                  basename(x),
                  rio::import(x),
-                 pos = - 1)
+                 pos = - 1L)
 
                invisible()
              }, title = paste0("Importation of ",
