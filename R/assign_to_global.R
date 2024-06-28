@@ -10,7 +10,7 @@
 #' @export
 #' @source https://stackoverflow.com/questions/28180989/r-cmd-check-found-the-following-assignments-to-the-global-environment
 #'
-assign_to_global <- function(name, object, pos) {
+assign_to_global <- function(name, object, pos = 1L) {
   (function (name, object, pos)
-    assign(name, object, envir = as.environment(pos)))(name, object, pos = 1L)
+    assign(name, object, envir = as.environment(pos)))(name, object, pos = pos)
 }
