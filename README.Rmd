@@ -107,4 +107,4 @@ parallel_import(lfiles)
     
 This is what you should observe: 
 
-!["Parallel import jobs"]("./inst/images/parallel_import_jobs.png")
+![Parallel import jobs](./inst/images/parallel_import_jobs.png)

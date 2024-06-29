@@ -149,7 +149,7 @@ parallel_import(lfiles)
 This is what you should observe:
 
 <figure>
-<img src="%22./inst/images/parallel_import_jobs.png%22"
-alt="“Parallel import jobs”" />
-<figcaption aria-hidden="true">“Parallel import jobs”</figcaption>
+<img src="./inst/images/parallel_import_jobs.png"
+alt="Parallel import jobs" />
+<figcaption aria-hidden="true">Parallel import jobs</figcaption>
 </figure>
