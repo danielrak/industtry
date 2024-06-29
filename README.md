@@ -1,6 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+``` r
+library(magrittr)
+```
+
 # The industtry package - a toolkit for structured datasets exploitation
 
 <!-- badges: start -->
@@ -14,13 +18,25 @@ This package proposes a set of functions that helps exploiting
 structured datasets (mostly data frames) with an industrialization
 approach. Industrialization here means applying as efficiently as
 possible the same procedure to any number of inputs as long as these
-inputs have an identified common structure.
+inputs have an identified common structure. This idea would have been
+very difficult to implement without the `purrr::` and `rio::` packages:
+
+``` r
+purrr:::map(c("purrr", "rio"), citation) %>% print(style = "text")
+#> [[1]]
+#> Wickham H, Henry L (2023). _purrr: Functional Programming Tools_. R
+#> package version 1.0.2, <https://CRAN.R-project.org/package=purrr>.
+#> 
+#> [[2]]
+#> Chan C, Leeper T, Becker J, Schoch D (2023). _rio: A Swiss-army knife
+#> for data file I/O_. <https://cran.r-project.org/package=rio>.
+```
 
 **It’s best to use it with RStudio.**
 
 Its contribution is probably in the idea of applying transformations to
 the set level (of any number of data frames, for e.g), given that
-numerous existing package hepls the user exploit one dataset at a time.
+numerous existing package help the user exploit one dataset at a time.
 The functions of this package that are the most in line with this
 philosophy are: `convert_r()`, `inspect_vars()`, `serial_import()` and
 `parallel_import()`.
@@ -37,3 +53,107 @@ You can install the development version of industtry from
 # install.packages("devtools")
 devtools::install_github("danielrak/industtry")
 ```
+
+## Example - importations
+
+``` r
+library(industtry)
+```
+
+Most of (but not all) use cases of data exploitation begins with
+datasets importation. When you have to work in some way with several
+datasets simultaneously, it may be useful to be able to import these
+with a simple code. That is the purpose of the two functions
+`serial_import()` and `parallel_import()`.
+
+Suppose you begin with an empty working session:
+
+``` r
+ls()
+#> character(0)
+```
+
+Say you want to import two data frames: cars.rds and mtcars.rds stored
+somewhere accessible to you:
+
+``` r
+yourdir <- system.file("permadir_examples_and_tests/importations", package = "industtry")
+
+list.files(yourdir) %>% purrr::keep(stringr::str_detect(., "\\.rds$"))
+#> [1] "cars.rds"   "mtcars.rds"
+```
+
+Note that as long as you have the resources (storage and memory), the
+procedure is the same for 2, 20, 200, … data frames.
+
+Prepare a vector of paths of data frames you want to import:
+
+``` r
+lfiles <- list.files(yourdir, full.names = TRUE) %>% 
+  purrr::keep(stringr::str_detect(., "\\.rds"))
+```
+
+One by one importation:
+
+``` r
+serial_import(lfiles)
+#> [[1]]
+#> NULL
+#> 
+#> [[2]]
+#> NULL
+```
+
+``` r
+
+ls()
+#> [1] "cars.rds"   "lfiles"     "mtcars.rds" "yourdir"
+```
+
+You should have correctly imported the data:
+
+``` r
+list("cars" = head(cars.rds), 
+     "mtcars" = head(mtcars.rds))
+#> $cars
+#>   speed dist
+#> 1     4    2
+#> 2     4   10
+#> 3     7    4
+#> 4     7   22
+#> 5     8   16
+#> 6     9   10
+#> 
+#> $mtcars
+#>                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
+#> Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+#> Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+#> Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+#> Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+#> Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+#> Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
+```
+
+If you want to be able to still use the Console while importing or to
+avoid interrupting all of the process after one failure:
+
+``` r
+# Remove from working session to illustrate parallel_import(): 
+rm(cars.rds, mtcars.rds)
+```
+
+``` r
+parallel_import(lfiles)
+```
+
+This is what you should observe:
+
+<figure>
+<img src="./inst/images/parallel_import_jobs.png"
+alt="Parallel import jobs" />
+<figcaption aria-hidden="true">Parallel import jobs</figcaption>
+</figure>
+
+NB: `parallel_import()` may be slower than `serial_impport()` as the
+former copies the imported datasets from parallel sessions to the
+working session and the later does not have this additional step.

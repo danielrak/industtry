@@ -1,8 +1,8 @@
-.Rproj
-.Rproj.user
-.Rhistory
-.RData
-.DS_Store
-.httr-oauth
+*.Rproj.user
+*.Rhistory
+*.RData
+*.DS_Store
+*.httr-oauth
 inst/doc
 docs
+.Rproj.user
