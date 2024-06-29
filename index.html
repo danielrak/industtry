@@ -53,24 +53,101 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9"><div class="section level1">
+  <main id="main" class="col-md-9"><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level1">
 <div class="page-header"><h1 id="the-industtry-package---a-toolkit-for-structured-datasets-exploitation">The industtry package - a toolkit for structured datasets exploitation<a class="anchor" aria-label="anchor" href="#the-industtry-package---a-toolkit-for-structured-datasets-exploitation"></a>
 </h1></div>
 <!-- badges: start -->
 
-<p>This package proposes a set of functions that helps exploiting structured datasets (mostly data frames) with an industrialization approach. Industrialization here means applying as efficiently as possible the same procedure to any number of inputs as long as these inputs have an identified common structure.</p>
+<p>This package proposes a set of functions that helps exploiting structured datasets (mostly data frames) with an industrialization approach. Industrialization here means applying as efficiently as possible the same procedure to any number of inputs as long as these inputs have an identified common structure. This idea would have been very difficult to implement without the <code>purrr::</code> and <code>rio::</code> packages:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">purrr</span><span class="fu">:::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"purrr"</span>, <span class="st">"rio"</span><span class="op">)</span>, <span class="va">citation</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span>style <span class="op">=</span> <span class="st">"text"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; Wickham H, Henry L (2023). _purrr: Functional Programming Tools_. R</span></span>
+<span><span class="co">#&gt; package version 1.0.2, &lt;https://CRAN.R-project.org/package=purrr&gt;.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt; Chan C, Leeper T, Becker J, Schoch D (2023). _rio: A Swiss-army knife</span></span>
+<span><span class="co">#&gt; for data file I/O_. &lt;https://cran.r-project.org/package=rio&gt;.</span></span></code></pre></div>
 <p><strong>It’s best to use it with RStudio.</strong></p>
-<p>Its contribution is probably in the idea of applying transformations to the set level (of any number of data frames, for e.g), given that numerous existing package hepls the user exploit one dataset at a time. The functions of this package that are the most in line with this philosophy are: <code><a href="reference/convert_r.html">convert_r()</a></code>, <code><a href="reference/inspect_vars.html">inspect_vars()</a></code>, <code><a href="reference/serial_import.html">serial_import()</a></code> and <code><a href="reference/parallel_import.html">parallel_import()</a></code>.</p>
+<p>Its contribution is probably in the idea of applying transformations to the set level (of any number of data frames, for e.g), given that numerous existing package help the user exploit one dataset at a time. The functions of this package that are the most in line with this philosophy are: <code><a href="reference/convert_r.html">convert_r()</a></code>, <code><a href="reference/inspect_vars.html">inspect_vars()</a></code>, <code><a href="reference/serial_import.html">serial_import()</a></code> and <code><a href="reference/parallel_import.html">parallel_import()</a></code>.</p>
 <p>This package also provides a set of micro-tools for dealing with usual data transformation tasks, particularly with R/RStudio.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the development version of industtry from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"danielrak/industtry"</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level2">
+<h2 id="example---importations">Example - importations<a class="anchor" aria-label="anchor" href="#example---importations"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">industtry</span><span class="op">)</span></span></code></pre></div>
+<p>Most of (but not all) use cases of data exploitation begins with datasets importation. When you have to work in some way with several datasets simultaneously, it may be useful to be able to import these with a simple code. That is the purpose of the two functions <code><a href="reference/serial_import.html">serial_import()</a></code> and <code><a href="reference/parallel_import.html">parallel_import()</a></code>.</p>
+<p>Suppose you begin with an empty working session:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; character(0)</span></span></code></pre></div>
+<p>Say you want to import two data frames: cars.rds and mtcars.rds stored somewhere accessible to you:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">yourdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"permadir_examples_and_tests/importations"</span>, package <span class="op">=</span> <span class="st">"industtry"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">yourdir</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/keep.html" class="external-link">keep</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">.</span>, <span class="st">"\\.rds$"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "cars.rds"   "mtcars.rds"</span></span></code></pre></div>
+<p>Note that as long as you have the resources (storage and memory), the procedure is the same for 2, 20, 200, … data frames.</p>
+<p>Prepare a vector of paths of data frames you want to import:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lfiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">yourdir</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/keep.html" class="external-link">keep</a></span><span class="op">(</span><span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html" class="external-link">str_detect</a></span><span class="op">(</span><span class="va">.</span>, <span class="st">"\\.rds"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>One by one importation:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/serial_import.html">serial_import</a></span><span class="op">(</span><span class="va">lfiles</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "cars.rds"   "lfiles"     "mtcars.rds" "yourdir"</span></span></code></pre></div>
+<p>You should have correctly imported the data:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"cars"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cars.rds</span><span class="op">)</span>, </span>
+<span>     <span class="st">"mtcars"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">mtcars.rds</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $cars</span></span>
+<span><span class="co">#&gt;   speed dist</span></span>
+<span><span class="co">#&gt; 1     4    2</span></span>
+<span><span class="co">#&gt; 2     4   10</span></span>
+<span><span class="co">#&gt; 3     7    4</span></span>
+<span><span class="co">#&gt; 4     7   22</span></span>
+<span><span class="co">#&gt; 5     8   16</span></span>
+<span><span class="co">#&gt; 6     9   10</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $mtcars</span></span>
+<span><span class="co">#&gt;                    mpg cyl disp  hp drat    wt  qsec vs am gear carb</span></span>
+<span><span class="co">#&gt; Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4</span></span>
+<span><span class="co">#&gt; Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4</span></span>
+<span><span class="co">#&gt; Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1</span></span>
+<span><span class="co">#&gt; Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1</span></span>
+<span><span class="co">#&gt; Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2</span></span>
+<span><span class="co">#&gt; Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1</span></span></code></pre></div>
+<p>If you want to be able to still use the Console while importing or to avoid interrupting all of the process after one failure:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Remove from working session to illustrate parallel_import(): </span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">cars.rds</span>, <span class="va">mtcars.rds</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/parallel_import.html">parallel_import</a></span><span class="op">(</span><span class="va">lfiles</span><span class="op">)</span></span></code></pre></div>
+<p>This is what you should observe:</p>
+<figure><img src="./inst/images/parallel_import_jobs.png" alt="Parallel import jobs"><figcaption aria-hidden="true">
+Parallel import jobs
+</figcaption></figure><p>NB: <code><a href="reference/parallel_import.html">parallel_import()</a></code> may be slower than <code>serial_impport()</code> as the former copies the imported datasets from parallel sessions to the working session and the later does not have this additional step.</p>
 </div>
+</div>
+
   </main><aside class="col-md-3"><div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
