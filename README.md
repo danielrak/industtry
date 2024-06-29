@@ -60,39 +60,42 @@ devtools::install_github("danielrak/industtry")
 library(industtry)
 ```
 
-Most (but not all) use cases of data exploitation begins with datasets
-importation. When you have to work in some way with several datasets
-simultaneously, it may be useful to be able to import these with a
-simple code. That is the purpose of the two functions: `serial_import()`
-and `parallel_import()`.
+Most of (but not all) use cases of data exploitation begins with
+datasets importation. When you have to work in some way with several
+datasets simultaneously, it may be useful to be able to import these
+with a simple code. That is the purpose of the two functions
+`serial_import()` and `parallel_import()`.
+
+Suppose you begin with an empty working session:
 
 ``` r
-# You begin with an empty working session: 
 ls()
 #> character(0)
 ```
 
+Say you want to import two data frames: cars.rds and mtcars.rds stored
+somewhere accessible to you:
+
 ``` r
-# Say you want to import two data frames : cars.rds and mtcars.rds stored somewhere accessible to you: 
 yourdir <- system.file("permadir_examples_and_tests/importations", package = "industtry")
 
 list.files(yourdir) %>% purrr::keep(stringr::str_detect(., "\\.rds$"))
 #> [1] "cars.rds"   "mtcars.rds"
 ```
 
-``` r
+Note that as long as you have the resources (storage and memory), the
+procedure is the same for 2, 20, 200, … data frames.
 
-# Note that as long as you have the resources (storage and memory), the procedure is the same for 2, 20, 200, ... data frames. 
-```
+Prepare a vector of paths of data frames you want to import:
 
 ``` r
-# Prepare a list of paths of data frames you want to import: 
 lfiles <- list.files(yourdir, full.names = TRUE) %>% 
   purrr::keep(stringr::str_detect(., "\\.rds"))
 ```
 
+One by one importation:
+
 ``` r
-# One by one importation:
 serial_import(lfiles)
 #> [[1]]
 #> NULL
@@ -107,10 +110,12 @@ ls()
 #> [1] "cars.rds"   "lfiles"     "mtcars.rds" "yourdir"
 ```
 
+You should have correctly imported the data:
+
 ``` r
-# You should have correctly imported the data: 
-list(head(cars.rds), head(mtcars.rds))
-#> [[1]]
+list("cars" = head(cars.rds), 
+     "mtcars" = head(mtcars.rds))
+#> $cars
 #>   speed dist
 #> 1     4    2
 #> 2     4   10
@@ -119,7 +124,7 @@ list(head(cars.rds), head(mtcars.rds))
 #> 5     8   16
 #> 6     9   10
 #> 
-#> [[2]]
+#> $mtcars
 #>                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
 #> Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
 #> Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
@@ -129,21 +134,22 @@ list(head(cars.rds), head(mtcars.rds))
 #> Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
 ```
 
+If you want to be able to still use the Console while importing or to
+avoid interrupting all of the process after one failure:
+
 ``` r
 # Remove from working session to illustrate parallel_import(): 
 rm(cars.rds, mtcars.rds)
 ```
 
 ``` r
-# If you want to be able to still use the Console while importing or to avoid interrupting all of the process after one failure: 
 parallel_import(lfiles)
 ```
 
-``` r
-# This is what you should observe: 
-imagedir <- system.file("images", package = "industtry")
+This is what you should observe:
 
-knitr::include_graphics(file.path(imagedir, "parallel_import_jobs.png"))
-```
-
-<img src="C:/Users/rheri/AppData/Local/R/win-library/4.3/industtry/images/parallel_import_jobs.png" width="100%" />
+<figure>
+<img src="%22./inst/images/parallel_import_jobs.png%22"
+alt="“Parallel import jobs”" />
+<figcaption aria-hidden="true">“Parallel import jobs”</figcaption>
+</figure>
