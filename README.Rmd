@@ -48,7 +48,7 @@ You can install the development version of industtry from [GitHub](https://githu
 devtools::install_github("danielrak/industtry")
 ```
 
-## Example 1 - importations
+## Example - importations
 
 ```{r}
 library(industtry)
@@ -108,3 +108,6 @@ parallel_import(lfiles)
 This is what you should observe: 
 
 ![Parallel import jobs](./inst/images/parallel_import_jobs.png)
+
+NB: `parallel_import()` may be slower than `serial_impport()` as the former copies the imported datasets from parallel sessions to the working session and the later does not have this additional step. 
+

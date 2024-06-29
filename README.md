@@ -54,7 +54,7 @@ You can install the development version of industtry from
 devtools::install_github("danielrak/industtry")
 ```
 
-## Example 1 - importations
+## Example - importations
 
 ``` r
 library(industtry)
@@ -153,3 +153,7 @@ This is what you should observe:
 alt="Parallel import jobs" />
 <figcaption aria-hidden="true">Parallel import jobs</figcaption>
 </figure>
+
+NB: `parallel_import()` may be slower than `serial_impport()` as the
+former copies the imported datasets from parallel sessions to the
+working session and the later does not have this additional step.
