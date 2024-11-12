@@ -1,0 +1,166 @@
+---
+title: "flat_detect_chars_structure_datasets.Rmd empty"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r development, include=FALSE}
+library(testthat)
+```
+
+```{r development-load}
+# Load already included functions if relevant
+pkgload::load_all(export_all = FALSE)
+```
+
+# detect_chars_structure_datasets
+
+```{r function-detect_chars_structure_datasets}
+#' Detect character structure from datasets
+#'
+#' @param datasets_folderpath Character 1L. Folder path of datasets to process. These datasets must be at the root of the path
+#' @param considered_extensions Character. Datasets file extensions to consider. Extensions must be one supported by the rio:: package
+#' @param patterns Character. Patterns to detect across the datasets variables. Regex is supported
+#' @param output_filepath Character 1L. Output folder path. 
+#' @param get_output_in_session Logical 1L. If TRUE, the function return a list, such that each element element corresponds to pattern detection details for each considered dataset
+#' @export
+#'
+detect_chars_structure_datasets <- function (
+  datasets_folderpath, 
+  considered_extensions, 
+  patterns, 
+  output_filepath = file.path(
+    datasets_folderpath, 
+    paste0("detect_chars_structure_", basename(datasets_folderpath), ".rds")), 
+  get_output_in_session = TRUE) {
+  
+  if (isFALSE(dir.exists(datasets_folderpath))) {
+    stop("datasets_folderpath must be a valid folder path")
+  }
+  
+  if (isFALSE(dir.exists(dirname(output_filepath)))) {
+    stop("Folder path of output_filepath must be a valid one")
+  }
+  
+  ext <- paste0(paste0("\\.", considered_extensions, "$"), collapse = "|")
+  lfiles <- list.files(datasets_folderpath, full.names = TRUE)
+  lfiles <- lfiles[grepl(ext, lfiles)]
+  
+  data_list <- lapply(lfiles, \(x) {
+    
+    dataname <- basename(x)
+    data <- rio::import(x, trust = TRUE)
+    data
+  })
+  
+  det_structure_list <- lapply(
+    data_list, \(each_data) 
+    lapply(each_data, detect_chars_structure, 
+           patterns = patterns, verbose = TRUE))
+  
+  det_structure_list2 <- lapply(det_structure_list, \(each_data) {
+    
+    tobind <- lapply(names(each_data), \(each_variable) {
+      
+      c("var" = each_variable, 
+        "any_defined_structure" = each_data[[each_variable]][[1]], 
+        "examples" = paste0(each_data[[each_variable]][[2]][
+          1:min(10, length(each_data[[each_variable]][[2]]))], 
+          collapse = " / "))
+    })
+    
+    df_out <- as.data.frame(do.call(what = rbind, tobind))
+    df_out[["any_defined_structure"]] <- as.logical(df_out[["any_defined_structure"]])
+    df_out
+  })
+  
+  det_structure_list2 <- stats::setNames(det_structure_list2, basename(lfiles))
+  
+  saveRDS(det_structure_list2, file = output_filepath)
+  if (get_output_in_session) {det_structure_list2}}
+```
+
+```{r examples-detect_chars_structure_datasets}
+mydir <- system.file("detect_chars_structure_datasets", package = "industtry")
+
+detect <- detect_chars_structure_datasets(
+  datasets_folderpath = mydir, 
+  considered_extensions = "xlsx", 
+  patterns = "(?i)college", 
+  output_filepath = file.path(mydir, "detect_college.rds"), 
+  get_output_in_session = TRUE)
+
+# head(lapply(detect, head))
+
+file.exists(file.path(mydir, "detect_college.rds"))
+```
+
+```{r tests-detect_chars_structure_datasets}
+test_that("Valid outputs are consistent", {
+
+  mydir <- system.file("detect_chars_structure_datasets", package = "industtry")
+
+  detect <- detect_chars_structure_datasets(
+  datasets_folderpath = mydir,
+  considered_extensions = "xlsx",
+  patterns = "(?i)college",
+  output_filepath = file.path(mydir, "detect_college.rds"),
+  get_output_in_session = TRUE)
+
+  expect_true(file.exists(file.path(mydir, "detect_college.rds")))
+
+  expect_equal(head(lapply(detect, head)),
+               list(AK.xlsx = structure(list(var = c("School Code", "School Name",
+                                                     "Address", "City", "State Code", "Zip Code"), any_defined_structure = c(FALSE,
+                                                                                                                             TRUE, FALSE, FALSE, FALSE, FALSE), examples = c("NA", "ALASKA BIBLE COLLEGE / ALASKA CAREER COLLEGE / CHARTER COLLEGE / ILISAGVIK COLLEGE / ALASKA CHRISTIAN COLLEGE",
+                                                                                                                                                                             "NA", "NA", "NA", "NA")), row.names = c(NA, 6L), class = "data.frame"),
+                    AL.xlsx = structure(list(var = c("School Code", "School Name",
+                                                     "Address", "City", "State Code", "Zip Code"), any_defined_structure = c(FALSE,
+                                                                                                                             TRUE, TRUE, FALSE, FALSE, FALSE), examples = c("NA", "EDWARD VIA VIRGINIA COLLEGE OF OSTEOPATH / CENTRAL ALABAMA COMMUNITY COLLEGE / BIRMINGHAM SOUTHERN COLLEGE / CALHOUN COMMUNITY COLLEGE / ENTERPRISE STATE COMMUNITY COLLEGE / GADSDEN STATE COMMUNITY COLLEGE / GEORGE C WALLACE COMMUNITY COLLEGE / HUNTINGDON COLLEGE / COASTAL ALABAMA COMMUNITY COLLEGE - BREW / JEFFERSON STATE COMMUNITY COLLEGE",
+                                                                                                                                                                            "5735 COLLEGE PARKWAY / 2602 COLLEGE DRIVE", "NA", "NA",
+                                                                                                                                                                            "NA")), row.names = c(NA, 6L), class = "data.frame"), AR.xlsx = structure(list(
+                                                                                                                                                                              var = c("School Code", "School Name", "Address", "City",
+                                                                                                                                                                                      "State Code", "Zip Code"), any_defined_structure = c(FALSE,
+                                                                                                                                                                                                                                           TRUE, TRUE, FALSE, FALSE, FALSE), examples = c("NA",
+                                                                                                                                                                                                                                                                                          "ARKANSAS BAPTIST COLLEGE / LYON COLLEGE / CENTRAL BAPTIST COLLEGE / CROWLEYS RIDGE COLLEGE / HENDRIX COLLEGE / PHILANDER SMITH COLLEGE / PHILLIPS COUNTY COMMUNITY COLLEGE / SHORTER COLLEGE / U OF A COMM COLLEGE AT MORRILTON / UNIVERSITY OF ARKANSAS COMMUNITY COLLEGE",
+                                                                                                                                                                                                                                                                                          "1501 COLLEGE AVENUE / 415 COLLEGE AVENUE / 100 COLLEGE DRIVE / ONE COLLEGE CIRCLE / 101 COLLEGE DR / 183 COLLEGE DRIVE / 1100 COLLEGE DRIVE / 218 COLLEGE DRIVE / ONE COLLEGE DRIVE / 1600 SOUTH COLLEGE STREET",
+                                                                                                                                                                                                                                                                                          "NA", "NA", "NA")), row.names = c(NA, 6L), class = "data.frame"),
+                    AS.xlsx = structure(list(var = c("School Code", "School Name",
+                                                     "Address", "City", "State Code", "Zip Code"), any_defined_structure = c(FALSE,
+                                                                                                                             TRUE, FALSE, FALSE, FALSE, FALSE), examples = c("NA", "AMERICAN SAMOA CMNTY COLLEGE",
+                                                                                                                                                                             "NA", "NA", "NA", "NA")), row.names = c(NA, 6L), class = "data.frame"),
+                    AZ.xlsx = structure(list(var = c("School Code", "School Name",
+                                                     "Address", "City", "State Code", "Zip Code"), any_defined_structure = c(FALSE,
+                                                                                                                             TRUE, FALSE, FALSE, FALSE, FALSE), examples = c("NA", "BROOKLINE COLLEGE - MESA / BROOKLINE COLLEGE - TUCSON / ARIZONA WESTERN COLLEGE / COCHISE COLLEGE / EASTERN ARIZONA COLLEGE / GLENDALE COMMUNITY COLLEGE / MESA COMMUNITY COLLEGE / PHOENIX COLLEGE / YAVAPAI COLLEGE / PIMA COUNTY COMMUNITY COLLEGE",
+                                                                                                                                                                             "NA", "NA", "NA", "NA")), row.names = c(NA, 6L), class = "data.frame"),
+                    CA.xlsx = structure(list(var = c("School Code", "School Name",
+                                                     "Address", "City", "State Code", "Zip Code"), any_defined_structure = c(FALSE,
+                                                                                                                             TRUE, TRUE, FALSE, FALSE, FALSE), examples = c("NA", "PLATT COLLEGE / PLATT COLLEGE - ANAHEIM / BRIGHTWOOD COLLEGE - CHULA VISTA / UNITED EDUCATION INSTITUTE - UEI COLLEGE / UEI COLLEGE-RIVERSIDE / PLATT COLLEGE - RIVERSIDE / UEI COLLEGE - BAKERSFIELD / UEI COLLEGE - SACRAMENTO / UC-HASTINGS COLLEGE OF THE LAW / ALLAN HANCOCK COLLEGE",
+                                                                                                                                                                            "800 SO COLLEGE DRIVE / 550 N COLLEGE AVE / 835 COLLEGE AVENUE / 800 COLLEGE AVE / 8800 GROSSMONT COLLEGE DR / 4700 COLLEGE OAK DR / 435 COLLEGE AVE / ONE COLLEGE DRIVE / 100 EAST COLLEGE AVE / 7250 MESA COLLEGE DRIVE",
+                                                                                                                                                                            "NA", "NA", "NA")), row.names = c(NA, 6L), class = "data.frame")))
+})
+
+test_that("Errors are consistent", {
+  
+  mydir <- system.file("detect_chars_structure_datasets", package = "industtry")
+  
+  expect_error(detect_chars_structure_datasets(datasets_folderpath = "noexist"),
+               regexp = "datasets_folderpath must be a valid folder path")
+  
+  expect_error(detect_chars_structure_datasets(
+    datasets_folderpath = mydir, 
+    considered_extensions = "xlsx", 
+    patterns = "(?i)college", 
+    output_filepath = "noexist/noexist.ext",
+    get_output_in_session = FALSE),
+    regexp = "Folder path of output_filepath must be a valid one")
+})
+```
+
+```{r development-inflate, eval=FALSE}
+# Run but keep eval=FALSE to avoid infinite loop
+# Execute in the console directly
+fusen::inflate(flat_file = "dev/flat_detect_chars_structure_datasets.Rmd", 
+               vignette_name = NA)
+```
