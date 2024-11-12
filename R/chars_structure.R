@@ -6,7 +6,7 @@
 #' @param input_vector Character. Vector to process
 #' @param unique Logical 1L. If TRUE, the result is reduced to unique values.
 #' @param named_output Logical 1L. If TRUE, output vector is named after corresponding input values. 
-#' @return Character. Vector describing structure of each elements of input_vector,
+#' @return Character. Vector describing structure of each element of input_vector,
 #' see example. 
 #' @examples
 #' library(magrittr)
