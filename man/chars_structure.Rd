@@ -14,7 +14,7 @@ chars_structure(input_vector, unique = TRUE, named_output = TRUE)
 \item{named_output}{Logical 1L. If TRUE, output vector is named after corresponding input values.}
 }
 \value{
-Character. Vector describing structure of each elements of input_vector,
+Character. Vector describing structure of each element of input_vector,
 see example.
 }
 \description{
