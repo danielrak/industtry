@@ -58,6 +58,34 @@ flat_convert_r.Rmd:
     document: true
     overwrite: ask
     clean: ask
+flat_detect_chars_structure.Rmd:
+  path: dev/flat_detect_chars_structure.Rmd
+  state: active
+  R: R/detect_chars_structure.R
+  tests: tests/testthat/test-detect_chars_structure.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_detect_chars_structure.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
+flat_detect_chars_structure_datasets.Rmd:
+  path: dev/flat_detect_chars_structure_datasets.Rmd
+  state: active
+  R: R/detect_chars_structure_datasets.R
+  tests: tests/testthat/test-detect_chars_structure_datasets.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_detect_chars_structure_datasets.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
 flat_dupl_show.Rmd:
   path: dev/flat_dupl_show.Rmd
   state: active
