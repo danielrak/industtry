@@ -3,6 +3,7 @@
 export(assign_to_global)
 export(chars_structure)
 export(chars_structure_general)
+export(convert_all)
 export(convert_r)
 export(current_script_location)
 export(detect_chars_structure)
