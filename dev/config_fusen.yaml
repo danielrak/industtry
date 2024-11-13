@@ -40,6 +40,20 @@ flat_chars_structure_general.Rmd:
     document: true
     overwrite: ask
     clean: ask
+flat_convert_all.Rmd:
+  path: dev/flat_convert_all.Rmd
+  state: active
+  R: R/convert_all.R
+  tests: tests/testthat/test-convert_all.R
+  vignettes: []
+  inflate:
+    flat_file: dev/flat_convert_all.Rmd
+    vignette_name: .na
+    open_vignette: true
+    check: true
+    document: true
+    overwrite: ask
+    clean: ask
 flat_convert_r.Rmd:
   path: dev/flat_convert_r.Rmd
   state: active
