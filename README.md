@@ -45,38 +45,6 @@ devtools::install_github("danielrak/industtry")
 The exported surface is intentionally broad; the table below is a
 *functional map* of the main user-facing tools.
 
-``` r
-library(industtry)
-api_map <- tibble::tribble(
-  ~ "Area",
-  ~ "Main intent",
-  ~ "Key functions",
-  "Import collections",
-  "Load multiple datasets into the Global Environment (serialized or parallelized).",
-  "serial_import(), parallel_import()",
-  "Batch conversion / renaming",
-  "Operate through Excel masks to convert file formats or rename files at scale.",
-  "mask_convert_r(), convert_r(), mask_rename_r(), rename_r()",
-  "Inspection & profiling",
-  "Inspect one dataset or a whole folder of datasets; export diagnostics to Excel.",
-  "inspect(), inspect_write(), inspect_vars()",
-  "Schema detection / consistency",
-  "Detect variables across datasets and compare classes/structures.",
-  "vars_detect*(), vars_compclasses*(), chars_structure*(), detect_chars_structure*()",
-  "Data hygiene helpers",
-  "Duplicate diagnostics, join checks, proportions, etc.",
-  "dupl_show(), dupl_sources(), ljoin_checks(), table_prop()",
-  "Paths & filesystem",
-  "Replicate folder structures / move files.",
-  "folder_structure_replicate(), path_move()",
-  "Utilities",
-  "String replacement, global assignment, script location, etc.",
-  "replace_multiple(), assign_to_global(), current_script_location()"
-)
-
-knitr::kable(api_map)
-```
-
 | Area | Main intent | Key functions |
 |:---|:---|:---|
 | Import collections | Load multiple datasets into the Global Environment (serialized or parallelized). | serial_import(), parallel_import() |
@@ -210,27 +178,6 @@ saveRDS(mtcars, file.path(mydir, "mtcars.rds"))
 mask_rename_r(input_path = mydir)
 
 list.files(mydir)
-```
 
-    ## [1] "cars.rds"           "mask_rename_r.xlsx" "mtcars.rds"
-
-``` r
 rename_r(mask_filepath = file.path(mydir, "mask_rename_r.xlsx"))
 ```
-
-    ## Warning in file.rename(file.path(dirname(mask_filepath), x[["file"]]),
-    ## file.path(dirname(mask_filepath), : impossible de renommer le fichier
-    ## ‘C:/Users/rheri/AppData/Local/Temp/Rtmpqq1K44/file1264ab73327/NA' en
-    ## ‘C:/Users/rheri/AppData/Local/Temp/Rtmpqq1K44/file1264ab73327/NA', à cause de
-    ## 'Le fichier spécifié est introuvable'
-    ## Warning in file.rename(file.path(dirname(mask_filepath), x[["file"]]),
-    ## file.path(dirname(mask_filepath), : impossible de renommer le fichier
-    ## ‘C:/Users/rheri/AppData/Local/Temp/Rtmpqq1K44/file1264ab73327/NA' en
-    ## ‘C:/Users/rheri/AppData/Local/Temp/Rtmpqq1K44/file1264ab73327/NA', à cause de
-    ## 'Le fichier spécifié est introuvable'
-
-    ## $`NA`
-    ## [1] FALSE
-    ## 
-    ## $`NA`
-    ## [1] FALSE

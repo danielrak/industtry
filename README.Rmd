@@ -54,7 +54,7 @@ devtools::install_github("danielrak/industtry")
 The exported surface is intentionally broad; the table below is a
 *functional map* of the main user-facing tools.
 
-``` {r}
+``` {r, echo = FALSE}
 library(industtry)
 api_map <- tibble::tribble(
   ~ "Area",
@@ -199,7 +199,7 @@ convert_r(mask_filepath =
 
 Similarly, `rename_r()` performs **batch renaming** based on an Excel mask created by `mask_rename_r()`.
   
-```{r}
+```{r, eval = FALSE}
 mydir <- tempfile()
 dir.create(mydir)
 
