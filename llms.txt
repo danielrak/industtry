@@ -1,0 +1,236 @@
+# industtry
+
+`industtry` is a toolkit for **industrial-style exploitation of
+structured datasets** (primarily data frames), with an emphasis on
+**set-level operations**: applying the *same* procedure to *many* inputs
+as long as they share an identified structure.
+
+A large part of the package is built around two pragmatic ideas:
+
+1.  **“Collections first”**: many workflows fail to scale because they
+    are designed for a single dataset; `industtry` pushes common tasks
+    to the *collection* level (importing, inspecting, detecting schema
+    differences, batch conversion, etc.).  
+2.  **“Operational tooling”**: lightweight helpers for day-to-day work
+    (paths, duplicates, joins checks, string replacements, etc.) that
+    tend to recur in production data pipelines.
+
+> Some features integrate tightly with **RStudio** (background jobs /
+> interactive workflows). Those parts degrade gracefully when RStudio is
+> not available (examples are marked accordingly).
+
+------------------------------------------------------------------------
+
+## Installation
+
+You can install the development version from GitHub:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("danielrak/industtry")
+```
+
+------------------------------------------------------------------------
+
+## API map (what the package covers)
+
+The exported surface is intentionally broad; the table below is a
+*functional map* of the main user-facing tools.
+
+| Area                           | Main intent                                                                      | Key functions                                                                      |
+|:-------------------------------|:---------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------|
+| Import collections             | Load multiple datasets into the Global Environment (serialized or parallelized). | serial_import(), parallel_import()                                                 |
+| Batch conversion / renaming    | Operate through Excel masks to convert file formats or rename files at scale.    | mask_convert_r(), convert_r(), mask_rename_r(), rename_r()                         |
+| Inspection & profiling         | Inspect one dataset or a whole folder of datasets; export diagnostics to Excel.  | inspect(), inspect_write(), inspect_vars()                                         |
+| Schema detection / consistency | Detect variables across datasets and compare classes/structures.                 | vars_detect*(), vars_compclasses*(), chars_structure*(), detect_chars_structure*() |
+| Data hygiene helpers           | Duplicate diagnostics, join checks, proportions, etc.                            | dupl_show(), dupl_sources(), ljoin_checks(), table_prop()                          |
+| Paths & filesystem             | Replicate folder structures / move files.                                        | folder_structure_replicate(), path_move()                                          |
+| Utilities                      | String replacement, global assignment, script location, etc.                     | replace_multiple(), assign_to_global(), current_script_location()                  |
+
+------------------------------------------------------------------------
+
+## Core workflow 1 — import datasets as a collection
+
+A lot of analysis pipelines begin with import. When you have **many**
+datasets, importing them “one by one” (and keeping names consistent)
+becomes error-prone.
+
+`industtry` provides:
+
+- [`serial_import()`](reference/serial_import.md) to import a set of
+  datasets *sequentially*.  
+- [`parallel_import()`](reference/parallel_import.md) to import a set of
+  datasets *in parallel* (RStudio only).
+
+``` r
+library(industtry)
+
+yourdir <- system.file("permadir_examples_and_tests/importations", package = "industtry")
+
+lfiles <- list.files(yourdir, full.names = TRUE) %>%
+  purrr::keep(stringr::str_detect(., "\\.rds$"))
+
+lfiles
+```
+
+### Sequential import
+
+``` r
+serial_import(lfiles)
+```
+
+### Parallel import (RStudio)
+
+`{r, eval = FALSE} # RStudio only: parallel_import(lfiles)`
+
+------------------------------------------------------------------------
+
+## Core workflow 2 — inspect datasets (single + collection)
+
+When datasets come from heterogeneous sources (different producers,
+different time windows, different exports), a fast “schema + variable”
+diagnostic helps you converge quickly.
+
+### Inspect one data frame to Excel
+
+``` r
+# built-in dataset as a simple example
+data(cars)
+
+out_dir <- tempdir()
+inspect_write(
+  data_frame_name = "cars",
+  output_path = out_dir,
+  output_label = "cars"
+)
+
+list.files(out_dir)
+```
+
+### Inspect a whole folder of datasets to Excel
+
+``` r
+mydir <- file.path(tempdir(), "inspect_vars_readme_example")
+dir.create(mydir, showWarnings = FALSE)
+
+saveRDS(cars, file.path(mydir, "cars1.rds"))
+saveRDS(mtcars, file.path(mydir, "cars2.rds"))
+
+inspect_vars(
+  input_path = mydir,
+  output_path = mydir,
+  output_label = "cardata",
+  considered_extensions = "rds"
+)
+
+list.files(mydir)
+```
+
+------------------------------------------------------------------------
+
+## Core workflow 3 — industrialized conversion (mask-driven)
+
+[`convert_r()`](reference/convert_r.md) is designed for **batch
+conversion of dataset file formats** using an Excel mask: a
+deterministic, auditable interface to define *what to convert* and *how
+to name outputs*.
+
+High-level pattern:
+
+1.  Create a mask with
+    [`mask_convert_r()`](reference/mask_convert_r.md).  
+2.  Fill the mask columns.  
+3.  Run `convert_r(mask_filepath, output_path)` (RStudio only).
+
+``` r
+mydir <- system.file("permadir_examples_and_tests/convert_r", package =
+                "industtry")
+
+mask_convert_r(output_path = mydir) 
+
+convert_r(mask_filepath =
+            file.path(mydir, "mask_convert_r.xlsx"),
+          output_path = mydir)
+```
+
+------------------------------------------------------------------------
+
+## Core workflow 4 — industrialized file renaming (mask-driven)
+
+Similarly, [`rename_r()`](reference/rename_r.md) performs **batch
+renaming** based on an Excel mask created by
+[`mask_rename_r()`](reference/mask_rename_r.md).
+
+``` r
+mydir <- tempfile()
+dir.create(mydir)
+
+saveRDS(cars, file.path(mydir, "cars.rds"))
+saveRDS(mtcars, file.path(mydir, "mtcars.rds"))
+
+mask_rename_r(input_path = mydir)
+
+list.files(mydir)
+
+rename_r(mask_filepath = file.path(mydir, "mask_rename_r.xlsx"))
+```
+
+# Package index
+
+## All functions
+
+- [`assign_to_global()`](assign_to_global.md) : Assign to global
+  environment
+- [`chars_structure()`](chars_structure.md) : Get :alpha: / :digit:
+  patterns from each symbol of character vector
+- [`chars_structure_general()`](chars_structure_general.md) :
+  Generalized characters structure
+- [`convert_all()`](convert_all.md) : Convert all datasets within a
+  folder to a given file format
+- [`convert_r()`](convert_r.md) : Industrialized dataset formats
+  conversion (RStudio only)
+- [`current_script_location()`](current_script_location.md) : RStudio
+  only - Get exact path of the currently opened script
+- [`detect_chars_structure()`](detect_chars_structure.md) : Detect
+  character structure Detect if values within a character variable match
+  at least one of defined patterns
+- [`detect_chars_structure_datasets()`](detect_chars_structure_datasets.md)
+  : Detect character structure from datasets
+- [`dupl_show()`](dupl_show.md) : Show observations of all duplicated
+  values of a variable or a combination of variables
+- [`dupl_sources()`](dupl_sources.md) : Illustrate sources of all
+  duplicated values of a variable or a combination of variables
+- [`folder_structure_replicate()`](folder_structure_replicate.md) :
+  Replicate the folder structure of a given directory
+- [`inspect()`](inspect.md) : Inspect a data frame
+- [`inspect_vars()`](inspect_vars.md) : Inspect a collection of datasets
+- [`inspect_write()`](inspect_write.md) : Inspect a data frame and write
+  the output in an excel file
+- [`ljoin_checks()`](ljoin_checks.md) : Perform a classical
+  dplyr::left_join() and add check information related to join
+- [`mask_convert_r()`](mask_convert_r.md) : Create an excel mask
+  compatible with the convert_r() function
+- [`mask_rename_r()`](mask_rename_r.md) : Create an excel mask
+  compatible with the rename_r() function.
+- [`parallel_import()`](parallel_import.md) : Import a collection of
+  datasets into the Global Environment (parallelized)
+- [`path_move()`](path_move.md) : Move through paths
+- [`rename_r()`](rename_r.md) : Industrialized file renaming
+- [`replace_multiple()`](replace_multiple.md) : Replace character vector
+  values using a correspondence approach
+- [`serial_import()`](serial_import.md) : Import a collection of
+  datasets into the Global Environment (serialized)
+- [`table_prop()`](table_prop.md) : Frequencies and proportions in one
+  output
+- [`vars_compclasses()`](vars_compclasses.md) : Collection-level
+  variables types comparison
+- [`vars_compclasses_allsame()`](vars_compclasses_allsame.md) : Variable
+  class comparison - all of same type across all datasets
+- [`vars_compclasses_not_allsame()`](vars_compclasses_not_allsame.md) :
+  Variable class comparison - not all of same type across all datasets
+- [`vars_detect()`](vars_detect.md) : Variable detection patterns
+- [`vars_detect_everywhere()`](vars_detect_everywhere.md) : Variable
+  detection - presence across all the datasets
+- [`vars_detect_not_everywhere()`](vars_detect_not_everywhere.md) :
+  Variable detection - inconsistent patterns
+
