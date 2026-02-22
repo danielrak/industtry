@@ -83,10 +83,7 @@ lfiles
 ### Sequential import
 
 ``` r
-rm(list = ls())     # clean example workspace
 serial_import(lfiles)
-
-ls()
 ```
 
 ### Parallel import (RStudio)
