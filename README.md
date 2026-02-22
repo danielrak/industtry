@@ -1,11 +1,5 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-``` r
-library(magrittr)
-```
-
-# The industtry package - a toolkit for structured datasets exploitation
+# industtry
 
 <!-- badges: start -->
 
@@ -14,146 +8,229 @@ coverage](https://codecov.io/gh/danielrak/industtry/branch/master/graph/badge.sv
 [![R-CMD-check](https://github.com/danielrak/industtry/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/danielrak/industtry/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-This package proposes a set of functions that helps exploiting
-structured datasets (mostly data frames) with an industrialization
-approach. Industrialization here means applying as efficiently as
-possible the same procedure to any number of inputs as long as these
-inputs have an identified common structure. This idea would have been
-very difficult to implement without the `purrr::` and `rio::` packages:
+`industtry` is a toolkit for **industrial-style exploitation of
+structured datasets** (primarily data frames), with an emphasis on
+**set-level operations**: applying the *same* procedure to *many* inputs
+as long as they share an identified structure.
 
-``` r
-purrr:::map(c("purrr", "rio"), citation) %>% print(style = "text")
-#> [[1]]
-#> Wickham H, Henry L (2023). _purrr: Functional Programming Tools_. R
-#> package version 1.0.2, <https://CRAN.R-project.org/package=purrr>.
-#> 
-#> [[2]]
-#> Chan C, Leeper T, Becker J, Schoch D (2023). _rio: A Swiss-army knife
-#> for data file I/O_. <https://cran.r-project.org/package=rio>.
-```
+A large part of the package is built around two pragmatic ideas:
 
-**It’s best to use it with RStudio.**
+1.  **“Collections first”**: many workflows fail to scale because they
+    are designed for a single dataset; `industtry` pushes common tasks
+    to the *collection* level (importing, inspecting, detecting schema
+    differences, batch conversion, etc.).  
+2.  **“Operational tooling”**: lightweight helpers for day-to-day work
+    (paths, duplicates, joins checks, string replacements, etc.) that
+    tend to recur in production data pipelines.
 
-Its contribution is probably in the idea of applying transformations to
-the set level (of any number of data frames, for e.g), given that
-numerous existing package help the user exploit one dataset at a time.
-The functions of this package that are the most in line with this
-philosophy are: `convert_r()`, `inspect_vars()`, `serial_import()` and
-`parallel_import()`.
+> Some features integrate tightly with **RStudio** (background jobs /
+> interactive workflows). Those parts degrade gracefully when RStudio is
+> not available (examples are marked accordingly).
 
-This package also provides a set of micro-tools for dealing with usual
-data transformation tasks, particularly with R/RStudio.
+------------------------------------------------------------------------
 
 ## Installation
 
-You can install the development version of industtry from
-[GitHub](https://github.com/) with:
+You can install the development version from GitHub:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("danielrak/industtry")
 ```
 
-## Example - importations
+------------------------------------------------------------------------
+
+## API map (what the package covers)
+
+The exported surface is intentionally broad; the table below is a
+*functional map* of the main user-facing tools.
 
 ``` r
 library(industtry)
+api_map <- tibble::tribble(
+  ~ "Area",
+  ~ "Main intent",
+  ~ "Key functions",
+  "Import collections",
+  "Load multiple datasets into the Global Environment (serialized or parallelized).",
+  "serial_import(), parallel_import()",
+  "Batch conversion / renaming",
+  "Operate through Excel masks to convert file formats or rename files at scale.",
+  "mask_convert_r(), convert_r(), mask_rename_r(), rename_r()",
+  "Inspection & profiling",
+  "Inspect one dataset or a whole folder of datasets; export diagnostics to Excel.",
+  "inspect(), inspect_write(), inspect_vars()",
+  "Schema detection / consistency",
+  "Detect variables across datasets and compare classes/structures.",
+  "vars_detect*(), vars_compclasses*(), chars_structure*(), detect_chars_structure*()",
+  "Data hygiene helpers",
+  "Duplicate diagnostics, join checks, proportions, etc.",
+  "dupl_show(), dupl_sources(), ljoin_checks(), table_prop()",
+  "Paths & filesystem",
+  "Replicate folder structures / move files.",
+  "folder_structure_replicate(), path_move()",
+  "Utilities",
+  "String replacement, global assignment, script location, etc.",
+  "replace_multiple(), assign_to_global(), current_script_location()"
+)
+
+knitr::kable(api_map)
 ```
 
-Most of (but not all) use cases of data exploitation begins with
-datasets importation. When you have to work in some way with several
-datasets simultaneously, it may be useful to be able to import these
-with a simple code. That is the purpose of the two functions
-`serial_import()` and `parallel_import()`.
+| Area | Main intent | Key functions |
+|:---|:---|:---|
+| Import collections | Load multiple datasets into the Global Environment (serialized or parallelized). | serial_import(), parallel_import() |
+| Batch conversion / renaming | Operate through Excel masks to convert file formats or rename files at scale. | mask_convert_r(), convert_r(), mask_rename_r(), rename_r() |
+| Inspection & profiling | Inspect one dataset or a whole folder of datasets; export diagnostics to Excel. | inspect(), inspect_write(), inspect_vars() |
+| Schema detection / consistency | Detect variables across datasets and compare classes/structures. | vars_detect*(), vars_compclasses*(), chars_structure*(), detect_chars_structure*() |
+| Data hygiene helpers | Duplicate diagnostics, join checks, proportions, etc. | dupl_show(), dupl_sources(), ljoin_checks(), table_prop() |
+| Paths & filesystem | Replicate folder structures / move files. | folder_structure_replicate(), path_move() |
+| Utilities | String replacement, global assignment, script location, etc. | replace_multiple(), assign_to_global(), current_script_location() |
 
-Suppose you begin with an empty working session:
+------------------------------------------------------------------------
+
+## Core workflow 1 — import datasets as a collection
+
+A lot of analysis pipelines begin with import. When you have **many**
+datasets, importing them “one by one” (and keeping names consistent)
+becomes error-prone.
+
+`industtry` provides:
+
+- `serial_import()` to import a set of datasets *sequentially*.  
+- `parallel_import()` to import a set of datasets *in parallel* (RStudio
+  only).
 
 ``` r
-ls()
-#> character(0)
-```
+library(industtry)
 
-Say you want to import two data frames: cars.rds and mtcars.rds stored
-somewhere accessible to you:
-
-``` r
 yourdir <- system.file("permadir_examples_and_tests/importations", package = "industtry")
 
-list.files(yourdir) %>% purrr::keep(stringr::str_detect(., "\\.rds$"))
-#> [1] "cars.rds"   "mtcars.rds"
+lfiles <- list.files(yourdir, full.names = TRUE) %>%
+  purrr::keep(stringr::str_detect(., "\\.rds$"))
+
+lfiles
 ```
 
-Note that as long as you have the resources (storage and memory), the
-procedure is the same for 2, 20, 200, … data frames.
-
-Prepare a vector of paths of data frames you want to import:
+### Sequential import
 
 ``` r
-lfiles <- list.files(yourdir, full.names = TRUE) %>% 
-  purrr::keep(stringr::str_detect(., "\\.rds"))
-```
-
-One by one importation:
-
-``` r
+rm(list = ls())     # clean example workspace
 serial_import(lfiles)
-#> [[1]]
-#> NULL
-#> 
-#> [[2]]
-#> NULL
-```
-
-``` r
 
 ls()
-#> [1] "cars.rds"   "lfiles"     "mtcars.rds" "yourdir"
 ```
 
-You should have correctly imported the data:
+### Parallel import (RStudio)
+
+`{r, eval = FALSE} # RStudio only: parallel_import(lfiles)`
+
+------------------------------------------------------------------------
+
+## Core workflow 2 — inspect datasets (single + collection)
+
+When datasets come from heterogeneous sources (different producers,
+different time windows, different exports), a fast “schema + variable”
+diagnostic helps you converge quickly.
+
+### Inspect one data frame to Excel
 
 ``` r
-list("cars" = head(cars.rds), 
-     "mtcars" = head(mtcars.rds))
-#> $cars
-#>   speed dist
-#> 1     4    2
-#> 2     4   10
-#> 3     7    4
-#> 4     7   22
-#> 5     8   16
-#> 6     9   10
-#> 
-#> $mtcars
-#>                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
-#> Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
-#> Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
-#> Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
-#> Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
-#> Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
-#> Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
+# built-in dataset as a simple example
+data(cars)
+
+out_dir <- tempdir()
+inspect_write(
+  data_frame_name = "cars",
+  output_path = out_dir,
+  output_label = "cars"
+)
+
+list.files(out_dir)
 ```
 
-If you want to be able to still use the Console while importing or to
-avoid interrupting all of the process after one failure:
+### Inspect a whole folder of datasets to Excel
 
 ``` r
-# Remove from working session to illustrate parallel_import(): 
-rm(cars.rds, mtcars.rds)
+mydir <- file.path(tempdir(), "inspect_vars_readme_example")
+dir.create(mydir, showWarnings = FALSE)
+
+saveRDS(cars, file.path(mydir, "cars1.rds"))
+saveRDS(mtcars, file.path(mydir, "cars2.rds"))
+
+inspect_vars(
+  input_path = mydir,
+  output_path = mydir,
+  output_label = "cardata",
+  considered_extensions = "rds"
+)
+
+list.files(mydir)
 ```
+
+------------------------------------------------------------------------
+
+## Core workflow 3 — industrialized conversion (mask-driven)
+
+`convert_r()` is designed for **batch conversion of dataset file
+formats** using an Excel mask: a deterministic, auditable interface to
+define *what to convert* and *how to name outputs*.
+
+High-level pattern:
+
+1.  Create a mask with `mask_convert_r()`.  
+2.  Fill the mask columns.  
+3.  Run `convert_r(mask_filepath, output_path)` (RStudio only).
 
 ``` r
-parallel_import(lfiles)
+mydir <- system.file("permadir_examples_and_tests/convert_r", package =
+                "industtry")
+
+mask_convert_r(output_path = mydir) 
+
+convert_r(mask_filepath =
+            file.path(mydir, "mask_convert_r.xlsx"),
+          output_path = mydir)
 ```
 
-This is what you should observe:
+------------------------------------------------------------------------
 
-<figure>
-<img src="./inst/images/parallel_import_jobs.png"
-alt="Parallel import jobs" />
-<figcaption aria-hidden="true">Parallel import jobs</figcaption>
-</figure>
+## Core workflow 4 — industrialized file renaming (mask-driven)
 
-NB: `parallel_import()` may be slower than `serial_impport()` as the
-former copies the imported datasets from parallel sessions to the
-working session and the later does not have this additional step.
+Similarly, `rename_r()` performs **batch renaming** based on an Excel
+mask created by `mask_rename_r()`.
+
+``` r
+mydir <- tempfile()
+dir.create(mydir)
+
+saveRDS(cars, file.path(mydir, "cars.rds"))
+saveRDS(mtcars, file.path(mydir, "mtcars.rds"))
+
+mask_rename_r(input_path = mydir)
+
+list.files(mydir)
+```
+
+    ## [1] "cars.rds"           "mask_rename_r.xlsx" "mtcars.rds"
+
+``` r
+rename_r(mask_filepath = file.path(mydir, "mask_rename_r.xlsx"))
+```
+
+    ## Warning in file.rename(file.path(dirname(mask_filepath), x[["file"]]),
+    ## file.path(dirname(mask_filepath), : impossible de renommer le fichier
+    ## ‘C:/Users/rheri/AppData/Local/Temp/Rtmpqq1K44/file1264ab73327/NA' en
+    ## ‘C:/Users/rheri/AppData/Local/Temp/Rtmpqq1K44/file1264ab73327/NA', à cause de
+    ## 'Le fichier spécifié est introuvable'
+    ## Warning in file.rename(file.path(dirname(mask_filepath), x[["file"]]),
+    ## file.path(dirname(mask_filepath), : impossible de renommer le fichier
+    ## ‘C:/Users/rheri/AppData/Local/Temp/Rtmpqq1K44/file1264ab73327/NA' en
+    ## ‘C:/Users/rheri/AppData/Local/Temp/Rtmpqq1K44/file1264ab73327/NA', à cause de
+    ## 'Le fichier spécifié est introuvable'
+
+    ## $`NA`
+    ## [1] FALSE
+    ## 
+    ## $`NA`
+    ## [1] FALSE
